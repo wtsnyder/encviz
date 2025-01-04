@@ -14,7 +14,7 @@ System. Other environments may be added as time and interest permits.
 1. Install dependencies
 
 ```
-$ sudo apt install cmake libcairo2-dev libgdal-dev libgtest-dev libmicrohttpd-dev  libtinyxml2-dev
+$ sudo apt install cmake libcairo2-dev libgdal-dev libgtest-dev libmicrohttpd-dev  libtinyxml2-dev librsvg2-dev
 ```
 
 2. Compile the software

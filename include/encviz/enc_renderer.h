@@ -14,6 +14,7 @@
 #include <encviz/enc_dataset.h>
 #include <encviz/style.h>
 #include <encviz/web_mercator.h>
+#include <encviz/svg_collection.h>
 
 namespace encviz
 {
@@ -101,6 +102,15 @@ private:
                      const web_mercator &wm, const layer_style &style);
 
     /**
+     * Render a buoy with the right shape
+     *
+     */
+    void render_buoy(cairo_t *cr, const OGRPoint *geo,
+		     const web_mercator &wm, const layer_style &style,
+		     const int buoy_shape,
+		     std::vector<int> buoy_colors);
+
+    /**
      * Set Render Color
      *
      * \param[out] cr Image context
@@ -123,6 +133,9 @@ private:
 
     /// Chart collection
     enc_dataset enc_;
+
+    /// Svg Collection
+    svg_collection svg_;
 
     /// Loaded styles
     std::map<std::string, render_style> styles_;

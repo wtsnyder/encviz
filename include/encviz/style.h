@@ -19,7 +19,7 @@ namespace encviz
 /// Simple color map
 struct color
 {
-    /// Red channel (8 bit)
+    /// Alpha channel
     uint8_t alpha{255};
 
     /// Red channel (8 bit)
@@ -44,8 +44,11 @@ struct layer_style
     /// Line color
     color line_color;
 
-    /// Line color
+    /// Line width
     int line_width{1};
+
+    /// Line dash style
+    int line_dash;
 
     /// Circular marker radius
     int marker_size;

@@ -7,6 +7,8 @@
 
 #include <encviz/enc_renderer.h>
 #include <encviz/xml_config.h>
+#include <librsvg/rsvg.h>
+#include <iostream>
 namespace fs = std::filesystem;
 
 namespace encviz
@@ -108,6 +110,7 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         Create("", 0, 0, 0, GDT_Unknown, nullptr);
     if (!enc_.export_data(tile_data, layers, bbox, scale_min))
     {
+	printf("Error exporting tile data\n");
         return false;
     }
 
@@ -123,15 +126,58 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         cairo_paint(cr);
     }
 
+    printf("Render Tile:\n");
     // Render style layers
     for (const auto &lstyle : style.layers)
     {
+	printf("  Layer: %s\n", lstyle.layer_name.c_str());
         // Render feature geometry in this layer
         OGRLayer *tile_layer = tile_data->GetLayerByName(lstyle.layer_name.c_str());
         for (const auto &feat : tile_layer)
         {
             OGRGeometry *geo = feat->GetGeometryRef();
             render_geo(cr, geo, wm, lstyle);
+
+	    // Handle buoy icon rendering
+	    int buoy_shape_idx = feat->GetFieldIndex("BOYSHP");
+	    if (buoy_shape_idx != -1)
+	    {
+		// Get buoy shape
+		int buoy_shape = feat->GetFieldAsInteger("BOYSHP");
+
+		// Get buoy colors
+		std::vector<std::string> colors_list;
+		std::vector<int> colors_list_int;
+		char** colors = feat->GetFieldAsStringList("COLOUR");
+		if ( colors )
+		{
+		    colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
+		    for (auto color : colors_list)
+			colors_list_int.push_back(std::stoi(color));
+		}
+
+		std::cout << "Rendering buoy: " << feat->GetFieldAsString("OBJNAM") << std::endl;
+		render_buoy(cr, geo->toPoint(), wm, lstyle, buoy_shape, colors_list_int);
+	    }
+
+	    /*
+	    if (std::string(feat->GetDefnRef()->GetName()) == "BOYLAT")
+	    {
+		// Loop over all fields in this feature and print their names
+		for (const auto &field : feat->GetDefnRef()->GetFields())
+		{
+		    printf("    Field: %s type: %d\n", field->GetNameRef(), field->GetType());
+		}
+
+		//printf(" %s : %s \n", "OBJNAM", feat->GetFieldAsString("OBJNAM"));
+		//printf(" %s : %s \n", "BOYSHP", feat->GetFieldAsString("BOYSHP"));
+	    }
+	    */
+
+	    
+	    //printf("    Feature: %s : %d\n", feat->GetDefnRef()->GetName(), feat->GetDefnRef()->GetFieldCount());
+
+	    //printf("    Field: %s : %d\n", feat->GetDefnRef()->GetFieldDefn(), feat->GetDefnRef()->GetFieldCount());
         }
     }
 
@@ -146,6 +192,8 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         printf("Cairo write error %d : %s\n", rc,
                cairo_status_to_string(rc));
     }
+
+    printf("Png Size: %lu\n", data.size());
 
     // Cleanup
     cairo_destroy(cr);
@@ -256,7 +304,7 @@ void enc_renderer::render_depth(cairo_t *cr, const OGRPoint *geo,
     cairo_select_font_face(cr, "monospace",
                            CAIRO_FONT_SLANT_NORMAL,
                            CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size(cr, 15);
+    cairo_set_font_size(cr, 10);
     cairo_move_to(cr, c.x - extents.width/2, c.y - extents.height/2);
     cairo_show_text(cr, text);
 }
@@ -325,6 +373,25 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
     // Draw line
     set_color(cr, style.line_color);
     cairo_set_line_width(cr, style.line_width);
+    switch (style.line_dash)
+    {
+	double dash;
+    case 0:
+	cairo_set_dash(cr, nullptr, 0, 0);
+	break;
+    case 1:
+	dash = style.line_width;
+	cairo_set_dash(cr, &dash, 1, 0);
+	break;
+    case 2:
+	dash = style.line_width * 2;
+	cairo_set_dash(cr, &dash, 1, 0);
+	break;
+    case 3:
+	dash = style.line_width * 10;
+	cairo_set_dash(cr, &dash, 1, 0);
+	break;	
+    }
     cairo_stroke(cr);
 }
 
@@ -369,7 +436,63 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
     cairo_fill_preserve(cr);
     set_color(cr, style.line_color);
     cairo_set_line_width(cr, style.line_width);
+    switch (style.line_dash)
+    {
+	double dash;
+    case 0:
+	cairo_set_dash(cr, nullptr, 0, 0);
+	break;
+    case 1:
+	dash = style.line_width;
+	cairo_set_dash(cr, &dash, 1, 0);
+	break;
+    case 2:
+	dash = style.line_width * 2;
+	cairo_set_dash(cr, &dash, 1, 0);
+	break;
+    case 3:
+	dash = style.line_width * 10;
+	cairo_set_dash(cr, &dash, 1, 0);
+	break;
+    }
     cairo_stroke(cr);
+}
+
+void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
+			       const web_mercator &wm, const layer_style &style,
+			       const int buoy_shape,
+			       std::vector<int> buoy_colors)
+{
+    // Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+    fs::path buoy_svg = "";
+    switch (buoy_shape)
+    {
+    case 1: // conical
+      buoy_svg = "Q_buoys_beacons/conical.svg";
+      break;
+    case 2: // can/cylindrical
+      buoy_svg = "Q_buoys_beacons/can.svg";
+      break;
+    case 3: // spherical
+      buoy_svg = "Q_buoys_beacons/spherical.svg";
+      break;
+    case 4: // pillar
+      buoy_svg = "Q_buoys_beacons/pillar.svg";
+      break;
+    case 5: // spar
+      buoy_svg = "Q_buoys_beacons/spar.svg";
+      break;
+    case 6: // barrel
+      buoy_svg = "Q_buoys_beacons/barrel.svg";
+      break;
+    case 7: // super buoy
+      buoy_svg = "Q_buoys_beacons/super_buoy.svg";
+      break;
+    }
+
+    svg_.render_svg(cr, buoy_svg, c, 50, 50);
 }
 
 /**
@@ -411,6 +534,7 @@ void enc_renderer::load_config(const fs::path &config_path)
     fs::path chart_path = xml_text(xml_query(root, "chart_path"));
     fs::path meta_path = xml_text(xml_query(root, "meta_path"));
     fs::path style_path = xml_text(xml_query(root, "style_path"));
+    fs::path svg_path = xml_text(xml_query(root, "svg_path"));
     tile_size_ = atoi(xml_text(xml_query(root, "tile_size")));
     min_scale0_ = atof(xml_text(xml_query(root, "scale_base")));
 
@@ -421,16 +545,22 @@ void enc_renderer::load_config(const fs::path &config_path)
         meta_path = config_path / meta_path;
     if (style_path.is_relative())
         style_path = config_path / style_path;
+    if (svg_path.is_relative())
+        svg_path = config_path / svg_path;
 
     printf(" - Charts: %s\n", chart_path.string().c_str());
     printf(" - Metadata: %s\n", meta_path.string().c_str());
     printf(" - Styles: %s\n", style_path.string().c_str());
+    printf(" - SVGs: %s\n", svg_path.string().c_str());
     printf(" - Tile Size: %d\n", tile_size_);
     printf(" - Scale Base: %g\n", min_scale0_);
 
     // Load charts
     enc_.set_cache_path(meta_path);
     enc_.load_charts(chart_path);
+
+    // Set up svg load path
+    svg_.set_svg_path(svg_path);
 
     // Load styles
     for (const fs::directory_entry &entry : fs::directory_iterator(style_path))

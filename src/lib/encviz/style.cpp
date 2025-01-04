@@ -107,6 +107,7 @@ layer_style parse_layer(tinyxml2::XMLElement *node)
     parsed.fill_color = parse_color(xml_query(node, "fill_color"));
     parsed.line_color = parse_color(xml_query(node, "line_color"));
     parsed.line_width = atoi(xml_text(xml_query(node, "line_width")));
+    parsed.line_dash = atoi(xml_text(xml_query(node, "line_dash")));
     parsed.marker_size = atoi(xml_text(xml_query(node, "marker_size")));
     return parsed;
 }

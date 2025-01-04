@@ -2,6 +2,7 @@ add_library(encviz
   enc_dataset.cpp
   enc_renderer.cpp
   style.cpp
+  svg_collection.cpp
   web_mercator.cpp
   xml_config.cpp
   )
@@ -10,4 +11,5 @@ target_link_libraries(encviz
   ${GDAL_LIBRARIES}
   ${MICROHTTPD_LIBRARIES}
   ${TINYXML2_LIBRARIES}
+  ${RSVG_LIBRARIES}
   )

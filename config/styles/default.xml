@@ -11,6 +11,7 @@
     <fill_color>C8B87A</fill_color>
     <line_color>A8ACA1</line_color>
     <line_width>1</line_width>
+    <line_dash>0</line_dash>
     <marker_size>5</marker_size>
   </layer>
 
@@ -20,7 +21,58 @@
     <fill_color>000</fill_color>
     <line_color>989C92</line_color>
     <line_width>1</line_width>
+    <line_dash>0</line_dash>
     <marker_size>5</marker_size>
+  </layer>
+
+  <!-- Traffic Separation Zone -->
+  <layer>
+    <layer_name>TSEZNE</layer_name>
+    <fill_color>dfc9e3</fill_color>
+    <line_color>dfc9e3</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Traffic Separation Scheme  Boundary -->
+  <layer>
+    <layer_name>TSSBND</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>b354aa</line_color>
+    <line_width>6</line_width>
+    <line_dash>2</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Recommended Track (aka. channels) -->
+  <layer>
+    <layer_name>RECTRC</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>bdcecb</line_color>
+    <line_width>2</line_width>
+    <line_dash>3</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Bridge -->
+  <layer>
+    <layer_name>BRIDGE</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>616866</line_color>
+    <line_width>2</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Buoy Lateral -->
+  <layer>
+    <layer_name>BOYLAT</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>1</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>10</marker_size>
   </layer>
 
   <!-- Depth Contours -->
@@ -29,6 +81,7 @@
     <fill_color>000</fill_color>
     <line_color>B2CBD6</line_color>
     <line_width>1</line_width>
+    <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
 
@@ -38,8 +91,10 @@
     <fill_color>000</fill_color>
     <line_color>000</line_color>
     <line_width>0</line_width>
+    <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
+
 
 </style>
 

@@ -11,6 +11,9 @@
   <!-- Location to store render styles -->
   <style_path>styles</style_path>
 
+  <!-- Location of SVG icons -->
+  <svg_path>icons</svg_path>
+
   <!-- Size of rendered tiles -->
   <tile_size>256</tile_size>
 
