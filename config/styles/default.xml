@@ -65,6 +65,36 @@
     <marker_size>0</marker_size>
   </layer>
 
+  <!-- Buoy Cardinal -->
+  <layer>
+    <layer_name>BOYCAR</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>1</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
+  </layer>
+
+  <!-- Buoy Installation -->
+  <layer>
+    <layer_name>BOYINB</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>1</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
+  </layer>
+
+  <!-- Buoy Isolated Danger -->
+  <layer>
+    <layer_name>BOYISD</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>1</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
+  </layer>
+
   <!-- Buoy Lateral -->
   <layer>
     <layer_name>BOYLAT</layer_name>
@@ -72,7 +102,27 @@
     <line_color>000</line_color>
     <line_width>1</line_width>
     <line_dash>0</line_dash>
-    <marker_size>10</marker_size>
+    <marker_size>1</marker_size>
+  </layer>
+
+  <!-- Buoy Safe Water -->
+  <layer>
+    <layer_name>BOYSAW</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>1</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
+  </layer>
+
+  <!-- Buoy Special Purpose -->
+  <layer>
+    <layer_name>BOYSPP</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>1</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
   </layer>
 
   <!-- Depth Contours -->
@@ -94,6 +144,7 @@
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
+
 
 
 </style>

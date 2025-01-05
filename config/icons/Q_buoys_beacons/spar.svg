@@ -93,9 +93,24 @@
        id="perspective9" />
   </defs>
   <path
-     style="fill:none;stroke:none"
-     d="m 72.456342,64.795637 15.98438,-44.835772 8.674573,1.874494 -14.634493,46.834358 z"
-     id="path3755"
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 73.71397,65.565381 13.940616,-45.911579 9.075597,2.06368 -14.099881,45.025942 z"
+     id="buoy_color_1"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 73.522982,63.918742 7.220959,-22.339261 9.430743,2.830943 -6.620736,22.656967 z"
+     id="buoy_color_2"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 80.074339,45.18833 1.906197,-6.676507 9.005936,2.191656 -1.751357,6.810557 z"
+     id="buoy_color_3"
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="ccccc" />
   <path

@@ -5,7 +5,7 @@
    height="150"
    id="svg2"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   sodipodi:docname="white.svg"
+   sodipodi:docname="can.svg"
    sodipodi:version="0.32"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true"
@@ -61,7 +61,7 @@
      id="namedview3030"
      showgrid="false"
      inkscape:zoom="4.4035072"
-     inkscape:cx="55.410378"
+     inkscape:cx="53.025915"
      inkscape:cy="89.474136"
      inkscape:window-x="0"
      inkscape:window-y="0"
@@ -82,15 +82,29 @@
        id="guide417"
        inkscape:locked="false" />
   </sodipodi:namedview>
-  <defs
-     id="defs4" />
+  <defs id="defs4" />
   <path
-     style="fill:none;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      d="m 44.744554,75.000772 13.23879,-44.34993 54.940946,17.87236 -8.60521,25.1537 -18.534296,-0.66194 -3.97163,-6.6194 -3.97164,-1.32387 h -5.95745 l -5.29551,4.63357 -1.98582,4.63357 z"
-     id="path2982"
+     id="buoy_color_1"
      inkscape:connector-curvature="0" />
   <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 45.079093,74.533799 9.017191,-25.935099 51.926656,16.260542 -1.36932,8.350687 -18.534297,-0.66194 -3.97163,-6.6194 -3.97164,-1.32387 h -5.95745 l -5.29551,4.63357 -1.98582,4.63357 z"
+     id="buoy_color_2"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccc" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 53.245084,51.595318 3.442798,-8.722257 51.254258,16.547068 -2.81349,8.727695 z"
+     id="buoy_color_3"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+  <path
      d="m 56.348214,25.965632 -15.21875,45.75 h -7.96875 v 5.65625 h 29.6875 c 1.28732,5.53295 6.23327,9.65624 12.15625,9.65625 5.92495,0 10.87095,-4.12052 12.15625,-9.65625 h 29.843746 v -0.0625 -5.59375 h -7.6875 l 9,-26.1875 z m 5.03125,8.625 47.156246,15.96875 -7.21874,21.15625 H 87.160714 c -1.2853,-5.53573 -6.2313,-9.65625 -12.15625,-9.65625 -5.92298,1e-5 -10.86893,4.1233 -12.15625,9.65625 h -13.71875 z m 13.625,32.4375 c 4.14,0 7.5,3.36 7.5,7.5 0,4.14 -3.36,7.5 -7.5,7.5 -4.14,0 -7.5,-3.36 -7.5,-7.5 0,-4.14 3.36,-7.5 7.5,-7.5 z"
-     id="path90440"
+     id="buoy_icon"
      style="fill:#000407;fill-opacity:1;fill-rule:evenodd;stroke:none" />
 </svg>

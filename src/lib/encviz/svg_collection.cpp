@@ -24,7 +24,8 @@ void svg_collection::set_svg_path(const std::filesystem::path &svg_path)
 }
 
 bool svg_collection::render_svg(cairo_t *cr, std::filesystem::path &svg_path,
-				coord center, double width, double height)
+				coord center, double width, double height,
+				std::string stylesheet)
 {
     fs::path full_path = svg_root_path_;
     full_path /= svg_path;
@@ -34,7 +35,27 @@ bool svg_collection::render_svg(cairo_t *cr, std::filesystem::path &svg_path,
 
     RsvgHandle *handle = rsvg_handle_new_from_gfile_sync(file, RSVG_HANDLE_FLAGS_NONE, NULL, &error);
 
+    if (!handle)
+    {
+      g_printerr ("could not load: %s", error->message);
+      return false;
+    }
+
     rsvg_handle_set_dpi(handle, 96.0);
+
+    bool set_style;
+    set_style = rsvg_handle_set_stylesheet (handle,
+					    reinterpret_cast<const uint8_t*>(stylesheet.c_str()),
+					    stylesheet.size(),
+					    &error);
+    if (!set_style)
+    {
+	g_printerr ("error setting style: %s", error->message);
+    }
+    else
+    {
+	std::cout << "Using style sheet:" << stylesheet << std::endl;
+    }
 
     // Get native size to maintain aspect ratio
     //double native_width, native_height;

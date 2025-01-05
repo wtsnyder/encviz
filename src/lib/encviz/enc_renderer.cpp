@@ -458,6 +458,26 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
     cairo_stroke(cr);
 }
 
+/**
+ * Mapping of S-57 standard COLOUR id's to css named colors
+ */
+const std::map<int, std::string> ENC_COLORS = {
+    {0, "none"}, // useful default value, not in standard
+    {1, "white"},
+    {2, "black"},
+    {3, "red"},
+    {4, "green"},
+    {5, "blue"},
+    {6, "yellow"},
+    {7, "grey"},
+    {8, "brown"},
+    {9, "darkorange"}, // amber
+    {10, "violet"},
+    {11, "orange"},
+    {12, "magenta"},
+    {13, "pink"}
+};
+
 void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
 			       const web_mercator &wm, const layer_style &style,
 			       const int buoy_shape,
@@ -465,6 +485,30 @@ void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
+
+    // create style sheet to set buoy colors
+    // Note right now this is blindly assigning colors to
+    // named svg elements "buoy_color_n" that must exist
+    // and not using COLPAT, which specifies the pattern
+    // (horizontal stripes, vert, etc.) of the colors
+    int i = 0;
+    std::stringstream ss;
+    for (auto color_code : buoy_colors)
+    {
+	i++;
+	try
+	{
+	    ss << "#buoy_color_" << i << "{\n"
+	       << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
+	       << "}\n";
+	}
+	catch (const std::out_of_range &e)
+	{
+	    // bad color
+	}
+    }
+
+    std::string stylesheet = ss.str();
 
     fs::path buoy_svg = "";
     switch (buoy_shape)
@@ -492,7 +536,7 @@ void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
       break;
     }
 
-    svg_.render_svg(cr, buoy_svg, c, 50, 50);
+    svg_.render_svg(cr, buoy_svg, c, 50, 50, stylesheet);
 }
 
 /**

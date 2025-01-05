@@ -85,10 +85,26 @@
   <defs
      id="defs4" />
   <path
-     style="fill:none;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="m 27.126119,74.938229 11.71578,-28.47585 76.152581,-0.48816 12.04122,28.47585 -41.167961,-0.32543 -3.09166,-5.69518 -4.06798,-3.09166 -6.50877,-0.32544 -3.90526,2.27807 -4.39342,7.15964 z"
-     id="path2983"
-     inkscape:connector-curvature="0" />
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 27.737156,73.234118 11.656456,-26.80864 76.785378,0.238302 10.47672,26.540517 -41.632257,0.374356 -3.97163,-6.6194 -3.97164,-1.32387 h -5.95745 l -5.29551,4.63357 -1.98582,4.63357 z"
+     id="buoy_color_1"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccc" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 27.595152,74.172749 5.838434,-15.168776 87.976844,0.178285 6.15307,13.980739 -40.904788,-0.486973 -3.97163,-6.6194 -3.97164,-1.32387 h -5.95745 l -5.29551,4.63357 -1.98582,4.63357 z"
+     id="buoy_color_2"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccc" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1.28171px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 32.09923,63.763091 2.743847,-8.810924 84.773963,-0.69082 1.94707,9.313819 z"
+     id="buoy_color_3"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
   <path
      style="fill:#000407;fill-opacity:1;fill-rule:evenodd;stroke:none"
      d="m 116.88115,44.040959 -79.837161,-0.01805 -12.1941,27.89305 H 3.0061388 v 5.65625 H 62.693639 c 1.28732,5.53295 6.23327,9.65624 12.15625,9.65625 5.92495,0 10.87095,-4.12052 12.15625,-9.65625 H 146.8499 v -5.65625 h -18.85783 z m -77.279501,4.8816 74.589361,-0.35519 9.74252,23.68574 -36.927391,-0.33715 c -1.2853,-5.53573 -6.2313,-9.65625 -12.15625,-9.65625 -5.92298,10e-6 -10.86893,4.1233 -12.15625,9.65625 h -32.5625 z m 35.24824,18.3059 c 4.14,0 7.5,3.36 7.5,7.5 0,4.14 -3.36,7.5 -7.5,7.5 -4.14,0 -7.5,-3.36 -7.5,-7.5 0,-4.14 3.36,-7.5 7.5,-7.5 z"
