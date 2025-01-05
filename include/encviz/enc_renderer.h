@@ -111,6 +111,15 @@ private:
 		     std::vector<int> buoy_colors);
 
     /**
+     * Render a beacon with the right shape
+     *
+     */
+    void render_beacon(cairo_t *cr, const OGRPoint *geo,
+		       const web_mercator &wm, const layer_style &style,
+		       const int beacon_shape,
+		       std::vector<int> beacon_colors);
+
+    /**
      * Set Render Color
      *
      * \param[out] cr Image context

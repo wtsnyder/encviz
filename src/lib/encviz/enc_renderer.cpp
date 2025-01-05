@@ -15,6 +15,26 @@ namespace encviz
 {
 
 /**
+ * Mapping of S-57 standard COLOUR id's to css named colors
+ */
+const std::map<int, std::string> ENC_COLORS = {
+    {0, "none"}, // useful default value, not in standard
+    {1, "white"},
+    {2, "black"},
+    {3, "red"},
+    {4, "green"},
+    {5, "blue"},
+    {6, "yellow"},
+    {7, "grey"},
+    {8, "brown"},
+    {9, "darkorange"}, // amber
+    {10, "violet"},
+    {11, "orange"},
+    {12, "magenta"},
+    {13, "pink"}
+};
+
+/**
  * Cairo Stream Callback
  *
  * \param[out] closure Pointer to std::vector<uint8_t> output stream
@@ -135,30 +155,40 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         OGRLayer *tile_layer = tile_data->GetLayerByName(lstyle.layer_name.c_str());
         for (const auto &feat : tile_layer)
         {
+	    // render basic geometries
             OGRGeometry *geo = feat->GetGeometryRef();
             render_geo(cr, geo, wm, lstyle);
+
+	    // Get colors if this elemnt has a list of colors
+	    std::vector<std::string> colors_list;
+	    std::vector<int> colors_list_int;
+	    char** colors = feat->GetFieldAsStringList("COLOUR");
+	    if ( colors )
+	    {
+		colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
+		for (auto color : colors_list)
+		    colors_list_int.push_back(std::stoi(color));
+	    }
 
 	    // Handle buoy icon rendering
 	    int buoy_shape_idx = feat->GetFieldIndex("BOYSHP");
 	    if (buoy_shape_idx != -1)
 	    {
-		// Get buoy shape
+		// Get buoy shape & render buoy
 		int buoy_shape = feat->GetFieldAsInteger("BOYSHP");
-
-		// Get buoy colors
-		std::vector<std::string> colors_list;
-		std::vector<int> colors_list_int;
-		char** colors = feat->GetFieldAsStringList("COLOUR");
-		if ( colors )
-		{
-		    colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
-		    for (auto color : colors_list)
-			colors_list_int.push_back(std::stoi(color));
-		}
-
 		std::cout << "Rendering buoy: " << feat->GetFieldAsString("OBJNAM") << std::endl;
 		render_buoy(cr, geo->toPoint(), wm, lstyle, buoy_shape, colors_list_int);
 	    }
+
+	    int beacon_shape_idx = feat->GetFieldIndex("BCNSHP");
+	    if (beacon_shape_idx != -1)
+	    {
+		// Get beacon shape & render beacon
+		int beacon_shape = feat->GetFieldAsInteger("BCNSHP");
+		std::cout << "Rendering beacon: " << feat->GetFieldAsString("OBJNAM") << std::endl;
+		render_beacon(cr, geo->toPoint(), wm, lstyle, beacon_shape, colors_list_int);
+	    }
+		
 
 	    /*
 	    if (std::string(feat->GetDefnRef()->GetName()) == "BOYLAT")
@@ -292,21 +322,51 @@ void enc_renderer::render_depth(cairo_t *cr, const OGRPoint *geo,
     coord c = wm.point_to_pixels(*geo);
 
     // TODO - Could do this better?
-    char text[64] = {};
-    snprintf(text, sizeof(text)-1, "%.1f", geo->getZ());
+    double depth = geo->getZ();
+    int depth_m = std::floor(depth); // depth in m
+    int depth_dm = std::floor((depth - depth_m) * 10); // depth remainder in decimeters
+    char m_text[64] = {};
+    snprintf(m_text, sizeof(m_text)-1, "%d", depth_m);
+    char dm_text[64] = {};
+    snprintf(dm_text, sizeof(dm_text)-1, "%d", depth_dm);
 
-    // Determine text render size
-    cairo_text_extents_t extents = {};
-    cairo_text_extents(cr, text, &extents);
-
-    // Draw text
+    // Set text style
     set_color(cr, style.line_color);
     cairo_select_font_face(cr, "monospace",
                            CAIRO_FONT_SLANT_NORMAL,
                            CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size(cr, 10);
-    cairo_move_to(cr, c.x - extents.width/2, c.y - extents.height/2);
-    cairo_show_text(cr, text);
+    
+    // Determine text render size
+    cairo_text_extents_t m_extents = {};
+    cairo_text_extents(cr, m_text, &m_extents);
+
+    cairo_text_extents_t dm_extents = {};
+    cairo_text_extents(cr, dm_text, &dm_extents);
+
+    // Draw text
+    if (depth_dm == 0)
+    {
+	// draw sounding text without a subscript
+	cairo_move_to(cr, c.x - m_extents.width/2, c.y - m_extents.height/2);
+	cairo_show_text(cr, m_text);
+    }
+    else
+    {
+	// draw sounding with a dm subscript
+	float width = m_extents.width + dm_extents.width;
+	float height = m_extents.height + dm_extents.height/2;
+	// center of the whole text is c.x, c.y
+	// top left of big text is x,y
+	float x = c.x - width / 2;
+	float y = c.y - height / 2;
+	// big number
+	cairo_move_to(cr, x, y);
+	cairo_show_text(cr, m_text);
+	// subscript is to the right and half way down the big number
+	cairo_move_to(cr, x + m_extents.width, y + m_extents.height / 2);
+	cairo_show_text(cr, dm_text);
+    }
 }
 
 /**
@@ -458,26 +518,6 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
     cairo_stroke(cr);
 }
 
-/**
- * Mapping of S-57 standard COLOUR id's to css named colors
- */
-const std::map<int, std::string> ENC_COLORS = {
-    {0, "none"}, // useful default value, not in standard
-    {1, "white"},
-    {2, "black"},
-    {3, "red"},
-    {4, "green"},
-    {5, "blue"},
-    {6, "yellow"},
-    {7, "grey"},
-    {8, "brown"},
-    {9, "darkorange"}, // amber
-    {10, "violet"},
-    {11, "orange"},
-    {12, "magenta"},
-    {13, "pink"}
-};
-
 void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
 			       const web_mercator &wm, const layer_style &style,
 			       const int buoy_shape,
@@ -537,6 +577,67 @@ void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
     }
 
     svg_.render_svg(cr, buoy_svg, c, 50, 50, stylesheet);
+}
+
+void enc_renderer::render_beacon(cairo_t *cr, const OGRPoint *geo,
+				 const web_mercator &wm, const layer_style &style,
+				 const int beacon_shape,
+				 std::vector<int> beacon_colors)
+{
+    // Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+    // create style sheet to set buoy colors
+    // Note right now this is blindly assigning colors to
+    // named svg elements "buoy_color_n" that must exist
+    // and not using COLPAT, which specifies the pattern
+    // (horizontal stripes, vert, etc.) of the colors
+    int i = 0;
+    std::stringstream ss;
+    for (auto color_code : beacon_colors)
+    {
+	i++;
+	try
+	{
+	    ss << "#beacon_color_" << i << "{\n"
+	       << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
+	       << "}\n";
+	}
+	catch (const std::out_of_range &e)
+	{
+	    // bad color
+	}
+    }
+
+    std::string stylesheet = ss.str();
+
+    fs::path beacon_svg = "";
+    switch (beacon_shape)
+    {
+    case 1: // stake
+	beacon_svg = "Q_buoys_beacons/stake.svg";
+	break;
+    case 2: // withy
+	//beacon_svg = "Q_buoys_beacons/can.svg";
+	break;
+    case 3: // beacon tower
+	beacon_svg = "Q_buoys_beacons/tower.svg";
+	break;
+    case 4: // lattice beacon
+      beacon_svg = "Q_buoys_beacons/lattice_beacon.svg";
+      break;
+    case 5: // pile beacon
+	//beacon_svg = "Q_buoys_beacons/spar.svg";
+	break;
+    case 6: // carin
+	beacon_svg = "Q_buoys_beacons/carin.svg";
+	break;
+    case 7: // buoyant beacon
+	beacon_svg = "Q_buoys_beacons/buoyant_beacon.svg";
+	break;
+    }
+
+    svg_.render_svg(cr, beacon_svg, c, 50, 50, stylesheet);
 }
 
 /**
