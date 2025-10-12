@@ -137,6 +137,12 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
     {
         create_layer(ods, layer_name.c_str());
     };
+	
+	// Create layers in the temporay dataset
+    for (const std::string &layer_name : layers)
+    {
+        create_layer(temp_ds.get(), layer_name.c_str());
+    };
 
     // Going to need 3 working layers
     OGRLayer *clip_layer = create_layer(temp_ds.get(), "");
@@ -161,7 +167,7 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
         {
             // NOTE: Some OGR drivers need to be done in sequence, and don't
             // like us jumping around betwen layers, like KML ...
-            OGRLayer *olayer = ods->GetLayerByName(layer_name.c_str());
+            OGRLayer *olayer = temp_ds->GetLayerByName(layer_name.c_str());
             if (olayer == nullptr)
             {
                 throw std::runtime_error("Cannot open output layer (OGR interleaving issue?)");
@@ -177,10 +183,10 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
             }
             
             // Copy over features
-            if (ilayer->Clip(clip_layer, olayer) != OGRERR_NONE)
-            {
-                throw std::runtime_error("Cannot perform layer clip operation");
-            }
+			if (ilayer->Clip(clip_layer, olayer) != OGRERR_NONE)
+			{
+				throw std::runtime_error("Cannot perform layer clip operation");
+			}
         }
 
         // Remove any coverage from the clipping layer
@@ -202,6 +208,64 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
             printf(" - Complete coverage (STOP)\n");
             break;
         }
+    }
+
+    // what is even in these layers
+    for (const std::string &layer_name : layers)
+    {
+		// temporary layer storing all polygons of this type
+        OGRLayer *ilayer = temp_ds->GetLayerByName(layer_name.c_str());
+		// output layer
+		OGRLayer *olayer = ods->GetLayerByName(layer_name.c_str());
+
+		// New geometry collection to compile all the polygons
+		std::unique_ptr<OGRGeometry, decltype(&OGRGeometryFactory::destroyGeometry)> multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
+
+		printf("Print Features:\n");
+		for (const auto &feat : ilayer)
+		{
+			// Get feature geometry type
+			OGRGeometry *geo = feat->GetGeometryRef();
+			OGRwkbGeometryType gtype = geo->getGeometryType();
+			
+			if (gtype == wkbPolygon)
+			{
+				// Copy all polygons on this layer into one geometry object
+				multi_poly->toMultiPolygon()->addGeometry(geo);
+			}
+			else if (gtype == wkbMultiPolygon)
+			{
+				// Copy all polygons on this layer into one geometry object
+				for (auto &poly : geo->toMultiPolygon())
+				{
+					multi_poly->toMultiPolygon()->addGeometry(poly);
+				}
+			}
+			else
+			{
+				// non-polygon features are copied straight to output
+				olayer->CreateFeature(feat.get());
+			}
+	  
+			//std::cout << feat->DumpReadableAsString() << std::endl;
+		} // done looping features
+
+		// union all the polygons in our multi-poly
+		auto a = multi_poly->UnionCascaded();
+
+		// create a geo feature with the unioned polygons
+		OGRFeature myfeature(olayer->GetLayerDefn());
+		myfeature.SetGeometry(a);
+		// add it to the output layer
+		olayer->CreateFeature(&myfeature);
+
+		/*
+		for (const auto &feat : olayer)
+		{
+			std::cout << feat->DumpReadableAsString() << std::endl;
+		}
+		*/
+
     }
 
     return true;
@@ -259,8 +323,9 @@ bool enc_dataset::load_chart_cache(const std::filesystem::path &path)
             // Ensure no EOF, and path matches before saving metadata
             if (handle.good() && (path == next.path))
             {
-                charts_[path.stem().string()] = next;
-                return true;
+				std::cout << "Load Chart bounds from cache: " << path << std::endl;
+				charts_[path.stem().string()] = next;
+				return true;
             }
         }
     }
@@ -280,6 +345,7 @@ bool enc_dataset::load_chart_disk(const std::filesystem::path &path)
     metadata next = {path};
 
     // Open dataset
+    std::cout << "Open Chart: " << path.string() << std::endl;
     const char *const drivers[] = { "S57", nullptr };
     GDALDataset *ds = GDALDataset::Open(path.string().c_str(),
                                         GDAL_OF_VECTOR | GDAL_OF_READONLY,
@@ -299,6 +365,7 @@ bool enc_dataset::load_chart_disk(const std::filesystem::path &path)
 
         // .. that has "Dataset Parameter" (DSPM) "Compilation of Scale" (CSCL)
         next.scale = get_feat_field_int(feat.get(), "DSPM_CSCL");
+	std::cout << "  scale: " << next.scale << std::endl;
     }
 
     // Get Chart Coverage Bounds
@@ -327,6 +394,9 @@ bool enc_dataset::load_chart_disk(const std::filesystem::path &path)
             geo->getEnvelope(&covr);
             next.bbox.Merge(covr);
         }
+
+	std::cout << "  coverage X: " << next.bbox.MinX << "," << next.bbox.MaxX << std::endl;
+	std::cout << "  coverage Y: " << next.bbox.MinY << "," << next.bbox.MaxY << std::endl;
     }
 
     // Cleanup
@@ -396,6 +466,7 @@ OGRLayer *enc_dataset::create_layer(GDALDataset *ds, const char *name)
     CHECKNULL(ptr, "Cannot create dataset layer");
     return ptr;
 }
+
 
 /**
  * Copy ENC Chart Coverage

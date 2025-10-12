@@ -244,6 +244,7 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
                               const web_mercator &wm, const layer_style &style)
 {
+    std::cout << "Render GEO: " << geo->getGeometryName() << std::endl;
     // What sort of geometry were we passed?
     OGRwkbGeometryType gtype = geo->getGeometryType();
     switch (gtype)
@@ -466,6 +467,9 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
 void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
                                const web_mercator &wm, const layer_style &style)
 {
+    if (geo->IsEmpty() || !geo->IsValid())
+        return;
+    std::cout << "Render polygon: " << geo->exportToJson() << std::endl;
     // FIXME - Throw a fit if we see interior rings (not handled)
     if (geo->getNumInteriorRings() != 0)
     {

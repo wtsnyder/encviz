@@ -14,6 +14,7 @@
 #include <filesystem>
 #include <gdal_priv.h>
 #include <ogrsf_frmts.h>
+#include <ogr_geometry.h>
 
 namespace encviz
 {
