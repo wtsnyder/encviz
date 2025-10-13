@@ -210,7 +210,7 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
         }
     }
 
-    // what is even in these layers
+    // Loop all layers to consolidate polygons
     for (const std::string &layer_name : layers)
     {
 		// temporary layer storing all polygons of this type
@@ -220,8 +220,7 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
 
 		// New geometry collection to compile all the polygons
 		std::unique_ptr<OGRGeometry, decltype(&OGRGeometryFactory::destroyGeometry)> multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
-
-		printf("Print Features:\n");
+		// Get all polygon features in this layer
 		for (const auto &feat : ilayer)
 		{
 			// Get feature geometry type
@@ -244,7 +243,11 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
 			else
 			{
 				// non-polygon features are copied straight to output
-				olayer->CreateFeature(feat.get());
+				OGRErr res = olayer->CreateFeature(feat.get());
+				if (res != OGRERR_NONE)
+				{
+					std::cerr << "Error copying feature" << std::endl;
+				}
 			}
 	  
 			//std::cout << feat->DumpReadableAsString() << std::endl;
@@ -254,17 +257,26 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
 		auto a = multi_poly->UnionCascaded();
 
 		// create a geo feature with the unioned polygons
-		OGRFeature myfeature(olayer->GetLayerDefn());
-		myfeature.SetGeometry(a);
-		// add it to the output layer
-		olayer->CreateFeature(&myfeature);
+		if (!a->IsEmpty())
+		{
+			OGRFeature myfeature(olayer->GetLayerDefn());
+			myfeature.SetGeometry(a);
+			// add it to the output layer
+			OGRErr res = olayer->CreateFeature(&myfeature);
+			if (res != OGRERR_NONE)
+			{
+				std::cerr << "Error creating feature" << std::endl;
+			}
+		}
 
 		/*
+		std::cout << "All Features: " << std::endl;
 		for (const auto &feat : olayer)
 		{
 			std::cout << feat->DumpReadableAsString() << std::endl;
 		}
 		*/
+
 
     }
 

@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <sstream>
 #include <stdexcept>
+#include <iostream>
 #include <encviz/style.h>
 #include <encviz/xml_config.h>
 
@@ -113,12 +114,36 @@ layer_style parse_layer(tinyxml2::XMLElement *node)
 }
 
 /**
+ * Parse Icon
+ */
+std::pair<std::string, std::filesystem::path> parse_icon(tinyxml2::XMLElement *node, std::filesystem::path svg_path)
+{
+	std::pair<std::string, std::filesystem::path> output;
+
+	output.first = xml_text(xml_query(node, "name"));
+	output.second = xml_text(xml_query(node, "file"));
+
+	if (output.second.is_relative())
+		output.second = svg_path / output.second;
+
+	if (!std::filesystem::exists(output.second))
+	{
+		throw std::runtime_error("Unable to locate icon: " + output.second.string());
+	}
+	else
+	{
+		std::cout << "Found Icon: " << output.second << std::endl;
+	}
+	return output;
+}
+
+/**
  * Load Style from File
  *
  * \param[in] filename Path to style file
  * \return Loaded style
  */
-render_style load_style(const std::string &filename)
+render_style load_style(const std::string &filename, std::filesystem::path svg_path)
 {
     // Load XML document
     tinyxml2::XMLDocument doc;
@@ -140,7 +165,20 @@ render_style load_style(const std::string &filename)
     {
         parsed.layers.push_back(parse_layer(child));
     }
-    
+
+	tinyxml2::XMLElement* icons = root->FirstChildElement("icons");
+	if (icons)
+	{
+		std::cout << "Loading Icons:" << std::endl;
+		for (tinyxml2::XMLElement *child : xml_query_all(icons, "icon"))
+		{
+			auto icon = parse_icon(child, svg_path);
+			parsed.icons.insert(icon);
+		}
+	}
+
+	
+	
     return parsed;
 }
 

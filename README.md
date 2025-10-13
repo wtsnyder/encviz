@@ -9,6 +9,14 @@ Leaflet.
 The application is currently Linux native, and targets an Ubuntu 24.04 Operating
 System. Other environments may be added as time and interest permits.
 
+## Helpful References
+https://www.teledynecaris.com/s-57/frames/S57catalog.htm
+
+This appears broken right now but it is usually great
+https://nauticalcharts.noaa.gov/enconline/enconline.html
+
+https://devgis.charttools.noaa.gov/pod/
+
 ## Quick Start
 
 1. Install dependencies

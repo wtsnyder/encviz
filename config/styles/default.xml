@@ -15,137 +15,340 @@
     <marker_size>5</marker_size>
   </layer>
 
-  <!-- Shoreline Construction -->
-  <layer>
-    <layer_name>SLCONS</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>989C92</line_color>
-    <line_width>1</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>5</marker_size>
-  </layer>
+  <!-- <layer> -->
+  <!--   <layer_name>LAKARE</layer_name> -->
+  <!--   <fill_color>a8cbe2</fill_color> -->
+  <!--   <line_color>000000</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>5</marker_size> -->
+  <!-- </layer> -->
 
-  <!-- Traffic Separation Zone -->
+  <!-- <layer> -->
+  <!--   <layer_name>RIVERS</layer_name> -->
+  <!--   <fill_color>a8cbe2</fill_color> -->
+  <!--   <line_color>000000</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>5</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Depth Soundings -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>SOUNDG</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>000</line_color> -->
+  <!--   <line_width>0</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>0</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Obstructions -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>OBSTRN</layer_name> -->
+  <!--   <fill_color>0000</fill_color> -->
+  <!--   <line_color>000</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>1</line_dash> -->
+  <!--   <marker_size>1</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Depth Contours -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>DEPCNT</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>B2CBD6</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>0</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Anchorage -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>ACHARE</layer_name> -->
+  <!--   <fill_color>0000</fill_color> -->
+  <!--   <line_color>ef0093</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>0</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Cable Areas -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>CBLARE</layer_name> -->
+  <!--   <fill_color>0000</fill_color> -->
+  <!--   <line_color>ef0093</line_color> -->
+  <!--   <line_width>2</line_width> -->
+  <!--   <line_dash>3</line_dash> -->
+  <!--   <marker_size>0</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Coastline -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>COALNE</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>000</line_color> -->
+  <!--   <line_width>2</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>5</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Shoreline Construction -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>SLCONS</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>989C92</line_color> -->
+  <!--   <line_width>2</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>5</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Pontoons / floating docks -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>PONTON</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>5f6966</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>5</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Buildings -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>BUISGL</layer_name> -->
+  <!--   <fill_color>f0dc9e</fill_color> -->
+  <!--   <line_color>a27638</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>5</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Forts -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>FORSTC</layer_name> -->
+  <!--   <fill_color>f0dc9e</fill_color> -->
+  <!--   <line_color>a27638</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>5</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Traffic Separation Zone -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>TSEZNE</layer_name> -->
+  <!--   <fill_color>dfc9e3</fill_color> -->
+  <!--   <line_color>dfc9e3</line_color> -->
+  <!--   <line_width>0</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>0</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Traffic Separation Scheme  Boundary -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>TSSBND</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>b354aa</line_color> -->
+  <!--   <line_width>6</line_width> -->
+  <!--   <line_dash>2</line_dash> -->
+  <!--   <marker_size>0</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Recommended Track (aka. channels) -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>RECTRC</layer_name> -->
+  <!--   <fill_color>0000</fill_color> -->
+  <!--   <line_color>bdcecb</line_color> -->
+  <!--   <line_width>2</line_width> -->
+  <!--   <line_dash>3</line_dash> -->
+  <!--   <marker_size>0</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Bridge -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>BRIDGE</layer_name> -->
+  <!--   <fill_color>0000</fill_color> -->
+  <!--   <line_color>616866</line_color> -->
+  <!--   <line_width>2</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>0</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Buoy Cardinal -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>BOYCAR</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>000</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>1</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Buoy Installation -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>BOYINB</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>000</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>1</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Buoy Isolated Danger -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>BOYISD</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>000</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>1</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Buoy Lateral -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>BOYLAT</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>000</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>1</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Buoy Safe Water -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>BOYSAW</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>000</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>1</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- <!-\- Buoy Special Purpose -\-> -->
+  <!-- <layer> -->
+  <!--   <layer_name>BOYSPP</layer_name> -->
+  <!--   <fill_color>000</fill_color> -->
+  <!--   <line_color>000</line_color> -->
+  <!--   <line_width>1</line_width> -->
+  <!--   <line_dash>0</line_dash> -->
+  <!--   <marker_size>1</marker_size> -->
+  <!-- </layer> -->
+
+  <!-- Underwater Rocks -->
   <layer>
-    <layer_name>TSEZNE</layer_name>
-    <fill_color>dfc9e3</fill_color>
-    <line_color>dfc9e3</line_color>
+    <layer_name>UWTROC</layer_name>
+    <fill_color>000000</fill_color>
+    <line_color>000</line_color>
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
 
-  <!-- Traffic Separation Scheme  Boundary -->
+  <!-- Wrecks -->
   <layer>
-    <layer_name>TSSBND</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>b354aa</line_color>
-    <line_width>6</line_width>
-    <line_dash>2</line_dash>
-    <marker_size>0</marker_size>
-  </layer>
-
-  <!-- Recommended Track (aka. channels) -->
-  <layer>
-    <layer_name>RECTRC</layer_name>
-    <fill_color>0000</fill_color>
-    <line_color>bdcecb</line_color>
-    <line_width>2</line_width>
-    <line_dash>3</line_dash>
-    <marker_size>0</marker_size>
-  </layer>
-
-  <!-- Bridge -->
-  <layer>
-    <layer_name>BRIDGE</layer_name>
-    <fill_color>0000</fill_color>
-    <line_color>616866</line_color>
-    <line_width>2</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>0</marker_size>
-  </layer>
-
-  <!-- Buoy Cardinal -->
-  <layer>
-    <layer_name>BOYCAR</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>000</line_color>
-    <line_width>1</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>1</marker_size>
-  </layer>
-
-  <!-- Buoy Installation -->
-  <layer>
-    <layer_name>BOYINB</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>000</line_color>
-    <line_width>1</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>1</marker_size>
-  </layer>
-
-  <!-- Buoy Isolated Danger -->
-  <layer>
-    <layer_name>BOYISD</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>000</line_color>
-    <line_width>1</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>1</marker_size>
-  </layer>
-
-  <!-- Buoy Lateral -->
-  <layer>
-    <layer_name>BOYLAT</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>000</line_color>
-    <line_width>1</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>1</marker_size>
-  </layer>
-
-  <!-- Buoy Safe Water -->
-  <layer>
-    <layer_name>BOYSAW</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>000</line_color>
-    <line_width>1</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>1</marker_size>
-  </layer>
-
-  <!-- Buoy Special Purpose -->
-  <layer>
-    <layer_name>BOYSPP</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>000</line_color>
-    <line_width>1</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>1</marker_size>
-  </layer>
-
-  <!-- Depth Contours -->
-  <layer>
-    <layer_name>DEPCNT</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>B2CBD6</line_color>
-    <line_width>1</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>0</marker_size>
-  </layer>
-
-  <!-- Depth Soundings -->
-  <layer>
-    <layer_name>SOUNDG</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>000</line_color>
+    <layer_name>WRECKS</layer_name>
+    <fill_color>000000</fill_color>
+    <line_color>0000</line_color>
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
 
 
-
+  <!-- Icon paths relative to svg path in config.xml -->
+  <icons>
+    <icon>
+      <name>BOYSHP_1</name>
+      <file>Q_buoys_beacons/conical.svg</file>
+    </icon>
+    <icon>
+      <name>BOYSHP_2</name>
+      <file>Q_buoys_beacons/can.svg</file>
+    </icon>
+    <icon>
+      <name>BOYSHP_3</name>
+      <file>Q_buoys_beacons/spherical.svg</file>
+    </icon>
+    <icon>
+      <name>BOYSHP_4</name>
+      <file>Q_buoys_beacons/pillar.svg</file>
+    </icon>
+    <icon>
+      <name>BOYSHP_5</name>
+      <file>Q_buoys_beacons/spar.svg</file>
+    </icon>
+    <icon>
+      <name>BOYSHP_6</name>
+      <file>Q_buoys_beacons/barrel.svg</file>
+    </icon>
+    <icon>
+      <name>BOYSHP_7</name>
+      <file>Q_buoys_beacons/super_buoy.svg</file>
+    </icon>
+    <icon>
+      <name>BCNSHP_1</name>
+      <file>Q_buoys_beacons/stake.svg</file>
+    </icon>
+    <icon>
+      <name>BCNSHP_2</name> <!-- withy -->
+      <file>Q_buoys_beacons/can.svg</file>
+    </icon>
+    <icon>
+      <name>BCNSHP_3</name>
+      <file>Q_buoys_beacons/tower.svg</file>
+    </icon>
+    <icon>
+      <name>BCNSHP_4</name>
+      <file>Q_buoys_beacons/lattice_beacon.svg</file>
+    </icon>
+    <icon>
+      <name>BCNSHP_5</name> <!-- plie beacon -->
+      <file>Q_buoys_beacons/spar.svg</file>
+    </icon>
+    <icon>
+      <name>BCNSHP_6</name>
+      <file>Q_buoys_beacons/carin.svg</file>
+    </icon>
+    <icon>
+      <name>BCNSHP_7</name>
+      <file>Q_buoys_beacons/buoyant_beacon.svg</file>
+    </icon>
+    <icon>
+      <name>UWTROC_awash</name>
+      <file>K_rocks_wrecks_obstrn/rock.svg</file>
+    </icon>
+    <icon>
+      <name>UWTROC_submerged</name>
+      <file>K_rocks_wrecks_obstrn/rock_submerged.svg</file>
+    </icon>
+    <icon>
+      <name>UWTROC_shoaler</name>
+      <file>K_rocks_wrecks_obstrn/obstruction_shallow.svg</file>
+    </icon>
+    <icon>
+      <name>UWTROC_shoaler_deep</name>
+      <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+    </icon>
+    <icon>
+      <name>WRECKS_1</name>
+      <file>K_rocks_wrecks_obstrn/wreck_non_dangerous.svg</file>
+    </icon>
+    <icon>
+      <name>WRECKS_2</name>
+      <file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
+    </icon>
+    <icon>
+      <name>WRECKS_3</name> <!-- distributed remains, needs svg -->
+      <file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
+    </icon>
+    <icon>
+      <name>WRECKS_4</name>
+      <file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
+    </icon>
+    <icon>
+      <name>WRECKS_5</name>
+      <file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
+    </icon>
+  </icons>
+  
 </style>
 

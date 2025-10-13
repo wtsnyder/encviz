@@ -11,6 +11,7 @@
     <fill_color>2C291B</fill_color>
     <line_color>252A2B</line_color>
     <line_width>1</line_width>
+    <line_dash>0</line_dash>
     <marker_size>5</marker_size>
   </layer>
 
@@ -20,6 +21,7 @@
     <fill_color>000</fill_color>
     <line_color>232C34</line_color>
     <line_width>1</line_width>
+    <line_dash>0</line_dash>
     <marker_size>5</marker_size>
   </layer>
 
@@ -29,6 +31,7 @@
     <fill_color>000</fill_color>
     <line_color>1A252F</line_color>
     <line_width>1</line_width>
+    <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
 
@@ -38,6 +41,7 @@
     <fill_color>000</fill_color>
     <line_color>000</line_color>
     <line_width>0</line_width>
+    <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
 

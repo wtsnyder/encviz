@@ -12,6 +12,8 @@
 #include <vector>
 #include <optional>
 #include <tinyxml2.h>
+#include <filesystem>
+#include <map>
 
 namespace encviz
 {
@@ -57,6 +59,8 @@ struct layer_style
     std::string attr_name;
 };
 
+typedef std::map<std::string, std::filesystem::path> IconStyle;
+
 /// Full rendering style
 struct render_style
 {
@@ -65,6 +69,9 @@ struct render_style
 
     /// Layers
     std::vector<layer_style> layers;
+
+	/// SVG Icons
+	IconStyle icons;
 };
 
 /**
@@ -89,12 +96,17 @@ color parse_color(tinyxml2::XMLElement *node);
  */
 layer_style parse_layer(tinyxml2::XMLElement *node);
 
+ /**
+  * Parse Icon
+  */
+std::pair<std::string, std::filesystem::path> parse_icon(tinyxml2::XMLElement *node, std::filesystem::path svg_path);
+
 /**
  * Load Style from File
  *
  * \param[in] filename Path to style file
  * \return Loaded style
  */
-render_style load_style(const std::string &filename);
+render_style load_style(const std::string &filename, std::filesystem::path svg_path);
 
 }; // ~namespace encviz

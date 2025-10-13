@@ -14,6 +14,7 @@ namespace encviz
 {
 
 svg_collection::svg_collection()
+	: svg_root_path_("")
 {
 
 }
@@ -37,25 +38,29 @@ bool svg_collection::render_svg(cairo_t *cr, std::filesystem::path &svg_path,
 
     if (!handle)
     {
-      g_printerr ("could not load: %s", error->message);
-      return false;
+		g_printerr ("Error loading SVG `%s`: %s\n", full_path.string().c_str(), error->message);
+		render_svg_missing(cr, center);
+		return false;
     }
 
     rsvg_handle_set_dpi(handle, 96.0);
 
-    bool set_style;
-    set_style = rsvg_handle_set_stylesheet (handle,
-					    reinterpret_cast<const uint8_t*>(stylesheet.c_str()),
-					    stylesheet.size(),
-					    &error);
-    if (!set_style)
-    {
-	g_printerr ("error setting style: %s", error->message);
-    }
-    else
-    {
-	std::cout << "Using style sheet:" << stylesheet << std::endl;
-    }
+	if (stylesheet.size() > 0)
+	{
+		bool set_style;
+		set_style = rsvg_handle_set_stylesheet (handle,
+												reinterpret_cast<const uint8_t*>(stylesheet.c_str()),
+												stylesheet.size(),
+												&error);
+		if (!set_style)
+		{
+			g_printerr ("error setting style: %s\n", error->message);
+		}
+		else
+		{
+			//std::cout << "Using style sheet:" << stylesheet << std::endl;
+		}
+	}
 
     // Get native size to maintain aspect ratio
     //double native_width, native_height;
@@ -76,13 +81,38 @@ bool svg_collection::render_svg(cairo_t *cr, std::filesystem::path &svg_path,
 
     if (!rsvg_handle_render_document (handle, cr, &viewport, &error))
     {
-	g_printerr ("could not render: %s", error->message);
-	return false;
+		g_printerr ("could not render: %s\n", error->message);
+		render_svg_missing(cr, center);
+		return false;
     }
 
     std::cout << "Rendered SVG: " << full_path.string() << std::endl;
 
     return true;
+}
+
+/**
+ * Plot a Big ? when we cant render an SVG
+ */
+void svg_collection::render_svg_missing(cairo_t *cr, coord center)
+{
+	char text[2] = "?";
+    cairo_set_source_rgba(cr,
+                          float(0) / 0xff,
+                          float(0) / 0xff,
+                          float(0) / 0xff,
+                          float(255) / 0xff);
+	cairo_select_font_face(cr, "monospace",
+                           CAIRO_FONT_SLANT_NORMAL,
+                           CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_font_size(cr, 35);
+
+	cairo_text_extents_t text_extents = {};
+    cairo_text_extents(cr, text, &text_extents);
+
+	// draw sounding text without a subscript
+	cairo_move_to(cr, center.x - text_extents.width/2, center.y - text_extents.height/2);
+	cairo_show_text(cr, text);
 }
 
 }; // ~namespace encviz

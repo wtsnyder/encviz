@@ -61,18 +61,18 @@ static cairo_status_t cairo_write_to_vector(void *closure,
  * \param[in] tile_size Dimension of output image
  * \param[in] min_scale0 Min display scale at zoom=0
  */
-enc_renderer::enc_renderer(const char *config_path)
+enc_renderer::enc_renderer(const char *config_file)
 {
     // Load specified, or default config path
-    if (config_path != nullptr)
+    if (config_file != nullptr)
     {
-        load_config(config_path);
+        load_config(config_file);
     }
     else
     {
-        // Default to ~/.encviz
+        // Default to ~/.encviz/config.xml
         fs::path default_path = getenv("HOME");
-        default_path.append(".encviz");
+        default_path.append(".encviz/config.xml");
         load_config(default_path);
     }
 }
@@ -150,64 +150,59 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     // Render style layers
     for (const auto &lstyle : style.layers)
     {
-	printf("  Layer: %s\n", lstyle.layer_name.c_str());
+		printf("  Layer: %s\n", lstyle.layer_name.c_str());
         // Render feature geometry in this layer
         OGRLayer *tile_layer = tile_data->GetLayerByName(lstyle.layer_name.c_str());
         for (const auto &feat : tile_layer)
         {
-	    // render basic geometries
+			/*
+			if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
+			{
+				// Loop over all fields in this feature and print their names
+				for (const auto &field : feat->GetDefnRef()->GetFields())
+				{
+					printf("    Field: %s type: %d\n", field->GetNameRef(), field->GetType());
+				}
+			  
+				//printf(" %s : %s \n", "OBJNAM", feat->GetFieldAsString("OBJNAM"));
+				//printf(" %s : %s \n", "BOYSHP", feat->GetFieldAsString("BOYSHP"));
+			}
+			*/
+						
+			// render basic geometries
             OGRGeometry *geo = feat->GetGeometryRef();
             render_geo(cr, geo, wm, lstyle);
+			
+			// Render anything with a buoy shape as a buoy
+			int buoy_shape_idx = feat->GetFieldIndex("BOYSHP");
+			if (buoy_shape_idx != -1)
+			{
+				render_buoy(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
+			}
 
-	    // Get colors if this elemnt has a list of colors
-	    std::vector<std::string> colors_list;
-	    std::vector<int> colors_list_int;
-	    char** colors = feat->GetFieldAsStringList("COLOUR");
-	    if ( colors )
-	    {
-		colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
-		for (auto color : colors_list)
-		    colors_list_int.push_back(std::stoi(color));
-	    }
+			// Render anything with a beacon shape as a beacon
+			int beacon_shape_idx = feat->GetFieldIndex("BCNSHP");
+			if (beacon_shape_idx != -1)
+			{
+				render_beacon(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
+			}
 
-	    // Handle buoy icon rendering
-	    int buoy_shape_idx = feat->GetFieldIndex("BOYSHP");
-	    if (buoy_shape_idx != -1)
-	    {
-		// Get buoy shape & render buoy
-		int buoy_shape = feat->GetFieldAsInteger("BOYSHP");
-		std::cout << "Rendering buoy: " << feat->GetFieldAsString("OBJNAM") << std::endl;
-		render_buoy(cr, geo->toPoint(), wm, lstyle, buoy_shape, colors_list_int);
-	    }
+			// Render Rocks
+			if (std::string(feat->GetDefnRef()->GetName()) == "UWTROC")
+			{
+				render_rock(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
+			}
 
-	    int beacon_shape_idx = feat->GetFieldIndex("BCNSHP");
-	    if (beacon_shape_idx != -1)
-	    {
-		// Get beacon shape & render beacon
-		int beacon_shape = feat->GetFieldAsInteger("BCNSHP");
-		std::cout << "Rendering beacon: " << feat->GetFieldAsString("OBJNAM") << std::endl;
-		render_beacon(cr, geo->toPoint(), wm, lstyle, beacon_shape, colors_list_int);
-	    }
-		
-
-	    /*
-	    if (std::string(feat->GetDefnRef()->GetName()) == "BOYLAT")
-	    {
-		// Loop over all fields in this feature and print their names
-		for (const auto &field : feat->GetDefnRef()->GetFields())
-		{
-		    printf("    Field: %s type: %d\n", field->GetNameRef(), field->GetType());
-		}
-
-		//printf(" %s : %s \n", "OBJNAM", feat->GetFieldAsString("OBJNAM"));
-		//printf(" %s : %s \n", "BOYSHP", feat->GetFieldAsString("BOYSHP"));
-	    }
-	    */
-
+			// Render Wrecks
+			if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
+			{
+				render_wreck(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
+			}
+			
 	    
-	    //printf("    Feature: %s : %d\n", feat->GetDefnRef()->GetName(), feat->GetDefnRef()->GetFieldCount());
+			//printf("    Feature: %s : %d\n", feat->GetDefnRef()->GetName(), feat->GetDefnRef()->GetFieldCount());
 
-	    //printf("    Field: %s : %d\n", feat->GetDefnRef()->GetFieldDefn(), feat->GetDefnRef()->GetFieldCount());
+			//printf("    Field: %s : %d\n", feat->GetDefnRef()->GetFieldDefn(), feat->GetDefnRef()->GetFieldCount());
         }
     }
 
@@ -262,14 +257,14 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
 
         case wkbPoint25D: // 0x80000001
             // TODO - SOUNDG only?
-            render_depth(cr, geo->toPoint(), wm, style);
+            render_depth(cr, geo->toPoint(), geo->toPoint()->getZ(), wm, style);
             break;
 
         case wkbMultiPoint25D: // 0x80000004
             // TODO - SOUNDG only?
             for (const OGRPoint *child : geo->toMultiPoint())
             {
-                render_depth(cr, child, wm, style);
+                render_depth(cr, child, child->getZ(), wm, style);
             }
             break;
 
@@ -316,14 +311,13 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
  * \param[in] wm Web Mercator point mapper
  * \param[in] style Feature style
  */
-void enc_renderer::render_depth(cairo_t *cr, const OGRPoint *geo,
+void enc_renderer::render_depth(cairo_t *cr, const OGRPoint *geo, double depth,
                                 const web_mercator &wm, const layer_style &style)
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
     // TODO - Could do this better?
-    double depth = geo->getZ();
     int depth_m = std::floor(depth); // depth in m
     int depth_dm = std::floor((depth - depth_m) * 10); // depth remainder in decimeters
     char m_text[64] = {};
@@ -348,25 +342,25 @@ void enc_renderer::render_depth(cairo_t *cr, const OGRPoint *geo,
     // Draw text
     if (depth_dm == 0)
     {
-	// draw sounding text without a subscript
-	cairo_move_to(cr, c.x - m_extents.width/2, c.y - m_extents.height/2);
-	cairo_show_text(cr, m_text);
+		// draw sounding text without a subscript
+		cairo_move_to(cr, c.x - m_extents.width/2, c.y + m_extents.height/2);
+		cairo_show_text(cr, m_text);
     }
     else
     {
-	// draw sounding with a dm subscript
-	float width = m_extents.width + dm_extents.width;
-	float height = m_extents.height + dm_extents.height/2;
-	// center of the whole text is c.x, c.y
-	// top left of big text is x,y
-	float x = c.x - width / 2;
-	float y = c.y - height / 2;
-	// big number
-	cairo_move_to(cr, x, y);
-	cairo_show_text(cr, m_text);
-	// subscript is to the right and half way down the big number
-	cairo_move_to(cr, x + m_extents.width, y + m_extents.height / 2);
-	cairo_show_text(cr, dm_text);
+		// draw sounding with a dm subscript
+		float width = m_extents.width + dm_extents.width;
+		float height = m_extents.height + dm_extents.height/2;
+		// center of the whole text is c.x, c.y
+		// top left of big text is x,y
+		float x = c.x - width / 2;
+		float y = c.y + height / 2;
+		// big number
+		cairo_move_to(cr, x, y);
+		cairo_show_text(cr, m_text);
+		// subscript is to the right and half way down the big number
+		cairo_move_to(cr, x + m_extents.width, y + m_extents.height / 2);
+		cairo_show_text(cr, dm_text);
     }
 }
 
@@ -469,7 +463,7 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
 {
     if (geo->IsEmpty() || !geo->IsValid())
         return;
-    std::cout << "Render polygon: " << geo->exportToJson() << std::endl;
+    //std::cout << "Render polygon: " << geo->exportToJson() << std::endl;
     // FIXME - Throw a fit if we see interior rings (not handled)
     if (geo->getNumInteriorRings() != 0)
     {
@@ -523,12 +517,24 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
 }
 
 void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
-			       const web_mercator &wm, const layer_style &style,
-			       const int buoy_shape,
-			       std::vector<int> buoy_colors)
+							   const web_mercator &wm, const layer_style &style,
+							   const IconStyle &icon_style,
+							   const OGRFeature *feat)
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
+
+	// Get buoy colors
+	// Get colors if this elemnt has a list of colors
+	std::vector<std::string> colors_list;
+	std::vector<int> colors_list_int;
+	char** colors = feat->GetFieldAsStringList("COLOUR");
+	if ( colors )
+	{
+		colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
+		for (auto color : colors_list)
+			colors_list_int.push_back(std::stoi(color));
+	}
 
     // create style sheet to set buoy colors
     // Note right now this is blindly assigning colors to
@@ -537,59 +543,55 @@ void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
     // (horizontal stripes, vert, etc.) of the colors
     int i = 0;
     std::stringstream ss;
-    for (auto color_code : buoy_colors)
+    for (auto color_code : colors_list_int)
     {
-	i++;
-	try
-	{
-	    ss << "#buoy_color_" << i << "{\n"
-	       << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
-	       << "}\n";
-	}
-	catch (const std::out_of_range &e)
-	{
-	    // bad color
-	}
+		i++;
+		try
+		{
+			ss << "#buoy_color_" << i << "{\n"
+			   << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
+			   << "}\n";
+		}
+		catch (const std::out_of_range &e)
+		{
+			// bad color
+		}
     }
-
     std::string stylesheet = ss.str();
 
-    fs::path buoy_svg = "";
-    switch (buoy_shape)
-    {
-    case 1: // conical
-      buoy_svg = "Q_buoys_beacons/conical.svg";
-      break;
-    case 2: // can/cylindrical
-      buoy_svg = "Q_buoys_beacons/can.svg";
-      break;
-    case 3: // spherical
-      buoy_svg = "Q_buoys_beacons/spherical.svg";
-      break;
-    case 4: // pillar
-      buoy_svg = "Q_buoys_beacons/pillar.svg";
-      break;
-    case 5: // spar
-      buoy_svg = "Q_buoys_beacons/spar.svg";
-      break;
-    case 6: // barrel
-      buoy_svg = "Q_buoys_beacons/barrel.svg";
-      break;
-    case 7: // super buoy
-      buoy_svg = "Q_buoys_beacons/super_buoy.svg";
-      break;
-    }
+	// Get buoy shape
+	int buoy_shape = feat->GetFieldAsInteger("BOYSHP");
 
-    svg_.render_svg(cr, buoy_svg, c, 50, 50, stylesheet);
+    fs::path svg = "";
+	std::string svg_tag = "BOYSHP_" + std::to_string(buoy_shape);
+	if (icon_style.find(svg_tag) != icon_style.end())
+	{
+		svg = icon_style.at(svg_tag);
+	}
+	std::cout << "Render Buoy: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, 50, 50, stylesheet);
 }
 
 void enc_renderer::render_beacon(cairo_t *cr, const OGRPoint *geo,
-				 const web_mercator &wm, const layer_style &style,
-				 const int beacon_shape,
-				 std::vector<int> beacon_colors)
+								 const web_mercator &wm, const layer_style &style,
+								 const IconStyle &icon_style,
+								 const OGRFeature *feat)
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
+
+	// Get buoy colors
+	// Get colors if this elemnt has a list of colors
+	std::vector<std::string> colors_list;
+	std::vector<int> colors_list_int;
+	char** colors = feat->GetFieldAsStringList("COLOUR");
+	if ( colors )
+	{
+		colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
+		for (auto color : colors_list)
+			colors_list_int.push_back(std::stoi(color));
+	}
 
     // create style sheet to set buoy colors
     // Note right now this is blindly assigning colors to
@@ -598,50 +600,98 @@ void enc_renderer::render_beacon(cairo_t *cr, const OGRPoint *geo,
     // (horizontal stripes, vert, etc.) of the colors
     int i = 0;
     std::stringstream ss;
-    for (auto color_code : beacon_colors)
+    for (auto color_code : colors_list_int)
     {
-	i++;
-	try
-	{
-	    ss << "#beacon_color_" << i << "{\n"
-	       << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
-	       << "}\n";
-	}
-	catch (const std::out_of_range &e)
-	{
-	    // bad color
-	}
+		i++;
+		try
+		{
+			ss << "#beacon_color_" << i << "{\n"
+			   << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
+			   << "}\n";
+		}
+		catch (const std::out_of_range &e)
+		{
+			// bad color
+		}
     }
-
     std::string stylesheet = ss.str();
 
-    fs::path beacon_svg = "";
-    switch (beacon_shape)
-    {
-    case 1: // stake
-	beacon_svg = "Q_buoys_beacons/stake.svg";
-	break;
-    case 2: // withy
-	//beacon_svg = "Q_buoys_beacons/can.svg";
-	break;
-    case 3: // beacon tower
-	beacon_svg = "Q_buoys_beacons/tower.svg";
-	break;
-    case 4: // lattice beacon
-      beacon_svg = "Q_buoys_beacons/lattice_beacon.svg";
-      break;
-    case 5: // pile beacon
-	//beacon_svg = "Q_buoys_beacons/spar.svg";
-	break;
-    case 6: // carin
-	beacon_svg = "Q_buoys_beacons/carin.svg";
-	break;
-    case 7: // buoyant beacon
-	beacon_svg = "Q_buoys_beacons/buoyant_beacon.svg";
-	break;
-    }
+	// Get beacon shape
+	int beacon_shape = feat->GetFieldAsInteger("BCNSHP");
 
-    svg_.render_svg(cr, beacon_svg, c, 50, 50, stylesheet);
+    fs::path svg = "";
+	std::string svg_tag = "BCNSHP_" + std::to_string(beacon_shape);
+	if (icon_style.find(svg_tag) != icon_style.end())
+	{
+		svg = icon_style.at(svg_tag);
+	}
+	std::cout << "Render Beacon: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, 50, 50, stylesheet);
+}
+
+void enc_renderer::render_rock(cairo_t *cr, const OGRPoint *geo,
+							   const web_mercator &wm, const layer_style &style,
+							   const IconStyle &icon_style,
+							   const OGRFeature *feat)
+{
+    // Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+	int water_level = feat->GetFieldAsInteger("WATLEV");
+	int exposition = feat->GetFieldAsInteger("EXPSOU");
+	//int quality = feat->GetFieldAsInteger("QUASOU");
+	float depth = feat->GetFieldAsDouble("VALSOU");
+
+	std::string wl = "awash";
+	if (water_level == 3) // always submerged
+		wl = "submerged";
+
+	if (exposition == 2) // Rock shallower than surrounding area
+	{
+		// Deeper or shallower than 20 m are displayed differently
+		if (depth < 20.0)
+			wl = "shoaler"; 
+		else
+			wl = "shoaler_deep";
+	}
+
+    fs::path svg = "";
+	std::string svg_tag = "UWTROC_" + wl;
+	if (icon_style.find(svg_tag) != icon_style.end())
+	{
+		svg = icon_style.at(svg_tag);
+	}
+	std::cout << "Render Rock: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, 25, 25);
+
+	// render text if shoaler
+	if (exposition == 2) // Rock shallower than surrounding area
+	{
+		render_depth(cr, geo, depth, wm, style);
+	}
+}
+
+void enc_renderer::render_wreck(cairo_t *cr, const OGRPoint *geo,
+								const web_mercator &wm, const layer_style &style,
+								const IconStyle &icon_style,
+								const OGRFeature *feat)
+{
+    // Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+	int category = feat->GetFieldAsInteger("CATWRK");
+
+    fs::path svg = "";
+	std::string svg_tag = "WRECKS_" + std::to_string(category);
+	if (icon_style.find(svg_tag) != icon_style.end())
+	{
+		svg = icon_style.at(svg_tag);
+	}
+	std::cout << "Render Wreck: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, 25, 25);
 }
 
 /**
@@ -664,12 +714,12 @@ void enc_renderer::set_color(cairo_t *cr, const color &c)
  *
  * \param[in] config_path
  */
-void enc_renderer::load_config(const fs::path &config_path)
+void enc_renderer::load_config(const fs::path &config_file)
 {
-    printf("Using config directory: %s ...\n", config_path.string().c_str());
+    printf("Using config file: %s ...\n", config_file.string().c_str());
 
     // Load XML document 
-    fs::path config_file = config_path / "config.xml";
+	fs::path config_path = config_file.parent_path();
     printf(" - Reading %s ...\n", config_file.string().c_str());
     tinyxml2::XMLDocument doc;
     if (doc.LoadFile(config_file.string().c_str()))
@@ -709,7 +759,7 @@ void enc_renderer::load_config(const fs::path &config_path)
     enc_.load_charts(chart_path);
 
     // Set up svg load path
-    svg_.set_svg_path(svg_path);
+    //svg_.set_svg_path(svg_path);
 
     // Load styles
     for (const fs::directory_entry &entry : fs::directory_iterator(style_path))
@@ -717,7 +767,7 @@ void enc_renderer::load_config(const fs::path &config_path)
         fs::path p = entry.path();
         if (p.extension() == ".xml")
         {
-            styles_[p.stem().string()] = load_style(p.string());
+            styles_[p.stem().string()] = load_style(p.string(), svg_path);
         }
     }
 }

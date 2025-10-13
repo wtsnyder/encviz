@@ -45,6 +45,8 @@ public:
     
 private:
 
+	void render_svg_missing(cairo_t *cr, coord center);
+
     /// Root directory for searching for SVG files
     std::filesystem::path svg_root_path_;
     

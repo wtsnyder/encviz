@@ -28,7 +28,7 @@ public:
      *
      * \param[in] config_path Path to configuration
      */
-    enc_renderer(const char *config_path = nullptr);
+    enc_renderer(const char *config_file = nullptr);
 
     /**
      * Render Chart Data
@@ -65,7 +65,7 @@ private:
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
      */
-    void render_depth(cairo_t *cr, const OGRPoint *geo,
+    void render_depth(cairo_t *cr, const OGRPoint *geo, double depth,
                       const web_mercator &wm, const layer_style &style);
 
     /**
@@ -106,18 +106,36 @@ private:
      *
      */
     void render_buoy(cairo_t *cr, const OGRPoint *geo,
-		     const web_mercator &wm, const layer_style &style,
-		     const int buoy_shape,
-		     std::vector<int> buoy_colors);
+					 const web_mercator &wm, const layer_style &style,
+					 const IconStyle &icon_style,
+					 const OGRFeature *feat);
 
     /**
      * Render a beacon with the right shape
      *
      */
     void render_beacon(cairo_t *cr, const OGRPoint *geo,
-		       const web_mercator &wm, const layer_style &style,
-		       const int beacon_shape,
-		       std::vector<int> beacon_colors);
+					   const web_mercator &wm, const layer_style &style,
+					   const IconStyle &icon_style,
+					   const OGRFeature *feat);
+
+	/**
+     * Render a rock using an icon
+     *
+     */
+    void render_rock(cairo_t *cr, const OGRPoint *geo,
+					 const web_mercator &wm, const layer_style &style,
+					 const IconStyle &icon_style,
+					 const OGRFeature *feat);
+
+	/**
+     * Render a wreck using an icon
+     *
+     */
+    void render_wreck(cairo_t *cr, const OGRPoint *geo,
+					  const web_mercator &wm, const layer_style &style,
+					  const IconStyle &icon_style,
+					  const OGRFeature *feat);
 
     /**
      * Set Render Color
@@ -130,9 +148,9 @@ private:
     /**
      * Load Configuration
      *
-     * \param[in] config_path
+     * \param[in] config_file
      */
-    void load_config(const std::filesystem::path &config_path);
+    void load_config(const std::filesystem::path &config_file);
 
     /// Dimension of output image
     int tile_size_;
@@ -148,6 +166,7 @@ private:
 
     /// Loaded styles
     std::map<std::string, render_style> styles_;
+
 };
 
 }; // ~namespace encviz
