@@ -129,6 +129,15 @@ private:
 					 const OGRFeature *feat);
 
 	/**
+     * Render an obstruction using an icon
+     *
+     */
+    void render_obstruction(cairo_t *cr, const OGRPoint *geo,
+							const web_mercator &wm, const layer_style &style,
+							const IconStyle &icon_style,
+							const OGRFeature *feat);
+
+	/**
      * Render a wreck using an icon
      *
      */

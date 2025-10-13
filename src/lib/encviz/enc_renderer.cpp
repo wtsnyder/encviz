@@ -193,6 +193,12 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 				render_rock(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
 			}
 
+			// Render Obstructions
+			if (std::string(feat->GetDefnRef()->GetName()) == "OBSTRN")
+			{
+				render_obstruction(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
+			}
+
 			// Render Wrecks
 			if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
 			{
@@ -430,22 +436,22 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
     cairo_set_line_width(cr, style.line_width);
     switch (style.line_dash)
     {
-	double dash;
+		double dash;
     case 0:
-	cairo_set_dash(cr, nullptr, 0, 0);
-	break;
+		cairo_set_dash(cr, nullptr, 0, 0);
+		break;
     case 1:
-	dash = style.line_width;
-	cairo_set_dash(cr, &dash, 1, 0);
-	break;
+		dash = style.line_width;
+		cairo_set_dash(cr, &dash, 1, 0);
+		break;
     case 2:
-	dash = style.line_width * 2;
-	cairo_set_dash(cr, &dash, 1, 0);
-	break;
+		dash = style.line_width * 2;
+		cairo_set_dash(cr, &dash, 1, 0);
+		break;
     case 3:
-	dash = style.line_width * 10;
-	cairo_set_dash(cr, &dash, 1, 0);
-	break;	
+		dash = style.line_width * 10;
+		cairo_set_dash(cr, &dash, 1, 0);
+		break;	
     }
     cairo_stroke(cr);
 }
@@ -658,6 +664,50 @@ void enc_renderer::render_rock(cairo_t *cr, const OGRPoint *geo,
 
     fs::path svg = "";
 	std::string svg_tag = "UWTROC_" + wl;
+	if (icon_style.find(svg_tag) != icon_style.end())
+	{
+		svg = icon_style.at(svg_tag);
+	}
+	std::cout << "Render Rock: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, 25, 25);
+
+	// render text if shoaler
+	if (exposition == 2) // Rock shallower than surrounding area
+	{
+		render_depth(cr, geo, depth, wm, style);
+	}
+}
+
+void enc_renderer::render_obstruction(cairo_t *cr, const OGRPoint *geo,
+									  const web_mercator &wm, const layer_style &style,
+									  const IconStyle &icon_style,
+									  const OGRFeature *feat)
+{
+    // Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+	int category = feat->GetFieldAsInteger("CATOBS");
+	int water_level = feat->GetFieldAsInteger("WATLEV");
+	int exposition = feat->GetFieldAsInteger("EXPSOU");
+	//int quality = feat->GetFieldAsInteger("QUASOU");
+	float depth = feat->GetFieldAsDouble("VALSOU");
+
+	std::string wl = "awash";
+	if (water_level == 3) // always submerged
+		wl = "submerged";
+
+	if (exposition == 2) // Rock shallower than surrounding area
+	{
+		// Deeper or shallower than 20 m are displayed differently
+		if (depth < 20.0)
+			wl = "shoaler"; 
+		else
+			wl = "shoaler_deep";
+	}
+
+    fs::path svg = "";
+	std::string svg_tag = "OBSTRN_" + wl;
 	if (icon_style.find(svg_tag) != icon_style.end())
 	{
 		svg = icon_style.at(svg_tag);
