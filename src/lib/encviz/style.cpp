@@ -110,6 +110,17 @@ layer_style parse_layer(tinyxml2::XMLElement *node)
     parsed.line_width = atoi(xml_text(xml_query(node, "line_width")));
     parsed.line_dash = atoi(xml_text(xml_query(node, "line_dash")));
     parsed.marker_size = atoi(xml_text(xml_query(node, "marker_size")));
+	parsed.marker_shape = CIRCLE_MARKER;
+	tinyxml2::XMLElement* shape = node->FirstChildElement("marker_shape");
+	if (shape)
+	{
+		std::string shape = xml_text(xml_query(node, "marker_shape"));
+		if (shape == "square")
+			parsed.marker_shape = SQUARE_MARKER;
+		else if (shape == "circle")
+			parsed.marker_shape = CIRCLE_MARKER;
+	}
+	
     return parsed;
 }
 

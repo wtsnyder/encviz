@@ -92,6 +92,15 @@
     <marker_size>5</marker_size>
   </layer>
 
+  <layer>
+    <layer_name>LAKSHR</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>2</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
   <!-- Shoreline Construction -->
   <layer>
     <layer_name>SLCONS</layer_name>
@@ -116,10 +125,11 @@
   <layer>
     <layer_name>BUISGL</layer_name>
     <fill_color>f0dc9e</fill_color>
-    <line_color>a27638</line_color>
-    <line_width>1</line_width>
+    <line_color>000000</line_color>
+    <line_width>2</line_width>
     <line_dash>0</line_dash>
     <marker_size>5</marker_size>
+    <marker_shape>square</marker_shape>
   </layer>
 
   <!-- Forts -->
@@ -162,6 +172,36 @@
     <marker_size>0</marker_size>
   </layer>
 
+    <!-- Underwater Rocks -->
+  <layer>
+    <layer_name>UWTROC</layer_name>
+    <fill_color>000000</fill_color>
+    <line_color>000</line_color> <!-- must have line color to draw sounding depths -->
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Wrecks -->
+  <layer>
+    <layer_name>WRECKS</layer_name>
+    <fill_color>000000</fill_color>
+    <line_color>0000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Obstructions -->
+  <layer>
+    <layer_name>OBSTRN</layer_name>
+    <fill_color>00000000</fill_color>
+    <line_color>000</line_color> <!-- must have line color to draw sounding depths -->
+    <line_width>2</line_width> <!-- need line width to draw obstruction areas -->
+    <line_dash>1</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
   <!-- Bridge -->
   <layer>
     <layer_name>BRIDGE</layer_name>
@@ -170,6 +210,16 @@
     <line_width>2</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Landmarks -->
+  <layer>
+    <layer_name>LNDMRK</layer_name>
+    <fill_color>ff0000</fill_color>
+    <line_color>000</line_color>
+    <line_width>1</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>10</marker_size>
   </layer>
 
   <!-- Buoy Cardinal -->
@@ -232,33 +282,23 @@
     <marker_size>1</marker_size>
   </layer>
 
-  <!-- Underwater Rocks -->
+  <!-- Fog signals -->
   <layer>
-    <layer_name>UWTROC</layer_name>
+    <layer_name>FOGSIG</layer_name>
     <fill_color>000000</fill_color>
-    <line_color>000</line_color> <!-- must have line color to draw sounding depths -->
+    <line_color>000</line_color>
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
 
-  <!-- Wrecks -->
+  <!-- Lights -->
   <layer>
-    <layer_name>WRECKS</layer_name>
-    <fill_color>000000</fill_color>
-    <line_color>0000</line_color>
-    <line_width>0</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>0</marker_size>
-  </layer>
-
-  <!-- Obstructions -->
-  <layer>
-    <layer_name>OBSTRN</layer_name>
+    <layer_name>LIGHTS</layer_name>
     <fill_color>00000000</fill_color>
-    <line_color>000</line_color> <!-- must have line color to draw sounding depths -->
-    <line_width>2</line_width> <!-- need line width to draw obstruction areas -->
-    <line_dash>1</line_dash>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
 
@@ -320,6 +360,18 @@
     <icon>
       <name>BCNSHP_7</name>
       <file>Q_buoys_beacons/buoyant_beacon.svg</file>
+    </icon>
+    <icon>
+      <name>FOGSIG</name>
+      <file>R_fog_signal/fog_signal.svg</file>
+    </icon>
+    <icon>
+      <name>LIGHTS</name>
+      <file>P_lights/light.svg</file>
+    </icon>
+    <icon>
+      <name>LNDMRK_windturbine</name>
+      <file>L_offshore_installations/wind_motor.svg</file>
     </icon>
     <icon>
       <name>UWTROC_awash</name>

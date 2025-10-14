@@ -120,6 +120,33 @@ private:
 					   const OGRFeature *feat);
 
 	/**
+     * Render a fog signal
+     *
+     */
+    void render_fog(cairo_t *cr, const OGRPoint *geo,
+					const web_mercator &wm, const layer_style &style,
+					const IconStyle &icon_style,
+					const OGRFeature *feat);
+
+	/**
+     * Render a light
+     *
+     */
+    void render_light(cairo_t *cr, const OGRPoint *geo,
+					  const web_mercator &wm, const layer_style &style,
+					  const IconStyle &icon_style,
+					  const OGRFeature *feat);
+
+	/**
+     * Render landmarks
+     *
+     */
+    void render_landmark(cairo_t *cr, const OGRPoint *geo,
+						 const web_mercator &wm, const layer_style &style,
+						 const IconStyle &icon_style,
+						 const OGRFeature *feat);
+
+	/**
      * Render a rock using an icon
      *
      */

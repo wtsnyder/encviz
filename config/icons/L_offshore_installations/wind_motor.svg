@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.0"
+   width="150"
+   height="150"
+   id="svg2"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="L5.1.svg"
+   sodipodi:version="0.32"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title2982">L5.1: Wind Turbine</title>
+  <metadata
+     id="metadata3032">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:title>L5.1: Wind Turbine</dc:title>
+      </cc:Work>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     id="namedview3030"
+     showgrid="false"
+     inkscape:zoom="5.2180818"
+     inkscape:cx="41.969445"
+     inkscape:cy="60.750293"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="-48.228106,75"
+       orientation="0,1"
+       id="guide4314"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="75,156.51731"
+       orientation="-1,0"
+       id="guide4316"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4" />
+  <path
+     style="fill:#000407;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5"
+     d="M 65.932178,24.590354 62.964749,26.34244 73.405303,39.997166 62.839195,52.10065 65.033783,54.055991 73.685128,43.312928 73.44174,68.914482 c -2.4367,0.45306 -3.741938,2.690467 -4.562097,4.71875 -0.353396,0.873962 -0.409839,1.979166 0,2.828125 1.124888,2.330141 3.116635,4.828119 6.078125,4.828124 2.962475,0 4.953237,-2.497983 6.078125,-4.828124 0.409839,-0.848959 0.353205,-1.954086 0,-2.828125 -0.816586,-2.020717 -1.951734,-4.363407 -4.542624,-4.702717 L 76.434419,41.079239 93.738352,40.715558 93.42227,38.711357 75.218905,38.340544 Z m 9.02559,46.699128 c 2.07,0 3.75,1.68 3.75,3.75 0,2.069999 -1.68,3.749999 -3.75,3.749999 -2.07,0 -3.75,-1.68 -3.75,-3.749999 0,-2.07 1.68,-3.75 3.75,-3.75 z"
+     id="path90440"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccccccaasaaccccccsssss" />
+</svg>

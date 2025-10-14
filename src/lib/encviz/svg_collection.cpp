@@ -111,7 +111,7 @@ void svg_collection::render_svg_missing(cairo_t *cr, coord center)
     cairo_text_extents(cr, text, &text_extents);
 
 	// draw sounding text without a subscript
-	cairo_move_to(cr, center.x - text_extents.width/2, center.y - text_extents.height/2);
+	cairo_move_to(cr, center.x - text_extents.width/2, center.y + text_extents.height/2);
 	cairo_show_text(cr, text);
 }
 

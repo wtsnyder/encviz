@@ -34,6 +34,12 @@ struct color
     uint8_t green{0};
 };
 
+enum MarkerShape
+{
+	CIRCLE_MARKER,
+	SQUARE_MARKER
+};
+
 /// Style for a single layer
 struct layer_style
 {
@@ -52,8 +58,11 @@ struct layer_style
     /// Line dash style
     int line_dash;
 
-    /// Circular marker radius
+    /// Circular marker radius, or box edge
     int marker_size;
+
+	/// Shape of marker
+	MarkerShape marker_shape;
 
     /// Text render attribute
     std::string attr_name;

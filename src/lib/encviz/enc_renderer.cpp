@@ -187,6 +187,24 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 				render_beacon(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
 			}
 
+			// Render Fog Signals
+			if (std::string(feat->GetDefnRef()->GetName()) == "FOGSIG")
+			{
+				render_fog(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
+			}
+
+			// Render Lights
+			if (std::string(feat->GetDefnRef()->GetName()) == "LIGHTS")
+			{
+				render_light(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
+			}
+
+			// Render Landmark
+			if (std::string(feat->GetDefnRef()->GetName()) == "LNDMRK")
+			{
+				render_landmark(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
+			}
+
 			// Render Rocks
 			if (std::string(feat->GetDefnRef()->GetName()) == "UWTROC")
 			{
@@ -391,7 +409,18 @@ void enc_renderer::render_point(cairo_t *cr, const OGRPoint *geo,
     coord c = wm.point_to_pixels(*geo);
 
     // Draw circle
-    cairo_arc(cr, c.x, c.y, style.marker_size, 0, 2 * M_PI);
+	if (style.marker_shape == SQUARE_MARKER)
+	{
+		cairo_rectangle(cr,
+						c.x - style.marker_size / 2,
+						c.y - style.marker_size / 2,
+						style.marker_size,
+						style.marker_size);
+	}
+	else
+	{
+		cairo_arc(cr, c.x, c.y, style.marker_size, 0, 2 * M_PI);
+	}
 
     // Draw line and fill
     set_color(cr, style.fill_color);
@@ -634,6 +663,123 @@ void enc_renderer::render_beacon(cairo_t *cr, const OGRPoint *geo,
 	std::cout << "Render Beacon: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, 50, 50, stylesheet);
+}
+
+void enc_renderer::render_fog(cairo_t *cr, const OGRPoint *geo,
+							  const web_mercator &wm, const layer_style &style,
+							  const IconStyle &icon_style,
+							  const OGRFeature *feat)
+{
+	// Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+    fs::path svg = "";
+	std::string svg_tag = "FOGSIG";
+	if (icon_style.find(svg_tag) != icon_style.end())
+	{
+		svg = icon_style.at(svg_tag);
+	}
+	std::cout << "Render Fog Signal: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, 50, 50);
+}
+
+void enc_renderer::render_light(cairo_t *cr, const OGRPoint *geo,
+								const web_mercator &wm, const layer_style &style,
+								const IconStyle &icon_style,
+								const OGRFeature *feat)
+{
+	// Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+	// Get light color
+	// Get colors if this elemnt has a list of colors
+	std::vector<std::string> colors_list;
+	std::vector<int> colors_list_int;
+	char** colors = feat->GetFieldAsStringList("COLOUR");
+	if ( colors )
+	{
+		colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
+		for (auto color : colors_list)
+			colors_list_int.push_back(std::stoi(color));
+	}
+
+    // create style sheet to set buoy colors
+    // Note right now this is blindly assigning colors to
+    // named svg element "light_color" that must exist
+    int i = 0;
+    std::stringstream ss;
+    for (auto color_code : colors_list_int)
+    {
+		i++;
+		try
+		{
+			ss << "#light_color" << "{\n"
+			   << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
+			   << "}\n";
+		}
+		catch (const std::out_of_range &e)
+		{
+			// bad color
+		}
+    }
+    std::string stylesheet = ss.str();
+
+    fs::path svg = "";
+	std::string svg_tag = "LIGHTS";
+	if (icon_style.find(svg_tag) != icon_style.end())
+	{
+		svg = icon_style.at(svg_tag);
+	}
+	std::cout << "Render Light: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, 50, 50, stylesheet);
+}
+
+void enc_renderer::render_landmark(cairo_t *cr, const OGRPoint *geo,
+								   const web_mercator &wm, const layer_style &style,
+								   const IconStyle &icon_style,
+								   const OGRFeature *feat)
+{
+	// Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+	// Get list of landmark's categories
+	char** categories = feat->GetFieldAsStringList("CATLMK");
+	std::vector<int> categories_list_int;
+	std::vector<std::string> categories_list;
+	if ( categories )
+	{
+		categories_list = std::vector<std::string>(categories, categories + CSLCount(categories));
+		for (auto cat : categories_list)
+			categories_list_int.push_back(std::stoi(cat));
+	}
+
+	std::string type;
+	for (auto cat : categories_list_int)
+	{
+		std::cout << "---------------- Category: " << cat << std::endl;
+
+		// 3 - chimney
+		// 15 - dome
+		// 17 - tower
+		// 20 - spire/minaret
+
+		
+		if (cat == 18 // windmill
+			|| cat == 19) // windmotor
+			type = "windturbine";
+	}
+
+    fs::path svg = "";
+	std::string svg_tag = "LNDMRK_" + type;
+	if (icon_style.find(svg_tag) != icon_style.end())
+	{
+		svg = icon_style.at(svg_tag);
+	}
+	std::cout << "Render Landmark: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, 50, 50);
 }
 
 void enc_renderer::render_rock(cairo_t *cr, const OGRPoint *geo,
