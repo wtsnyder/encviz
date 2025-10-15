@@ -257,6 +257,17 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
 		auto a = multi_poly->UnionCascaded();
 
 		// create a geo feature with the unioned polygons
+		/*
+		 * TODO: Replace this with a loop that does this:
+		 * - loop ilayer agin
+		 * - if a polygon is found, loop through unioned polygons and
+		 *   find all intersecting polygons
+		 * - copy ilayer and replace geometry with all overlapping polygons
+		 * - delete overlapping polygons from multi_poly union
+		 * - don't copy ilayers that intersect no polygons
+		 *
+		 * This should preserve metadata attached to merged polygons
+		 */
 		if (!a->IsEmpty())
 		{
 			OGRFeature myfeature(olayer->GetLayerDefn());

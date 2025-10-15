@@ -40,6 +40,15 @@ enum MarkerShape
 	SQUARE_MARKER
 };
 
+struct DepareColors
+{
+	color foreshore;
+	color very_shallow;
+	color medium_shallow;
+	color medium_deep;
+	color deep;
+};
+
 /// Style for a single layer
 struct layer_style
 {
@@ -63,6 +72,9 @@ struct layer_style
 
 	/// Shape of marker
 	MarkerShape marker_shape;
+
+	/// Colors only used for DEPARE layer
+	DepareColors depare_colors;
 
     /// Text render attribute
     std::string attr_name;

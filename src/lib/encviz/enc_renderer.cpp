@@ -172,6 +172,27 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 			// render basic geometries
             OGRGeometry *geo = feat->GetGeometryRef();
             render_geo(cr, geo, wm, lstyle);
+
+			// Render DEPARE
+			if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE")
+			{
+				OGRwkbGeometryType gtype = geo->getGeometryType();
+				switch (gtype)
+				{
+				case wkbPolygon: // 6
+					render_depare(cr, geo->toPolygon(), wm, lstyle, feat.get());
+					break;
+				case wkbMultiPolygon: // 10
+					for (const OGRPolygon *child : geo->toMultiPolygon())
+					{
+						render_depare(cr, child, wm, lstyle, feat.get());
+					}
+					break;
+				default:
+					break;
+				}
+
+			}
 			
 			// Render anything with a buoy shape as a buoy
 			int buoy_shape_idx = feat->GetFieldIndex("BOYSHP");
@@ -203,6 +224,12 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 			if (std::string(feat->GetDefnRef()->GetName()) == "LNDMRK")
 			{
 				render_landmark(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
+			}
+
+			// Render Silo/Tank
+			if (std::string(feat->GetDefnRef()->GetName()) == "SILTNK")
+			{
+				render_silotank(cr, geo->toPoint(), wm, lstyle, style.icons, feat.get());
 			}
 
 			// Render Rocks
@@ -551,6 +578,36 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
     cairo_stroke(cr);
 }
 
+void enc_renderer::render_depare(cairo_t *cr, const OGRPolygon *geo,
+								 const web_mercator &wm, const layer_style &style,
+								 const OGRFeature *feat)
+{
+	float maxdepth = feat->GetFieldAsDouble("DRVAL2");
+	layer_style tweaked_style = style;
+	if (maxdepth < 3)
+	{
+		tweaked_style.fill_color = style.depare_colors.foreshore;
+	}
+	else if (maxdepth < 5)
+	{
+		tweaked_style.fill_color = style.depare_colors.very_shallow;
+	}
+	else if (maxdepth < 10)
+	{
+		tweaked_style.fill_color = style.depare_colors.medium_shallow;
+	}
+	else if (maxdepth < 25)
+	{
+		tweaked_style.fill_color = style.depare_colors.medium_deep;
+	}
+	else
+	{
+		tweaked_style.fill_color = style.depare_colors.deep;
+	}
+
+	render_poly(cr, geo, wm, tweaked_style);
+}
+
 void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
 							   const web_mercator &wm, const layer_style &style,
 							   const IconStyle &icon_style,
@@ -755,29 +812,58 @@ void enc_renderer::render_landmark(cairo_t *cr, const OGRPoint *geo,
 			categories_list_int.push_back(std::stoi(cat));
 	}
 
-	std::string type;
+	std::string type = "";
 	for (auto cat : categories_list_int)
 	{
 		std::cout << "---------------- Category: " << cat << std::endl;
 
-		// 3 - chimney
-		// 15 - dome
-		// 17 - tower
-		// 20 - spire/minaret
-
-		
-		if (cat == 18 // windmill
-			|| cat == 19) // windmotor
-			type = "windturbine";
+		switch (cat)
+		{
+		case 3: // chimney
+			type = "_chimney";
+			break;
+		case 6: // flare stack
+			type = "_flarestack";
+			break;
+		case 7: // mast
+			type = "_mast";
+			break;
+		case 17: // tower
+			type = "_tower";
+			break;
+		case 18:
+		case 19:
+			type = "_windturbine";
+			break;
+		}
 	}
 
     fs::path svg = "";
-	std::string svg_tag = "LNDMRK_" + type;
+	std::string svg_tag = "LNDMRK" + type;
 	if (icon_style.find(svg_tag) != icon_style.end())
 	{
 		svg = icon_style.at(svg_tag);
 	}
 	std::cout << "Render Landmark: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, 50, 50);
+}
+
+void enc_renderer::render_silotank(cairo_t *cr, const OGRPoint *geo,
+								   const web_mercator &wm, const layer_style &style,
+								   const IconStyle &icon_style,
+								   const OGRFeature *feat)
+{
+	// Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+    fs::path svg = "";
+	std::string svg_tag = "SILTNK";
+	if (icon_style.find(svg_tag) != icon_style.end())
+	{
+		svg = icon_style.at(svg_tag);
+	}
+	std::cout << "Render Silo/Tank: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, 50, 50);
 }

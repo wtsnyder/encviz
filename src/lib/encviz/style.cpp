@@ -120,6 +120,16 @@ layer_style parse_layer(tinyxml2::XMLElement *node)
 		else if (shape == "circle")
 			parsed.marker_shape = CIRCLE_MARKER;
 	}
+
+	tinyxml2::XMLElement* depare = node->FirstChildElement("depare_colors");
+	if (depare)
+	{
+		parsed.depare_colors.foreshore = parse_color(xml_query(depare, "foreshore"));
+		parsed.depare_colors.very_shallow = parse_color(xml_query(depare, "very_shallow"));
+		parsed.depare_colors.medium_shallow = parse_color(xml_query(depare, "medium_shallow"));
+		parsed.depare_colors.medium_deep = parse_color(xml_query(depare, "medium_deep"));
+		parsed.depare_colors.deep = parse_color(xml_query(depare, "deep"));
+	}
 	
     return parsed;
 }

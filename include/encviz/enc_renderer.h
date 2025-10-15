@@ -101,6 +101,14 @@ private:
     void render_poly(cairo_t *cr, const OGRPolygon *geo,
                      const web_mercator &wm, const layer_style &style);
 
+	/**
+     * Render depth areas with special colors
+     *
+     */
+    void render_depare(cairo_t *cr, const OGRPolygon *geo,
+					 const web_mercator &wm, const layer_style &style,
+					 const OGRFeature *feat);
+	
     /**
      * Render a buoy with the right shape
      *
@@ -142,6 +150,15 @@ private:
      *
      */
     void render_landmark(cairo_t *cr, const OGRPoint *geo,
+						 const web_mercator &wm, const layer_style &style,
+						 const IconStyle &icon_style,
+						 const OGRFeature *feat);
+
+	/**
+     * Render silo/tank
+     *
+     */
+    void render_silotank(cairo_t *cr, const OGRPoint *geo,
 						 const web_mercator &wm, const layer_style &style,
 						 const IconStyle &icon_style,
 						 const OGRFeature *feat);

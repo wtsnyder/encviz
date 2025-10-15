@@ -42,6 +42,23 @@
     <marker_size>0</marker_size>
   </layer>
 
+  <layer>
+    <layer_name>DEPARE</layer_name>
+    <fill_color>00ff00</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+    <depare_colors>
+      <foreshore>000000</foreshore>
+      <very_shallow>000000</very_shallow>
+      <medium_shallow>000000</medium_shallow>
+      <medium_deep>000000</medium_deep>
+      <deep>000000</deep>
+    </depare_colors>
+  </layer>
+    
+
   <!-- Depth Soundings -->
   <layer>
     <layer_name>SOUNDG</layer_name>
@@ -215,11 +232,21 @@
   <!-- Landmarks -->
   <layer>
     <layer_name>LNDMRK</layer_name>
-    <fill_color>ff0000</fill_color>
+    <fill_color>000000</fill_color>
     <line_color>000</line_color>
     <line_width>1</line_width>
     <line_dash>0</line_dash>
-    <marker_size>10</marker_size>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Silos/tanks -->
+  <layer>
+    <layer_name>SILTNK</layer_name>
+    <fill_color>000000</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
   </layer>
 
   <!-- Buoy Cardinal -->
@@ -370,8 +397,32 @@
       <file>P_lights/light.svg</file>
     </icon>
     <icon>
+      <name>LNDMRK</name>
+      <file>E_landmarks/conspicuous_point.svg</file>
+    </icon>
+    <icon>
+      <name>LNDMRK_chimney</name>
+      <file>E_landmarks/chimney.svg</file>
+    </icon>
+    <icon>
+      <name>LNDMRK_flarestack</name>
+      <file>E_landmarks/flare.svg</file>
+    </icon>
+    <icon>
+      <name>LNDMRK_mast</name>
+      <file>E_landmarks/mast.svg</file>
+    </icon>
+    <icon>
+      <name>LNDMRK_tower</name>
+      <file>E_landmarks/tower.svg</file>
+    </icon>
+    <icon>
       <name>LNDMRK_windturbine</name>
       <file>L_offshore_installations/wind_motor.svg</file>
+    </icon>
+    <icon>
+      <name>SILTNK</name>
+      <file>E_landmarks/water_tower.svg</file>
     </icon>
     <icon>
       <name>UWTROC_awash</name>

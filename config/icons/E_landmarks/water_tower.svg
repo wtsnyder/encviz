@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.0"
+   width="150"
+   height="150"
+   id="svg2"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="E21.svg"
+   sodipodi:version="0.32"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title2982">E21: Water Tower</title>
+  <metadata
+     id="metadata3032">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:title>E21: Water Tower</dc:title>
+      </cc:Work>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1270"
+     inkscape:window-height="1011"
+     id="namedview3030"
+     showgrid="false"
+     inkscape:zoom="13.76078"
+     inkscape:cx="83.352836"
+     inkscape:cy="61.915097"
+     inkscape:window-x="650"
+     inkscape:window-y="32"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="-61.09628,75"
+       orientation="0,1"
+       id="guide4969"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="75,338.08071"
+       orientation="-1,0"
+       id="guide4971"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4" />
+  <path
+     style="fill:#000407;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.35"
+     d="m 62.700973,22.708846 v 16.646875 h 7.13125 c -2.012212,7.185495 -3.947376,15.194893 -4.834375,34.945312 h -4.528125 v 1.97969 h 10.390625 c 0.450562,1.93653 2.181645,3.37968 4.254688,3.37968 2.073732,0 3.804832,-1.44218 4.254687,-3.37968 h 10.445313 v -0.0218 -1.95782 l -4.419203,-0.07417 C 83.927404,54.830346 81.491305,46.791122 79.643161,39.355721 h 7.229687 V 22.708846 Z m 2.264063,1.596875 H 83.897848 V 36.621346 H 64.965036 Z m 7.207812,15.05 h 5.315625 c 2.058575,9.535053 4.175381,18.414704 5.578125,34.945312 h -3.696875 c -0.449855,-1.9375 -2.180955,-3.37968 -4.254687,-3.37968 -2.073043,0 -3.804126,1.44315 -4.254688,3.37968 h -3.554687 c 0.991882,-17.876267 2.681732,-26.313671 4.867187,-34.945312 z m 2.942188,33.304682 c 1.449,0 2.625,1.176 2.625,2.625 0,1.449 -1.176,2.625 -2.625,2.625 -1.449,0 -2.625,-1.176 -2.625,-2.625 0,-1.449 1.176,-2.625 2.625,-2.625 z"
+     id="path90440"
+     sodipodi:nodetypes="cccccccsccccccccccccccccccscccsssss" />
+</svg>
