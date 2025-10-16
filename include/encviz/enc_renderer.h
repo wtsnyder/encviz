@@ -53,10 +53,18 @@ private:
      * \param[in] geo Feature geometry
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
+	 * \param[out] late_render_polygons All polygons to be rendered at once afterwards
      */
     void render_geo(cairo_t *cr, const OGRGeometry *geo,
-                    const web_mercator &wm, const layer_style &style);
+                    const web_mercator &wm, const layer_style &style,
+					OGRGeometry *late_render_polygons);
 
+	/**
+	 * Render multi-polygons
+	 */
+	void render_multipoly(cairo_t *cr, const OGRGeometry *geo,
+						  const web_mercator &wm, const layer_style &style);
+	
     /**
      * Render Depth Value
      *

@@ -2,24 +2,41 @@
 <style xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="style.xsd">
 
-  <!-- White Background -->
-  <background>fff</background>
+  <!-- Green Background -->
+  <background>00ff00</background>
 
+  <!-- Depth areas -->
+  <layer>
+    <layer_name>DEPARE</layer_name>
+    <fill_color>d9edde</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+    <depare_colors>
+      <foreshore>74b98f</foreshore>
+      <very_shallow>7fc0e9</very_shallow>
+      <medium_shallow>7fc0e9</medium_shallow>
+      <medium_deep>b9e1de</medium_deep>
+      <deep>d9edde</deep>
+    </depare_colors>
+  </layer>
+    
   <!-- Land Areas -->
   <layer>
     <layer_name>LNDARE</layer_name>
     <fill_color>C8B87A</fill_color>
-    <line_color>A8ACA1</line_color>
-    <line_width>1</line_width>
+    <line_color>00000000</line_color>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
-    <marker_size>5</marker_size>
+    <marker_size>0</marker_size>
   </layer>
 
   <layer>
     <layer_name>LAKARE</layer_name>
     <fill_color>a8cbe2</fill_color>
-    <line_color>000000</line_color>
-    <line_width>1</line_width>
+    <line_color>00000000</line_color>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>5</marker_size>
   </layer>
@@ -27,10 +44,10 @@
   <layer>
     <layer_name>RIVERS</layer_name>
     <fill_color>a8cbe2</fill_color>
-    <line_color>000000</line_color>
-    <line_width>1</line_width>
+    <line_color>00000000</line_color>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
-    <marker_size>5</marker_size>
+    <marker_size>0</marker_size>
   </layer>
 
   <layer>
@@ -40,24 +57,7 @@
     <line_width>1</line_width>
     <line_dash>1</line_dash>
     <marker_size>0</marker_size>
-  </layer>
-
-  <layer>
-    <layer_name>DEPARE</layer_name>
-    <fill_color>00ff00</fill_color>
-    <line_color>000</line_color>
-    <line_width>0</line_width>
-    <line_dash>0</line_dash>
-    <marker_size>0</marker_size>
-    <depare_colors>
-      <foreshore>000000</foreshore>
-      <very_shallow>000000</very_shallow>
-      <medium_shallow>000000</medium_shallow>
-      <medium_deep>000000</medium_deep>
-      <deep>000000</deep>
-    </depare_colors>
-  </layer>
-    
+  </layer>    
 
   <!-- Depth Soundings -->
   <layer>

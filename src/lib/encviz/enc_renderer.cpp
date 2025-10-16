@@ -11,6 +11,8 @@
 #include <iostream>
 namespace fs = std::filesystem;
 
+typedef std::unique_ptr<OGRGeometry, decltype(&OGRGeometryFactory::destroyGeometry)> GeoPtr;
+
 namespace encviz
 {
 
@@ -151,6 +153,10 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     for (const auto &lstyle : style.layers)
     {
 		printf("  Layer: %s\n", lstyle.layer_name.c_str());
+
+		// New geometry collection to compile all the polygons
+		GeoPtr multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
+	
         // Render feature geometry in this layer
         OGRLayer *tile_layer = tile_data->GetLayerByName(lstyle.layer_name.c_str());
         for (const auto &feat : tile_layer)
@@ -171,7 +177,7 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 						
 			// render basic geometries
             OGRGeometry *geo = feat->GetGeometryRef();
-            render_geo(cr, geo, wm, lstyle);
+            render_geo(cr, geo, wm, lstyle, multi_poly.get());
 
 			// Render DEPARE
 			if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE")
@@ -255,6 +261,16 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 
 			//printf("    Field: %s : %d\n", feat->GetDefnRef()->GetFieldDefn(), feat->GetDefnRef()->GetFieldCount());
         }
+
+		// Render all polygons together after other features
+		// because we have now built up the whole list and can
+		// union them together.
+		// Skip if DEPARE though because those are all touching
+		// but need to be different colors
+		if (lstyle.layer_name != "DEPARE")
+		{
+			render_multipoly(cr, multi_poly.get(), wm, lstyle);
+		}
     }
 
     // Write out image
@@ -288,7 +304,8 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
  * \param[in] style Feature style
  */
 void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
-                              const web_mercator &wm, const layer_style &style)
+                              const web_mercator &wm, const layer_style &style,
+							  OGRGeometry *late_render_polygons)
 {
     std::cout << "Render GEO: " << geo->getGeometryName() << std::endl;
     // What sort of geometry were we passed?
@@ -326,25 +343,29 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
         case wkbMultiLineString: // 5
             for (const OGRGeometry *child : geo->toMultiLineString())
             {
-                render_geo(cr, child, wm, style);
+                render_geo(cr, child, wm, style, late_render_polygons);
             }
             break;
 
         case wkbPolygon: // 6
-            render_poly(cr, geo->toPolygon(), wm, style);
+            //render_poly(cr, geo->toPolygon(), wm, style);
+			// Copy all polygons on this layer into one geometry object
+			late_render_polygons->toMultiPolygon()->addGeometry(geo);
             break;
 
         case wkbMultiPolygon: // 10
             for (const OGRPolygon *child : geo->toMultiPolygon())
             {
-                render_poly(cr, child, wm, style);
+                //render_poly(cr, child, wm, style);
+				// Copy all polygons on this layer into one geometry object
+				late_render_polygons->toMultiPolygon()->addGeometry(child);
             }
             break;
 
         case wkbGeometryCollection: // 7
             for (const OGRGeometry *child : geo->toGeometryCollection())
             {
-                render_geo(cr, child, wm, style);
+                render_geo(cr, child, wm, style, late_render_polygons);
             }
             break;
 
@@ -352,6 +373,35 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
             throw std::runtime_error("Unhandled geometry of type " +
                                      std::to_string(gtype));
     }
+}
+
+void enc_renderer::render_multipoly(cairo_t *cr, const OGRGeometry *geo,
+									const web_mercator &wm, const layer_style &style)
+{
+	OGRwkbGeometryType gtype = geo->getGeometryType();
+	if (gtype != wkbMultiPolygon)
+	{
+		return;
+	}
+
+	// Perform union of all polygons before drawing
+	// TODO: would it be faster to just cheat in render poly and draw a 2px
+	// border of the same color... probably
+	GeoPtr union_polygons(geo->UnionCascaded(), &OGRGeometryFactory::destroyGeometry);
+	gtype = union_polygons->getGeometryType();
+	
+	if (gtype == wkbPolygon)
+	{
+		render_poly(cr, union_polygons->toPolygon(), wm, style);
+	}
+	else if (gtype == wkbMultiPolygon)
+	{
+		for (const OGRPolygon *child : union_polygons->toMultiPolygon())
+		{
+			render_poly(cr, child, wm, style);
+		}
+	}
+	return;
 }
 
 /**
@@ -587,23 +637,29 @@ void enc_renderer::render_depare(cairo_t *cr, const OGRPolygon *geo,
 	if (maxdepth < 3)
 	{
 		tweaked_style.fill_color = style.depare_colors.foreshore;
+		tweaked_style.line_color = style.depare_colors.foreshore;
 	}
 	else if (maxdepth < 5)
 	{
 		tweaked_style.fill_color = style.depare_colors.very_shallow;
+		tweaked_style.line_color = style.depare_colors.very_shallow;
 	}
 	else if (maxdepth < 10)
 	{
 		tweaked_style.fill_color = style.depare_colors.medium_shallow;
+		tweaked_style.line_color = style.depare_colors.medium_shallow;
 	}
 	else if (maxdepth < 25)
 	{
 		tweaked_style.fill_color = style.depare_colors.medium_deep;
+		tweaked_style.line_color = style.depare_colors.medium_deep;
 	}
 	else
 	{
 		tweaked_style.fill_color = style.depare_colors.deep;
+		tweaked_style.line_color = style.depare_colors.deep;
 	}
+	tweaked_style.line_width = 2; // overdraw by 1 px to hide gaps
 
 	render_poly(cr, geo, wm, tweaked_style);
 }

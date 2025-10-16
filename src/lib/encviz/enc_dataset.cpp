@@ -137,12 +137,6 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
     {
         create_layer(ods, layer_name.c_str());
     };
-	
-	// Create layers in the temporay dataset
-    for (const std::string &layer_name : layers)
-    {
-        create_layer(temp_ds.get(), layer_name.c_str());
-    };
 
     // Going to need 3 working layers
     OGRLayer *clip_layer = create_layer(temp_ds.get(), "");
@@ -167,7 +161,7 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
         {
             // NOTE: Some OGR drivers need to be done in sequence, and don't
             // like us jumping around betwen layers, like KML ...
-            OGRLayer *olayer = temp_ds->GetLayerByName(layer_name.c_str());
+            OGRLayer *olayer = ods->GetLayerByName(layer_name.c_str());
             if (olayer == nullptr)
             {
                 throw std::runtime_error("Cannot open output layer (OGR interleaving issue?)");
@@ -208,87 +202,6 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
             printf(" - Complete coverage (STOP)\n");
             break;
         }
-    }
-
-    // Loop all layers to consolidate polygons
-    for (const std::string &layer_name : layers)
-    {
-		// temporary layer storing all polygons of this type
-        OGRLayer *ilayer = temp_ds->GetLayerByName(layer_name.c_str());
-		// output layer
-		OGRLayer *olayer = ods->GetLayerByName(layer_name.c_str());
-
-		// New geometry collection to compile all the polygons
-		std::unique_ptr<OGRGeometry, decltype(&OGRGeometryFactory::destroyGeometry)> multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
-		// Get all polygon features in this layer
-		for (const auto &feat : ilayer)
-		{
-			// Get feature geometry type
-			OGRGeometry *geo = feat->GetGeometryRef();
-			OGRwkbGeometryType gtype = geo->getGeometryType();
-			
-			if (gtype == wkbPolygon)
-			{
-				// Copy all polygons on this layer into one geometry object
-				multi_poly->toMultiPolygon()->addGeometry(geo);
-			}
-			else if (gtype == wkbMultiPolygon)
-			{
-				// Copy all polygons on this layer into one geometry object
-				for (auto &poly : geo->toMultiPolygon())
-				{
-					multi_poly->toMultiPolygon()->addGeometry(poly);
-				}
-			}
-			else
-			{
-				// non-polygon features are copied straight to output
-				OGRErr res = olayer->CreateFeature(feat.get());
-				if (res != OGRERR_NONE)
-				{
-					std::cerr << "Error copying feature" << std::endl;
-				}
-			}
-	  
-			//std::cout << feat->DumpReadableAsString() << std::endl;
-		} // done looping features
-
-		// union all the polygons in our multi-poly
-		auto a = multi_poly->UnionCascaded();
-
-		// create a geo feature with the unioned polygons
-		/*
-		 * TODO: Replace this with a loop that does this:
-		 * - loop ilayer agin
-		 * - if a polygon is found, loop through unioned polygons and
-		 *   find all intersecting polygons
-		 * - copy ilayer and replace geometry with all overlapping polygons
-		 * - delete overlapping polygons from multi_poly union
-		 * - don't copy ilayers that intersect no polygons
-		 *
-		 * This should preserve metadata attached to merged polygons
-		 */
-		if (!a->IsEmpty())
-		{
-			OGRFeature myfeature(olayer->GetLayerDefn());
-			myfeature.SetGeometry(a);
-			// add it to the output layer
-			OGRErr res = olayer->CreateFeature(&myfeature);
-			if (res != OGRERR_NONE)
-			{
-				std::cerr << "Error creating feature" << std::endl;
-			}
-		}
-
-		/*
-		std::cout << "All Features: " << std::endl;
-		for (const auto &feat : olayer)
-		{
-			std::cout << feat->DumpReadableAsString() << std::endl;
-		}
-		*/
-
-
     }
 
     return true;
