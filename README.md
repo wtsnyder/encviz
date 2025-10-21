@@ -13,6 +13,7 @@ System. Other environments may be added as time and interest permits.
 https://www.teledynecaris.com/s-57/frames/S57catalog.htm
 
 This appears broken right now but it is usually great
+
 https://nauticalcharts.noaa.gov/enconline/enconline.html
 
 https://devgis.charttools.noaa.gov/pod/
@@ -74,3 +75,49 @@ http://127.0.0.1:8888/default/{z}/{y}/{x}.png
 ```
 
 7. Scroll around and enjoy.
+
+## Docker workflow
+
+1. Setup docker apt repo
+```
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+
+2. Install dependencies
+
+```
+sudo apt install docker-ce docker-buildx-plugin docker-compose-plugin
+```
+
+3. Build the dev container
+```
+docker buildx build --no-cache --load --file docker/Dockerfile --target encviz-dev -t encviz-dev:latest .
+```
+Check that you have an `encviz-dev:latest` listed in `docker images`
+
+4. Build encviz using the container
+```
+docker run -it -v ./:/encviz encviz-dev /bin/bash -c 'cd encviz && mkdir build-docker && cd build-docker && cmake .. && make -j'
+```
+
+5. Build an encviz container
+```
+docker buildx build --no-cache --load --file docker/Dockerfile --target encviz -t encviz:latest .
+```
+
+6. Run encviz with some charts
+```
+docker run -it -p 8888:8888 -v /home/will/Documents/charts/02Region_ENCs:/encviz/config/charts encviz
+```
