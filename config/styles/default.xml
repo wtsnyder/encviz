@@ -2,6 +2,8 @@
 <style xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="style.xsd">
 
+  <!-- Icon paths relative to svg path in config.xml -->
+
   <!-- Green Background -->
   <background>00ff00</background>
 
@@ -32,6 +34,16 @@
     <marker_size>0</marker_size>
   </layer>
 
+  <!-- Built up areas -->
+  <layer>
+    <layer_name>BUAARE</layer_name>
+    <fill_color>b09039</fill_color>
+    <line_color>00000000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
   <layer>
     <layer_name>LAKARE</layer_name>
     <fill_color>a8cbe2</fill_color>
@@ -50,14 +62,17 @@
     <marker_size>0</marker_size>
   </layer>
 
+  <!-- Land Regions, just for text labels?-->
+  <!--
   <layer>
     <layer_name>LNDRGN</layer_name>
     <fill_color>d2ddc7</fill_color>
     <line_color>000</line_color>
-    <line_width>1</line_width>
+    <line_width>0</line_width>
     <line_dash>1</line_dash>
     <marker_size>0</marker_size>
-  </layer>    
+  </layer>
+  -->
 
   <!-- Depth Soundings -->
   <layer>
@@ -109,6 +124,7 @@
     <marker_size>5</marker_size>
   </layer>
 
+  <!-- Lake Shore -->
   <layer>
     <layer_name>LAKSHR</layer_name>
     <fill_color>000</fill_color>
@@ -159,6 +175,16 @@
     <marker_size>5</marker_size>
   </layer>
 
+  <!-- Fairway -->
+  <layer>
+    <layer_name>FAIRWY</layer_name>
+    <fill_color>d9edde</fill_color>
+    <line_color>000000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
   <!-- Traffic Separation Zone -->
   <layer>
     <layer_name>TSEZNE</layer_name>
@@ -197,6 +223,27 @@
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+
+    <icon_color>000000</icon_color>
+    <icon_size>25</icon_size>
+    <icons>
+      <icon>
+	<name>UWTROC_awash</name>
+	<file>K_rocks_wrecks_obstrn/rock.svg</file>
+      </icon>
+      <icon>
+	<name>UWTROC_submerged</name>
+	<file>K_rocks_wrecks_obstrn/rock_submerged.svg</file>
+      </icon>
+      <icon>
+	<name>UWTROC_shoaler</name>
+	<file>K_rocks_wrecks_obstrn/obstruction_shallow.svg</file>
+      </icon>
+      <icon>
+	<name>UWTROC_shoaler_deep</name>
+	<file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Wrecks -->
@@ -207,6 +254,31 @@
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+
+    <icon_color>000000</icon_color>
+    <icon_size>25</icon_size>
+    <icons>
+      <icon>
+	<name>WRECKS_1</name>
+	<file>K_rocks_wrecks_obstrn/wreck_non_dangerous.svg</file>
+      </icon>
+      <icon>
+	<name>WRECKS_2</name>
+	<file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
+      </icon>
+      <icon>
+	<name>WRECKS_3</name> <!-- distributed remains, needs svg -->
+	<file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
+      </icon>
+      <icon>
+	<name>WRECKS_4</name>
+	<file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
+      </icon>
+      <icon>
+	<name>WRECKS_5</name>
+	<file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Obstructions -->
@@ -217,6 +289,27 @@
     <line_width>2</line_width> <!-- need line width to draw obstruction areas -->
     <line_dash>1</line_dash>
     <marker_size>0</marker_size>
+
+    <icon_color>000000</icon_color>
+    <icon_size>25</icon_size>
+    <icons>
+      <icon>
+	<name>OBSTRN_awash</name>
+	<file>K_rocks_wrecks_obstrn/obstruction_covers_uncovers.svg</file>
+      </icon>
+      <icon>
+	<name>OBSTRN_submerged</name>
+	<file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+      </icon>
+      <icon>
+	<name>OBSTRN_shoaler</name>
+	<file>K_rocks_wrecks_obstrn/obstruction_shallow.svg</file>
+      </icon>
+      <icon>
+	<name>OBSTRN_shoaler_deep</name>
+	<file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Bridge -->
@@ -237,6 +330,32 @@
     <line_width>1</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+    <icons>
+      <icon>
+	<name>LNDMRK</name>
+	<file>E_landmarks/conspicuous_point.svg</file>
+      </icon>
+      <icon>
+	<name>LNDMRK_chimney</name>
+	<file>E_landmarks/chimney.svg</file>
+      </icon>
+      <icon>
+	<name>LNDMRK_flarestack</name>
+	<file>E_landmarks/flare.svg</file>
+      </icon>
+      <icon>
+	<name>LNDMRK_mast</name>
+	<file>E_landmarks/mast.svg</file>
+      </icon>
+      <icon>
+	<name>LNDMRK_tower</name>
+	<file>E_landmarks/tower.svg</file>
+      </icon>
+      <icon>
+	<name>LNDMRK_windturbine</name>
+	<file>L_offshore_installations/wind_motor.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Silos/tanks -->
@@ -247,6 +366,217 @@
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+    <icons>
+      <icon>
+	<name>SILTNK</name>
+	<file>E_landmarks/water_tower.svg</file>
+      </icon>
+    </icons>
+  </layer>
+
+  <!-- Beacon Cardinal -->
+  <layer>
+    <layer_name>BCNCAR</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BCNSHP_1</name>
+	<file>Q_buoys_beacons/stake.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_2</name> <!-- withy -->
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_3</name>
+	<file>Q_buoys_beacons/tower.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_4</name>
+	<file>Q_buoys_beacons/lattice_beacon.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_5</name> <!-- plie beacon -->
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_6</name>
+	<file>Q_buoys_beacons/carin.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_7</name>
+	<file>Q_buoys_beacons/buoyant_beacon.svg</file>
+      </icon>
+    </icons>
+  </layer>
+
+  <!-- Beacon Isolated Danger -->
+  <layer>
+    <layer_name>BCNISD</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BCNSHP_1</name>
+	<file>Q_buoys_beacons/stake.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_2</name> <!-- withy -->
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_3</name>
+	<file>Q_buoys_beacons/tower.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_4</name>
+	<file>Q_buoys_beacons/lattice_beacon.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_5</name> <!-- plie beacon -->
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_6</name>
+	<file>Q_buoys_beacons/carin.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_7</name>
+	<file>Q_buoys_beacons/buoyant_beacon.svg</file>
+      </icon>
+    </icons>
+  </layer>
+
+  <!-- Beacon Lateral -->
+  <layer>
+    <layer_name>BCNLAT</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BCNSHP_1</name>
+	<file>Q_buoys_beacons/stake.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_2</name> <!-- withy -->
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_3</name>
+	<file>Q_buoys_beacons/tower.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_4</name>
+	<file>Q_buoys_beacons/lattice_beacon.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_5</name> <!-- plie beacon -->
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_6</name>
+	<file>Q_buoys_beacons/carin.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_7</name>
+	<file>Q_buoys_beacons/buoyant_beacon.svg</file>
+      </icon>
+    </icons>
+  </layer>
+
+  <!-- Beacon Safe water -->
+  <layer>
+    <layer_name>BCNSAW</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BCNSHP_1</name>
+	<file>Q_buoys_beacons/stake.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_2</name> <!-- withy -->
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_3</name>
+	<file>Q_buoys_beacons/tower.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_4</name>
+	<file>Q_buoys_beacons/lattice_beacon.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_5</name> <!-- plie beacon -->
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_6</name>
+	<file>Q_buoys_beacons/carin.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_7</name>
+	<file>Q_buoys_beacons/buoyant_beacon.svg</file>
+      </icon>
+    </icons>
+  </layer>
+
+  <!-- Beacon Special Purpose -->
+  <layer>
+    <layer_name>BCNSPP</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BCNSHP_1</name>
+	<file>Q_buoys_beacons/stake.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_2</name> <!-- withy -->
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_3</name>
+	<file>Q_buoys_beacons/tower.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_4</name>
+	<file>Q_buoys_beacons/lattice_beacon.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_5</name> <!-- plie beacon -->
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_6</name>
+	<file>Q_buoys_beacons/carin.svg</file>
+      </icon>
+      <icon>
+	<name>BCNSHP_7</name>
+	<file>Q_buoys_beacons/buoyant_beacon.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Buoy Cardinal -->
@@ -254,9 +584,40 @@
     <layer_name>BOYCAR</layer_name>
     <fill_color>000</fill_color>
     <line_color>000</line_color>
-    <line_width>1</line_width>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BOYSHP_1</name>
+	<file>Q_buoys_beacons/conical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_2</name>
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_3</name>
+	<file>Q_buoys_beacons/spherical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_4</name>
+	<file>Q_buoys_beacons/pillar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_5</name>
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_6</name>
+	<file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_7</name>
+	<file>Q_buoys_beacons/super_buoy.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Buoy Installation -->
@@ -264,9 +625,40 @@
     <layer_name>BOYINB</layer_name>
     <fill_color>000</fill_color>
     <line_color>000</line_color>
-    <line_width>1</line_width>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BOYSHP_1</name>
+	<file>Q_buoys_beacons/conical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_2</name>
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_3</name>
+	<file>Q_buoys_beacons/spherical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_4</name>
+	<file>Q_buoys_beacons/pillar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_5</name>
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_6</name>
+	<file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_7</name>
+	<file>Q_buoys_beacons/super_buoy.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Buoy Isolated Danger -->
@@ -274,9 +666,40 @@
     <layer_name>BOYISD</layer_name>
     <fill_color>000</fill_color>
     <line_color>000</line_color>
-    <line_width>1</line_width>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BOYSHP_1</name>
+	<file>Q_buoys_beacons/conical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_2</name>
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_3</name>
+	<file>Q_buoys_beacons/spherical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_4</name>
+	<file>Q_buoys_beacons/pillar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_5</name>
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_6</name>
+	<file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_7</name>
+	<file>Q_buoys_beacons/super_buoy.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Buoy Lateral -->
@@ -284,9 +707,42 @@
     <layer_name>BOYLAT</layer_name>
     <fill_color>000</fill_color>
     <line_color>000</line_color>
-    <line_width>1</line_width>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
-    <marker_size>1</marker_size>
+    <marker_size>0</marker_size>
+
+    <icon_color>000000</icon_color>
+    <icon_size>30</icon_size>
+    <icons>
+      <icon>
+	<name>BOYSHP_1</name>
+	<file>Q_buoys_beacons/conical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_2</name>
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_3</name>
+	<file>Q_buoys_beacons/spherical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_4</name>
+	<file>Q_buoys_beacons/pillar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_5</name>
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_6</name>
+	<file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_7</name>
+	<file>Q_buoys_beacons/super_buoy.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Buoy Safe Water -->
@@ -294,9 +750,40 @@
     <layer_name>BOYSAW</layer_name>
     <fill_color>000</fill_color>
     <line_color>000</line_color>
-    <line_width>1</line_width>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BOYSHP_1</name>
+	<file>Q_buoys_beacons/conical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_2</name>
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_3</name>
+	<file>Q_buoys_beacons/spherical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_4</name>
+	<file>Q_buoys_beacons/pillar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_5</name>
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_6</name>
+	<file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_7</name>
+	<file>Q_buoys_beacons/super_buoy.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Buoy Special Purpose -->
@@ -304,9 +791,40 @@
     <layer_name>BOYSPP</layer_name>
     <fill_color>000</fill_color>
     <line_color>000</line_color>
-    <line_width>1</line_width>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	<name>BOYSHP_1</name>
+	<file>Q_buoys_beacons/conical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_2</name>
+	<file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_3</name>
+	<file>Q_buoys_beacons/spherical.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_4</name>
+	<file>Q_buoys_beacons/pillar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_5</name>
+	<file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_6</name>
+	<file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+	<name>BOYSHP_7</name>
+	<file>Q_buoys_beacons/super_buoy.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Fog signals -->
@@ -317,6 +835,14 @@
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+
+    <icon_color>a30075</icon_color>
+    <icons>
+      <icon>
+	<name>FOGSIG</name>
+	<file>R_fog_signal/fog_signal.svg</file>
+      </icon>
+    </icons>
   </layer>
 
   <!-- Lights -->
@@ -327,156 +853,15 @@
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+    <icons>
+      <icon>
+	<name>LIGHTS</name>
+	<file>P_lights/light.svg</file>
+    </icon>
+    </icons>
   </layer>
 
 
-  <!-- Icon paths relative to svg path in config.xml -->
-  <icons>
-    <icon>
-      <name>BOYSHP_1</name>
-      <file>Q_buoys_beacons/conical.svg</file>
-    </icon>
-    <icon>
-      <name>BOYSHP_2</name>
-      <file>Q_buoys_beacons/can.svg</file>
-    </icon>
-    <icon>
-      <name>BOYSHP_3</name>
-      <file>Q_buoys_beacons/spherical.svg</file>
-    </icon>
-    <icon>
-      <name>BOYSHP_4</name>
-      <file>Q_buoys_beacons/pillar.svg</file>
-    </icon>
-    <icon>
-      <name>BOYSHP_5</name>
-      <file>Q_buoys_beacons/spar.svg</file>
-    </icon>
-    <icon>
-      <name>BOYSHP_6</name>
-      <file>Q_buoys_beacons/barrel.svg</file>
-    </icon>
-    <icon>
-      <name>BOYSHP_7</name>
-      <file>Q_buoys_beacons/super_buoy.svg</file>
-    </icon>
-    <icon>
-      <name>BCNSHP_1</name>
-      <file>Q_buoys_beacons/stake.svg</file>
-    </icon>
-    <icon>
-      <name>BCNSHP_2</name> <!-- withy -->
-      <file>Q_buoys_beacons/can.svg</file>
-    </icon>
-    <icon>
-      <name>BCNSHP_3</name>
-      <file>Q_buoys_beacons/tower.svg</file>
-    </icon>
-    <icon>
-      <name>BCNSHP_4</name>
-      <file>Q_buoys_beacons/lattice_beacon.svg</file>
-    </icon>
-    <icon>
-      <name>BCNSHP_5</name> <!-- plie beacon -->
-      <file>Q_buoys_beacons/spar.svg</file>
-    </icon>
-    <icon>
-      <name>BCNSHP_6</name>
-      <file>Q_buoys_beacons/carin.svg</file>
-    </icon>
-    <icon>
-      <name>BCNSHP_7</name>
-      <file>Q_buoys_beacons/buoyant_beacon.svg</file>
-    </icon>
-    <icon>
-      <name>FOGSIG</name>
-      <file>R_fog_signal/fog_signal.svg</file>
-    </icon>
-    <icon>
-      <name>LIGHTS</name>
-      <file>P_lights/light.svg</file>
-    </icon>
-    <icon>
-      <name>LNDMRK</name>
-      <file>E_landmarks/conspicuous_point.svg</file>
-    </icon>
-    <icon>
-      <name>LNDMRK_chimney</name>
-      <file>E_landmarks/chimney.svg</file>
-    </icon>
-    <icon>
-      <name>LNDMRK_flarestack</name>
-      <file>E_landmarks/flare.svg</file>
-    </icon>
-    <icon>
-      <name>LNDMRK_mast</name>
-      <file>E_landmarks/mast.svg</file>
-    </icon>
-    <icon>
-      <name>LNDMRK_tower</name>
-      <file>E_landmarks/tower.svg</file>
-    </icon>
-    <icon>
-      <name>LNDMRK_windturbine</name>
-      <file>L_offshore_installations/wind_motor.svg</file>
-    </icon>
-    <icon>
-      <name>SILTNK</name>
-      <file>E_landmarks/water_tower.svg</file>
-    </icon>
-    <icon>
-      <name>UWTROC_awash</name>
-      <file>K_rocks_wrecks_obstrn/rock.svg</file>
-    </icon>
-    <icon>
-      <name>UWTROC_submerged</name>
-      <file>K_rocks_wrecks_obstrn/rock_submerged.svg</file>
-    </icon>
-    <icon>
-      <name>UWTROC_shoaler</name>
-      <file>K_rocks_wrecks_obstrn/obstruction_shallow.svg</file>
-    </icon>
-    <icon>
-      <name>UWTROC_shoaler_deep</name>
-      <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
-    </icon>
-    <icon>
-      <name>OBSTRN_awash</name>
-      <file>K_rocks_wrecks_obstrn/obstruction_covers_uncovers.svg</file>
-    </icon>
-    <icon>
-      <name>OBSTRN_submerged</name>
-      <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
-    </icon>
-    <icon>
-      <name>OBSTRN_shoaler</name>
-      <file>K_rocks_wrecks_obstrn/obstruction_shallow.svg</file>
-    </icon>
-    <icon>
-      <name>OBSTRN_shoaler_deep</name>
-      <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
-    </icon>
-    <icon>
-      <name>WRECKS_1</name>
-      <file>K_rocks_wrecks_obstrn/wreck_non_dangerous.svg</file>
-    </icon>
-    <icon>
-      <name>WRECKS_2</name>
-      <file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
-    </icon>
-    <icon>
-      <name>WRECKS_3</name> <!-- distributed remains, needs svg -->
-      <file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
-    </icon>
-    <icon>
-      <name>WRECKS_4</name>
-      <file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
-    </icon>
-    <icon>
-      <name>WRECKS_5</name>
-      <file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
-    </icon>
-  </icons>
   
 </style>
 

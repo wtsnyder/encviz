@@ -49,8 +49,8 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1011"
+     inkscape:window-width="1504"
+     inkscape:window-height="1282"
      id="namedview7"
      showgrid="false"
      fit-margin-top="0"
@@ -58,11 +58,11 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="5.12"
-     inkscape:cx="85.058594"
-     inkscape:cy="75.390625"
-     inkscape:window-x="0"
-     inkscape:window-y="32"
-     inkscape:window-maximized="1"
+     inkscape:cx="85.449219"
+     inkscape:cy="75.683594"
+     inkscape:window-x="26"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0"
      inkscape:current-layer="svg3425"
      inkscape:showpageshadow="0"
      inkscape:pagecheckerboard="0"
@@ -82,8 +82,8 @@
   <defs
      id="defs3427" />
   <path
-     d="m 74.780047,55.85546 v 37.5 m -31.25,-18.75 h 62.500013 m -12.500013,-12.5 v 25 m -37.5,-25 v 25"
+     style="color:#000000;fill:#000000;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
+     d="m 74.779297,53.980469 a 1.875,1.875 0 0 0 -1.875,1.875 v 16.875 h -15 v -10.625 a 1.875,1.875 0 0 0 -1.875,-1.875 1.875,1.875 0 0 0 -1.875,1.875 v 10.625 h -10.625 a 1.875,1.875 0 0 0 -1.875,1.875 1.875,1.875 0 0 0 1.875,1.875 h 10.625 v 10.625 a 1.875,1.875 0 0 0 1.875,1.875 1.875,1.875 0 0 0 1.875,-1.875 v -10.625 h 15 v 16.875 a 1.875,1.875 0 0 0 1.875,1.875 1.875,1.875 0 0 0 1.875,-1.875 v -16.875 h 15 v 10.625 a 1.875,1.875 0 0 0 1.875,1.875 1.875,1.875 0 0 0 1.875,-1.875 v -10.625 H 106.0293 a 1.875,1.875 0 0 0 1.875,-1.875 1.875,1.875 0 0 0 -1.875,-1.875 H 95.404297 v -10.625 a 1.875,1.875 0 0 0 -1.875,-1.875 1.875,1.875 0 0 0 -1.875,1.875 v 10.625 h -15 v -16.875 a 1.875,1.875 0 0 0 -1.875,-1.875 z"
      id="path3393"
-     style="fill:none;stroke:#000000;stroke-width:3.75px;stroke-linecap:round;stroke-linejoin:round"
-     inkscape:connector-curvature="0" />
+     class="icon" />
 </svg>

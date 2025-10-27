@@ -19,6 +19,24 @@ namespace encviz
 {
 
 /**
+ * Print colors to css color format #RRGGBBAA
+ */
+std::ostream& operator<<(std::ostream& os, const color& c)
+{
+	std::stringstream ss;
+
+	// output #RRGGBBAA
+	ss << "#" << std::hex << std::setfill('0')
+	   << std::setw(2) << int(c.red)
+	   << std::setw(2) << int(c.green)
+	   << std::setw(2) << int(c.blue)
+	   << std::setw(2) << int(c.alpha);
+	
+    os << ss.str();
+    return os;
+}
+
+/**
  * Parse Color Code
  *
  * Color code pattern can be one of:
@@ -94,7 +112,7 @@ color parse_color(tinyxml2::XMLElement *node)
  * \param[in] node Layer element
  * \return Parsed layer style
  */
-layer_style parse_layer(tinyxml2::XMLElement *node)
+layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path &svg_path)
 {
     // Sanity check
     if (node == nullptr)
@@ -119,6 +137,31 @@ layer_style parse_layer(tinyxml2::XMLElement *node)
 			parsed.marker_shape = SQUARE_MARKER;
 		else if (shape == "circle")
 			parsed.marker_shape = CIRCLE_MARKER;
+	}
+
+	parsed.icon_color = {255,0,0,0}; // black
+	tinyxml2::XMLElement* icon_color = node->FirstChildElement("icon_color");
+	if (icon_color)
+	{
+		parsed.icon_color = parse_color(xml_query(node, "icon_color"));
+	}
+
+	parsed.icon_size = 50;
+	tinyxml2::XMLElement* icon_size = node->FirstChildElement("icon_size");
+	if (icon_size)
+	{
+		parsed.icon_size = atoi(xml_text(xml_query(node, "icon_size")));
+	}
+
+	tinyxml2::XMLElement* icons = node->FirstChildElement("icons");
+	if (icons)
+	{
+		std::cout << "Loading Icons:" << std::endl;
+		for (tinyxml2::XMLElement *child : xml_query_all(icons, "icon"))
+		{
+			auto icon = parse_icon(child, svg_path);
+			parsed.icons.insert(icon);
+		}
 	}
 
 	tinyxml2::XMLElement* depare = node->FirstChildElement("depare_colors");
@@ -184,20 +227,8 @@ render_style load_style(const std::string &filename, std::filesystem::path svg_p
     catch (...) {}
     for (tinyxml2::XMLElement *child : xml_query_all(root, "layer"))
     {
-        parsed.layers.push_back(parse_layer(child));
+        parsed.layers.push_back(parse_layer(child, svg_path));
     }
-
-	tinyxml2::XMLElement* icons = root->FirstChildElement("icons");
-	if (icons)
-	{
-		std::cout << "Loading Icons:" << std::endl;
-		for (tinyxml2::XMLElement *child : xml_query_all(icons, "icon"))
-		{
-			auto icon = parse_icon(child, svg_path);
-			parsed.icons.insert(icon);
-		}
-	}
-
 	
 	
     return parsed;

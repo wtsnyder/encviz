@@ -12,11 +12,19 @@ System. Other environments may be added as time and interest permits.
 ## Helpful References
 https://www.teledynecaris.com/s-57/frames/S57catalog.htm
 
+https://nauticalcharts.noaa.gov/publications/docs/us-chart-1/ChartNo1.pdf
+
 This appears broken right now but it is usually great
 
 https://nauticalcharts.noaa.gov/enconline/enconline.html
 
 https://devgis.charttools.noaa.gov/pod/
+
+S-52 Standard
+
+https://iho.int/uploads/user/pubs/standards/s-52/S-52%20Edition%206.1.1%20-%20June%202015.pdf
+
+https://iho.int/uploads/user/pubs/standards/s-52/S-52%20PresLib%20Ed%204.0.3%20Part%20I%20Addendum_Clean.pdf
 
 ## Quick Start
 

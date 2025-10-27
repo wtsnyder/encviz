@@ -48,8 +48,8 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     inkscape:window-height="1011"
-     inkscape:window-width="1920"
+     inkscape:window-height="1371"
+     inkscape:window-width="3440"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      guidetolerance="10.0"
@@ -61,8 +61,8 @@
      id="base"
      showgrid="false"
      inkscape:zoom="8.1094196"
-     inkscape:cx="93.841488"
-     inkscape:cy="43.282999"
+     inkscape:cx="94.026458"
+     inkscape:cy="43.406312"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:current-layer="svg2"
@@ -114,9 +114,10 @@
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="ccccc" />
   <path
-     style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+     style="fill-opacity:1;fill-rule:evenodd;stroke:none"
      d="M 86.834277,17.661448 72.379642,62.827317 c -4.58857,1.09832 -8.21335,4.74044 -9.28125,9.34375 h -8.4375 l -0.125,5.65625 h 8.5625 c 1.28732,5.53295 6.23327,9.65624 12.15625,9.65625 5.92495,0 10.87095,-4.12052 12.15625,-9.65625 l 8.261441,0.108009 0.05444,-5.577252 -8.315872,-0.187007 c -0.4895,-2.11431 -1.49849,-4.03814 -2.90625,-5.59375 L 99.039103,20.351022 Z m 1.900618,3.437669 7.044534,1.388 L 82.20659,65.268388 C 79.28465,63.285138 78.892777,63.15853 75.014077,62.68758 Z m -13.480253,46.38445 c 4.14,0 7.5,3.36 7.5,7.5 0,4.14 -3.36,7.5 -7.5,7.5 -4.14,0 -7.5,-3.36 -7.5,-7.5 0,-4.14 3.36,-7.5 7.5,-7.5 z"
      id="path27763"
      inkscape:connector-curvature="0"
-     sodipodi:nodetypes="ccccccsccccccccccccsssss" />
+     sodipodi:nodetypes="ccccccsccccccccccccsssss"
+     class="icon" />
 </svg>

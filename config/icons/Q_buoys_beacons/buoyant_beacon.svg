@@ -5,7 +5,7 @@
    height="150"
    id="svg2"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   sodipodi:docname="blue.svg"
+   sodipodi:docname="buoyant_beacon.svg"
    sodipodi:version="0.32"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true"
@@ -56,13 +56,13 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1011"
+     inkscape:window-width="3440"
+     inkscape:window-height="1371"
      id="namedview3078"
      showgrid="false"
      inkscape:zoom="6.3791229"
-     inkscape:cx="69.602045"
-     inkscape:cy="56.120568"
+     inkscape:cx="69.837187"
+     inkscape:cy="56.277329"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -109,9 +109,10 @@
      x="67.510414"
      y="27.073921" />
   <path
-     style="fill:#000407;fill-opacity:1;fill-rule:evenodd;stroke:none"
+     style="fill-opacity:1;fill-rule:evenodd;stroke:none"
      d="M 66.728127,1.4886206 V 66.238621 c -1.70454,1.6489 -2.94669,3.77114 -3.5,6.15625 h -8.4375 l -0.125,5.65625 h 8.5625 c 1.28732,5.53295 6.23327,9.65624 12.15625,9.65625 5.92495,0 10.87095,-4.12052 12.15625,-9.65625 l 8.3125,-0.0312 v -5.65625 l -8.3125,0.0312 c -0.58668,-2.52896 -1.94655,-4.75116 -3.8125,-6.4375 V 1.4886206 Z m 2.25,1.9375 h 12.34375 l 0.0332,61.5866204 c -3.65022,-2.62034 -7.99699,-2.68668 -12.34375,0 z m 6.40625,64.2812504 c 4.14,0 7.5,3.36 7.5,7.5 0,4.14 -3.36,7.5 -7.5,7.5 -4.14,0 -7.5,-3.36 -7.5,-7.5 0,-4.14 3.36,-7.5 7.5,-7.5 z"
      id="path2520"
      inkscape:connector-curvature="0"
-     sodipodi:nodetypes="ccccccsccccccccccccsssss" />
+     sodipodi:nodetypes="ccccccsccccccccccccsssss"
+     class="icon" />
 </svg>

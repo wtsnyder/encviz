@@ -58,10 +58,10 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="2.36"
-     inkscape:cx="-49.576271"
-     inkscape:cy="27.966102"
-     inkscape:window-x="397"
-     inkscape:window-y="32"
+     inkscape:cx="-52.330508"
+     inkscape:cy="28.389831"
+     inkscape:window-x="26"
+     inkscape:window-y="23"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg2"
      inkscape:showpageshadow="0"
@@ -84,6 +84,7 @@
   <path
      d="M 72.767585,102.1676 V 77.730098 h -24.4625 v -4.9875 h 24.4625 v -24.4375 h 4.9625 v 24.4375 h 24.462495 v 4.9875 H 77.730085 V 102.1676 Z"
      id="path2818"
-     style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-     inkscape:connector-curvature="0" />
+     style="fill-rule:evenodd;stroke:none"
+     inkscape:connector-curvature="0"
+     class="icon" />
 </svg>

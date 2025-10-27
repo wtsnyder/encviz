@@ -56,13 +56,13 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1011"
+     inkscape:window-width="3440"
+     inkscape:window-height="1371"
      id="namedview3261"
      showgrid="false"
      inkscape:zoom="4.742657"
-     inkscape:cx="60.092897"
-     inkscape:cy="72.744034"
+     inkscape:cx="60.409176"
+     inkscape:cy="72.954886"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -109,6 +109,7 @@
      inkscape:connector-curvature="0"
      d="M 85.79377,12.875166 72.190063,45.89212 43.866705,72.581528 h -6.82826 l -0.109692,4.963516 h 27.258195 c 1.129657,4.855308 5.469864,8.473613 10.667441,8.473624 5.199306,0 9.539557,-3.615863 10.667442,-8.473624 H 106.69216 V 72.581528 H 99.863918 L 97.697524,52.974273 103.28494,14.399252 Z m 2.677087,4.263835 10.312945,1.311683 -7.311237,34.523589 2.166395,19.607255 h -8.117129 c -1.125437,-4.861119 -5.465749,-8.501049 -10.667442,-8.501049 -5.200016,0 -9.540284,3.642296 -10.667441,8.501049 H 52.25806 L 76.753994,47.715207 Z m -7.045981,57.921538 c 0,3.632966 -2.948492,6.581466 -6.581456,6.581466 -3.632962,0 -6.581456,-2.9485 -6.581456,-6.581466 0,-3.632967 2.948494,-6.581451 6.581456,-6.581451 3.632964,0 6.581456,2.948484 6.581456,6.581451 z"
      id="path27763"
-     style="fill:#000407;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.877528"
-     sodipodi:nodetypes="ccccccsccccccccccccsccccsssss" />
+     style="fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.877528"
+     sodipodi:nodetypes="ccccccsccccccccccccsccccsssss"
+     class="icon" />
 </svg>

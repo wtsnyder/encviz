@@ -56,13 +56,13 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1011"
+     inkscape:window-width="3440"
+     inkscape:window-height="1371"
      id="namedview3002"
      showgrid="false"
      inkscape:zoom="6.5106021"
-     inkscape:cx="68.887638"
-     inkscape:cy="57.751955"
+     inkscape:cx="20.505016"
+     inkscape:cy="69.118031"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -85,11 +85,12 @@
   <defs
      id="defs4" />
   <path
-     d="m 64.73949,77.514969 0.134211,-4.846775 7.665789,-0.115725 V 1.3274694 h 4.9625 V 72.552469 h 7.7875 v 4.9625 h -20.55"
+     d="m 64.73949,77.514969 0.134211,-4.846775 7.665789,-0.115725 0.09408,-53.702862 4.9625,0 -0.09408,53.702862 h 7.7875 v 4.9625 h -20.55"
      id="path7832"
      style="fill:#000407;fill-opacity:1;fill-rule:evenodd;stroke:none"
      inkscape:connector-curvature="0"
-     sodipodi:nodetypes="ccccccccc" />
+     sodipodi:nodetypes="ccccccccc"
+     class="icon" />
   <rect
      fill="none"
      style="fill-opacity:1;stroke:none"

@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <optional>
 #include <tinyxml2.h>
@@ -34,6 +35,9 @@ struct color
     uint8_t green{0};
 };
 
+// Print colors to css color format
+std::ostream& operator<<(std::ostream& os, const color& c);
+
 enum MarkerShape
 {
 	CIRCLE_MARKER,
@@ -48,6 +52,8 @@ struct DepareColors
 	color medium_deep;
 	color deep;
 };
+
+typedef std::map<std::string, std::filesystem::path> IconStyle;
 
 /// Style for a single layer
 struct layer_style
@@ -73,14 +79,20 @@ struct layer_style
 	/// Shape of marker
 	MarkerShape marker_shape;
 
+	/// Color of icon
+	color icon_color;
+
+	/// Size of icon
+	int icon_size;
+
+	IconStyle icons;
+
 	/// Colors only used for DEPARE layer
 	DepareColors depare_colors;
 
     /// Text render attribute
     std::string attr_name;
 };
-
-typedef std::map<std::string, std::filesystem::path> IconStyle;
 
 /// Full rendering style
 struct render_style
@@ -115,7 +127,7 @@ color parse_color(tinyxml2::XMLElement *node);
  * \param[in] node Layer element
  * \return Parsed layer style
  */
-layer_style parse_layer(tinyxml2::XMLElement *node);
+layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path &svg_path);
 
  /**
   * Parse Icon

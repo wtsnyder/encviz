@@ -49,15 +49,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1023"
-     inkscape:window-height="826"
+     inkscape:window-width="1490"
+     inkscape:window-height="1028"
      id="namedview3072"
      showgrid="false"
      inkscape:zoom="3.7571428"
-     inkscape:cx="70.133081"
-     inkscape:cy="65.076047"
-     inkscape:window-x="0"
-     inkscape:window-y="32"
+     inkscape:cx="70.399241"
+     inkscape:cy="67.471484"
+     inkscape:window-x="26"
+     inkscape:window-y="23"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg2"
      inkscape:showpageshadow="0"
@@ -80,5 +80,6 @@
   <path
      d="m 91.836146,13.437215 -14.1875,42.53125 -49.28125,-16.6875 13.84375,32.59375 h -7.8125 v 5.6875 h 27.46875 c 1.360102,5.4308 6.274526,9.46875 12.125,9.46875 5.850474,0 10.764898,-4.03795 12.125,-9.46875 H 133.6174 v -5.6875 h -7.40625 l -43.625004,-14.5 14.1875,-42.53125 z m -17.84375,53.59375 c 4.14,0 7.5,3.36 7.5,7.5 0,4.14 -3.36,7.5 -7.5,7.5 -4.14,0 -7.5,-3.36 -7.5,-7.5 0,-4.14 3.36,-7.5 7.5,-7.5 z"
      id="path2748"
-     style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+     style="fill-rule:evenodd;stroke:none"
+     class="icon" />
 </svg>

@@ -123,7 +123,6 @@ private:
      */
     void render_buoy(cairo_t *cr, const OGRPoint *geo,
 					 const web_mercator &wm, const layer_style &style,
-					 const IconStyle &icon_style,
 					 const OGRFeature *feat);
 
     /**
@@ -132,7 +131,6 @@ private:
      */
     void render_beacon(cairo_t *cr, const OGRPoint *geo,
 					   const web_mercator &wm, const layer_style &style,
-					   const IconStyle &icon_style,
 					   const OGRFeature *feat);
 
 	/**
@@ -141,7 +139,6 @@ private:
      */
     void render_fog(cairo_t *cr, const OGRPoint *geo,
 					const web_mercator &wm, const layer_style &style,
-					const IconStyle &icon_style,
 					const OGRFeature *feat);
 
 	/**
@@ -150,7 +147,6 @@ private:
      */
     void render_light(cairo_t *cr, const OGRPoint *geo,
 					  const web_mercator &wm, const layer_style &style,
-					  const IconStyle &icon_style,
 					  const OGRFeature *feat);
 
 	/**
@@ -159,7 +155,6 @@ private:
      */
     void render_landmark(cairo_t *cr, const OGRPoint *geo,
 						 const web_mercator &wm, const layer_style &style,
-						 const IconStyle &icon_style,
 						 const OGRFeature *feat);
 
 	/**
@@ -168,7 +163,6 @@ private:
      */
     void render_silotank(cairo_t *cr, const OGRPoint *geo,
 						 const web_mercator &wm, const layer_style &style,
-						 const IconStyle &icon_style,
 						 const OGRFeature *feat);
 
 	/**
@@ -177,7 +171,6 @@ private:
      */
     void render_rock(cairo_t *cr, const OGRPoint *geo,
 					 const web_mercator &wm, const layer_style &style,
-					 const IconStyle &icon_style,
 					 const OGRFeature *feat);
 
 	/**
@@ -186,7 +179,6 @@ private:
      */
     void render_obstruction(cairo_t *cr, const OGRPoint *geo,
 							const web_mercator &wm, const layer_style &style,
-							const IconStyle &icon_style,
 							const OGRFeature *feat);
 
 	/**
@@ -195,7 +187,6 @@ private:
      */
     void render_wreck(cairo_t *cr, const OGRPoint *geo,
 					  const web_mercator &wm, const layer_style &style,
-					  const IconStyle &icon_style,
 					  const OGRFeature *feat);
 
     /**
