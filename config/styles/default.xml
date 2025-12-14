@@ -312,6 +312,25 @@
     </icons>
   </layer>
 
+  <!-- Anchor berths -->
+  <layer>
+    <layer_name>ACHBRT</layer_name>
+    <fill_color>000000</fill_color>
+    <line_color>0000</line_color> 
+    <line_width>1</line_width> <!-- line width used for anchor circle -->
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+
+    <icon_color>ef0093</icon_color>
+    <icon_size>25</icon_size>
+    <icons>
+      <icon>
+	<name>ACHBRT</name>
+	<file>N_areas_limits/anchor_berth.svg</file>
+      </icon>
+    </icons>
+  </layer>
+
   <!-- Bridge -->
   <layer>
     <layer_name>BRIDGE</layer_name>

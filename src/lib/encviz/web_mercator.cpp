@@ -159,7 +159,7 @@ coord web_mercator::pixels_to_meters(const coord &in) const
  * Convert OGR Point to pixels
  *
  * \param[in] point OGR point (deg)
- * \return Output coordinate (meters)
+ * \return Output coordinate (pixels)
  */
 coord web_mercator::point_to_pixels(const OGRPoint &point) const
 {
@@ -167,6 +167,19 @@ coord web_mercator::point_to_pixels(const OGRPoint &point) const
     coord c = { point.getX(), point.getY() };
     c = deg_to_meters(c);
     return meters_to_pixels(c);
+}
+
+/**
+ * Convert OGR Point to meters
+ *
+ * \param[in] point OGR point (deg)
+ * \return Output coordinate (meters)
+ */
+coord web_mercator::point_to_meters(const OGRPoint &point) const
+{
+    // Convert lat/lon to m coordinates
+    coord c = { point.getX(), point.getY() };
+	return deg_to_meters(c);
 }
 
 }; // ~namespace encviz

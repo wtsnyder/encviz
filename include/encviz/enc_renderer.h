@@ -189,6 +189,14 @@ private:
 					  const web_mercator &wm, const layer_style &style,
 					  const OGRFeature *feat);
 
+	/**
+     * Render an archor berth using an icon
+     *
+     */
+    void render_anchor(cairo_t *cr, const OGRPoint *geo,
+					  const web_mercator &wm, const layer_style &style,
+					  const OGRFeature *feat);
+
     /**
      * Set Render Color
      *

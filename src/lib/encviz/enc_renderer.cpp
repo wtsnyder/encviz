@@ -113,7 +113,7 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 
     // Oversample a bit so not clip text between tiles
     {
-        double oversample = 0.1;
+        double oversample = 0.2;
         double width = bbox.MaxX - bbox.MinX;
         double height = bbox.MaxY - bbox.MinY;
         bbox.MinX -= oversample * (width/2);
@@ -254,6 +254,12 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 			if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
 			{
 				render_wreck(cr, geo->toPoint(), wm, lstyle, feat.get());
+			}
+
+			// Render Anchor Berths
+			if (std::string(feat->GetDefnRef()->GetName()) == "ACHBRT")
+			{
+				render_anchor(cr, geo->toPoint(), wm, lstyle, feat.get());
 			}
 			
 	    
@@ -1006,7 +1012,7 @@ void enc_renderer::render_obstruction(cairo_t *cr, const OGRPoint *geo,
 	   << "}\n";
 	std::string stylesheet = ss.str();
 
-	int category = feat->GetFieldAsInteger("CATOBS");
+	//int category = feat->GetFieldAsInteger("CATOBS");
 	int water_level = feat->GetFieldAsInteger("WATLEV");
 	int exposition = feat->GetFieldAsInteger("EXPSOU");
 	//int quality = feat->GetFieldAsInteger("QUASOU");
@@ -1066,6 +1072,47 @@ void enc_renderer::render_wreck(cairo_t *cr, const OGRPoint *geo,
 	std::cout << "Render Wreck: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
+}
+
+void enc_renderer::render_anchor(cairo_t *cr, const OGRPoint *geo,
+								 const web_mercator &wm, const layer_style &style,
+								 const OGRFeature *feat)
+{
+    // Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(*geo);
+
+	std::stringstream ss;
+	ss << ".icon {\n"
+	   << "  fill: " << style.icon_color << ";\n"
+	   << "}\n";
+	std::string stylesheet = ss.str();
+
+	int category = feat->GetFieldAsInteger("CATACH");
+	float radius = feat->GetFieldAsDouble("RADIUS");
+	std::cout << "anchor category: " << category << std::endl;
+	std::cout << "anchor radius: " << radius << std::endl;
+
+    fs::path svg = "";
+	std::string svg_tag = "ACHBRT";
+	if (style.icons.find(svg_tag) != style.icons.end())
+	{
+		svg = style.icons.at(svg_tag);
+	}
+	std::cout << "Render Anchor Berth: " << svg_tag << " -> " << svg << std::endl;
+
+    svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
+
+	// Render anchor radius
+	coord m = wm.point_to_meters(*geo);
+	coord m1 = m; m1.x += radius; m1.y += radius;
+	coord c1 = wm.meters_to_pixels(m1);
+	float radius_pixels = (std::abs(c1.x - c.x) + std::abs(c1.y - c.y))/2;
+
+	cairo_arc(cr, c.x, c.y, radius_pixels, 0, 2 * M_PI);
+	set_color(cr, style.icon_color);
+	cairo_set_dash(cr, nullptr, 0, 0);
+    cairo_set_line_width(cr, style.line_width);
+    cairo_stroke(cr);
 }
 
 /**

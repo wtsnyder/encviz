@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.0"
+   width="150"
+   height="150"
+   id="svg2"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="anchor_berth.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title2984">K24: Stranded wreck</title>
+  <metadata
+     id="metadata3074">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:title>K24: Stranded wreck</dc:title>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1490"
+     inkscape:window-height="1028"
+     id="namedview3072"
+     showgrid="false"
+     inkscape:zoom="3.7571428"
+     inkscape:cx="64.942967"
+     inkscape:cy="67.737644"
+     inkscape:window-x="26"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="90.228138,75.209124"
+       orientation="0,-1"
+       id="guide267"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="75.057035,86.387832"
+       orientation="1,0"
+       id="guide269"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4" />
+  <path
+     style="fill-rule:evenodd;stroke:none;stroke-width:0.904643"
+     d="m 74.913502,14.625735 a 2.7139293,2.7139293 0 0 0 -2.713929,2.71393 V 41.765029 H 47.774209 a 2.7139293,2.7139293 0 0 0 -2.71393,2.71393 2.7139293,2.7139293 0 0 0 2.71393,2.713929 h 24.425364 v 7.512778 C 62.030708,56.055856 54.10671,64.710414 54.10671,75.236824 c 0,10.526409 7.923998,19.180968 18.092863,20.531158 v 9.322068 H 57.944377 L 40.646611,87.792281 a 2.7139293,2.7139293 0 0 0 -3.837667,0 2.7139293,2.7139293 0 0 0 0,3.837665 L 54.901807,109.7228 a 2.7142007,2.7142007 0 0 0 1.918833,0.7951 h 18.092862 18.092862 a 2.7142007,2.7142007 0 0 0 1.918833,-0.7951 L 113.01806,91.629946 a 2.7139293,2.7139293 0 0 0 0,-3.837665 2.7139293,2.7139293 0 0 0 -3.83767,0 L 91.882628,105.09005 H 77.627431 v -9.322068 c 10.169408,-1.349694 18.092862,-10.00436 18.092862,-20.531158 0,-10.526798 -7.923454,-19.181464 -18.092862,-20.531158 v -7.512778 h 24.425359 a 2.7139293,2.7139293 0 0 0 2.71393,-2.713929 2.7139293,2.7139293 0 0 0 -2.71393,-2.71393 H 77.627431 V 17.339665 a 2.7139293,2.7139293 0 0 0 -2.713929,-2.71393 z m 0,45.232156 c 8.518845,0 15.378933,6.860087 15.378933,15.378933 0,8.518845 -6.860088,15.378933 -15.378933,15.378933 -8.518845,0 -15.378933,-6.860088 -15.378933,-15.378933 0,-8.518846 6.860088,-15.378933 15.378933,-15.378933 z"
+     id="path5325"
+     class="icon" />
+</svg>
