@@ -234,7 +234,7 @@
       </icon>
       <icon>
 	<name>UWTROC_shoaler</name>
-	<file>K_rocks_wrecks_obstrn/obstruction_shallow.svg</file>
+	<file>K_rocks_wrecks_obstrn/obstruction.svg</file>
       </icon>
       <icon>
 	<name>UWTROC_shoaler_deep</name>
@@ -251,6 +251,14 @@
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+
+    <depare_colors>
+      <foreshore>15251f</foreshore>
+      <very_shallow>16232f</very_shallow>
+      <medium_shallow>151b21</medium_shallow>
+      <medium_deep>0c0e0f</medium_deep>
+      <deep>070707</deep>
+    </depare_colors>
 
     <icon_color>1A252F</icon_color>
     <icon_size>25</icon_size>
@@ -287,12 +295,20 @@
     <line_dash>1</line_dash>
     <marker_size>0</marker_size>
 
+    <depare_colors>
+      <foreshore>15251f</foreshore>
+      <very_shallow>16232f</very_shallow>
+      <medium_shallow>151b21</medium_shallow>
+      <medium_deep>0c0e0f</medium_deep>
+      <deep>070707</deep>
+    </depare_colors>
+
     <icon_color>1A252F</icon_color>
     <icon_size>25</icon_size>
     <icons>
       <icon>
 	<name>OBSTRN_awash</name>
-	<file>K_rocks_wrecks_obstrn/obstruction_covers_uncovers.svg</file>
+	<file>K_rocks_wrecks_obstrn/obstruction.svg</file>
       </icon>
       <icon>
 	<name>OBSTRN_submerged</name>
@@ -300,11 +316,30 @@
       </icon>
       <icon>
 	<name>OBSTRN_shoaler</name>
-	<file>K_rocks_wrecks_obstrn/obstruction_shallow.svg</file>
+	<file>K_rocks_wrecks_obstrn/obstruction.svg</file>
       </icon>
       <icon>
 	<name>OBSTRN_shoaler_deep</name>
 	<file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+      </icon>
+    </icons>
+  </layer>
+
+  <!-- Anchor berths -->
+  <layer>
+    <layer_name>ACHBRT</layer_name>
+    <fill_color>000000</fill_color>
+    <line_color>0000</line_color> 
+    <line_width>1</line_width> <!-- line width used for anchor circle -->
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+
+    <icon_color>ef0093</icon_color>
+    <icon_size>25</icon_size>
+    <icons>
+      <icon>
+	<name>ACHBRT</name>
+	<file>N_areas_limits/anchor_berth.svg</file>
       </icon>
     </icons>
   </layer>
@@ -388,6 +423,10 @@
     <icon_color>1A252F</icon_color>
     <icons>
       <icon>
+	<name>BCNSHP_0</name>
+	<file>Q_buoys_beacons/conspicuous.svg</file>
+      </icon>
+      <icon>
 	<name>BCNSHP_1</name>
 	<file>Q_buoys_beacons/stake.svg</file>
       </icon>
@@ -428,6 +467,10 @@
     <marker_size>1</marker_size>
     <icon_color>1A252F</icon_color>
     <icons>
+      <icon>
+	<name>BCNSHP_0</name>
+	<file>Q_buoys_beacons/conspicuous.svg</file>
+      </icon>
       <icon>
 	<name>BCNSHP_1</name>
 	<file>Q_buoys_beacons/stake.svg</file>
@@ -470,6 +513,10 @@
     <icon_color>1A252F</icon_color>
     <icons>
       <icon>
+	<name>BCNSHP_0</name>
+	<file>Q_buoys_beacons/conspicuous.svg</file>
+      </icon>
+      <icon>
 	<name>BCNSHP_1</name>
 	<file>Q_buoys_beacons/stake.svg</file>
       </icon>
@@ -511,6 +558,10 @@
     <icon_color>1A252F</icon_color>
     <icons>
       <icon>
+	<name>BCNSHP_0</name>
+	<file>Q_buoys_beacons/conspicuous.svg</file>
+      </icon>
+      <icon>
 	<name>BCNSHP_1</name>
 	<file>Q_buoys_beacons/stake.svg</file>
       </icon>
@@ -551,6 +602,10 @@
     <marker_size>1</marker_size>
     <icon_color>1A252F</icon_color>
     <icons>
+      <icon>
+	<name>BCNSHP_0</name>
+	<file>Q_buoys_beacons/conspicuous.svg</file>
+      </icon>
       <icon>
 	<name>BCNSHP_1</name>
 	<file>Q_buoys_beacons/stake.svg</file>

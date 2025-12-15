@@ -87,7 +87,7 @@ struct layer_style
 
 	IconStyle icons;
 
-	/// Colors only used for DEPARE layer
+	/// Colors only used for DEPARE, WRECKS, OBSTRN layers
 	DepareColors depare_colors;
 
     /// Text render attribute

@@ -958,9 +958,13 @@ void enc_renderer::render_rock(cairo_t *cr, const OGRPoint *geo,
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
+	encviz::color depare_color = {0,0,0,0};
 	std::stringstream ss;
 	ss << ".icon {\n"
 	   << "  fill: " << style.icon_color << ";\n"
+	   << "}\n"
+	   << ".obstruction {\n"
+	   << "  fill: " << depare_color << ";\n"
 	   << "}\n";
 	std::string stylesheet = ss.str();
 
@@ -1006,30 +1010,44 @@ void enc_renderer::render_obstruction(cairo_t *cr, const OGRPoint *geo,
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n";
-	std::string stylesheet = ss.str();
-
 	//int category = feat->GetFieldAsInteger("CATOBS");
 	int water_level = feat->GetFieldAsInteger("WATLEV");
 	int exposition = feat->GetFieldAsInteger("EXPSOU");
 	//int quality = feat->GetFieldAsInteger("QUASOU");
 	float depth = feat->GetFieldAsDouble("VALSOU");
 
+	encviz::color depare_color = style.depare_colors.foreshore;
+	
 	std::string wl = "awash";
 	if (water_level == 3) // always submerged
+	{
 		wl = "submerged";
+		depare_color = {0,0,0,0}; // transparent background when submerged
+	}
 
 	if (exposition == 2) // Rock shallower than surrounding area
 	{
 		// Deeper or shallower than 20 m are displayed differently
 		if (depth < 20.0)
-			wl = "shoaler"; 
+		{
+			wl = "shoaler";
+			depare_color = style.depare_colors.very_shallow;
+		}
 		else
+		{
 			wl = "shoaler_deep";
+			depare_color = style.depare_colors.medium_shallow;
+		}
 	}
+
+	std::stringstream ss;
+	ss << ".icon {\n"
+	   << "  fill: " << style.icon_color << ";\n"
+	   << "}\n"
+	   << ".obstruction {\n"
+	   << "  fill: " << depare_color << ";\n"
+	   << "}\n";
+	std::string stylesheet = ss.str();
 
     fs::path svg = "";
 	std::string svg_tag = "OBSTRN_" + wl;
@@ -1037,7 +1055,7 @@ void enc_renderer::render_obstruction(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Rock: " << svg_tag << " -> " << svg << std::endl;
+	std::cout << "Render Obstruction: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 
@@ -1055,13 +1073,22 @@ void enc_renderer::render_wreck(cairo_t *cr, const OGRPoint *geo,
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
+	int category = feat->GetFieldAsInteger("CATWRK");
+
+	encviz::color depare_color = {0,0,0,0};
+	if (category == 2) // dangerous wreck, set background color
+	{
+		depare_color = style.depare_colors.very_shallow;
+	}
+
 	std::stringstream ss;
 	ss << ".icon {\n"
 	   << "  fill: " << style.icon_color << ";\n"
+	   << "}\n"
+	   << ".obstruction {\n"
+	   << "  fill: " << depare_color << ";\n"
 	   << "}\n";
 	std::string stylesheet = ss.str();
-
-	int category = feat->GetFieldAsInteger("CATWRK");
 
     fs::path svg = "";
 	std::string svg_tag = "WRECKS_" + std::to_string(category);
