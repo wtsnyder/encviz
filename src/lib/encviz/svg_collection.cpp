@@ -42,8 +42,8 @@ void svg_collection::set_svg_path(const std::filesystem::path &svg_path)
 }
 
 bool svg_collection::render_svg(cairo_t *cr, std::filesystem::path &svg_path,
-				coord center, double width, double height,
-				std::string stylesheet)
+								coord center, double width, double height,
+								std::string stylesheet, double rotation)
 {
     fs::path full_path = svg_root_path_;
     full_path /= svg_path;
@@ -90,20 +90,26 @@ bool svg_collection::render_svg(cairo_t *cr, std::filesystem::path &svg_path,
     //
     // Note, height seems to be ignored when svg has
     // size info so aspect ratio is preserved
-    RsvgRectangle viewport = {
-	.x = center.x - (width / 2.0),
-	.y = center.y - (height / 2.0),
-	.width = width,
-	.height = height,
+	RsvgRectangle viewport = {
+		.x = -width / 2.0, // position handled by translate later
+		.y = -height / 2.0,
+		.width = width,
+		.height = height,
     };
+
+	cairo_save(cr);
+	cairo_translate(cr, center.x, center.y);
+	cairo_rotate(cr, rotation * G_PI / 180.0);
 
     if (!rsvg_handle_render_document (handle.get(), cr, &viewport, &error))
     {
 		g_printerr ("could not render: %s\n", error->message);
 		render_svg_missing(cr, center);
+		cairo_restore(cr);
 		return false;
     }
 
+	cairo_restore(cr);
     //std::cout << "Rendered SVG: " << full_path.string() << std::endl;
 
     return true;

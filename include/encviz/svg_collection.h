@@ -40,8 +40,8 @@ public:
      *
      */
     bool render_svg(cairo_t *cr, std::filesystem::path &svg_path,
-		    coord center, double width, double height,
-		    std::string stylesheet = "");
+					coord center, double width, double height,
+					std::string stylesheet = "", double rotation = 0.0);
     
 private:
 
