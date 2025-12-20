@@ -10,6 +10,23 @@
 #include <iostream>
 namespace fs = std::filesystem;
 
+// Define a custom deleter for GObjects
+struct GObjectDeleter {
+    void operator()(RsvgHandle* handle) const {
+        if (handle) {
+            g_object_unref(handle);
+        }
+    }
+	void operator()(GFile* handle) const {
+        if (handle) {
+            g_object_unref(handle);
+        }
+    }
+};
+
+typedef std::unique_ptr<RsvgHandle, GObjectDeleter> RsvgHandlePtr;
+typedef std::unique_ptr<GFile, GObjectDeleter> GFilePtr;
+
 namespace encviz
 {
 
@@ -32,9 +49,10 @@ bool svg_collection::render_svg(cairo_t *cr, std::filesystem::path &svg_path,
     full_path /= svg_path;
     
     GError *error = NULL;
-    GFile *file = g_file_new_for_path(full_path.string().c_str());
+    GFilePtr file(g_file_new_for_path(full_path.string().c_str()));
 
-    RsvgHandle *handle = rsvg_handle_new_from_gfile_sync(file, RSVG_HANDLE_FLAGS_NONE, NULL, &error);
+    //RsvgHandle *handle = rsvg_handle_new_from_gfile_sync(file, RSVG_HANDLE_FLAGS_NONE, NULL, &error);
+	RsvgHandlePtr handle(rsvg_handle_new_from_gfile_sync(file.get(), RSVG_HANDLE_FLAGS_NONE, NULL, &error));
 
     if (!handle)
     {
@@ -43,12 +61,12 @@ bool svg_collection::render_svg(cairo_t *cr, std::filesystem::path &svg_path,
 		return false;
     }
 
-    rsvg_handle_set_dpi(handle, 96.0);
+    rsvg_handle_set_dpi(handle.get(), 96.0);
 
 	if (stylesheet.size() > 0)
 	{
 		bool set_style;
-		set_style = rsvg_handle_set_stylesheet (handle,
+		set_style = rsvg_handle_set_stylesheet (handle.get(),
 												reinterpret_cast<const uint8_t*>(stylesheet.c_str()),
 												stylesheet.size(),
 												&error);
@@ -79,14 +97,14 @@ bool svg_collection::render_svg(cairo_t *cr, std::filesystem::path &svg_path,
 	.height = height,
     };
 
-    if (!rsvg_handle_render_document (handle, cr, &viewport, &error))
+    if (!rsvg_handle_render_document (handle.get(), cr, &viewport, &error))
     {
 		g_printerr ("could not render: %s\n", error->message);
 		render_svg_missing(cr, center);
 		return false;
     }
 
-    std::cout << "Rendered SVG: " << full_path.string() << std::endl;
+    //std::cout << "Rendered SVG: " << full_path.string() << std::endl;
 
     return true;
 }
