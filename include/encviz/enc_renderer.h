@@ -204,6 +204,13 @@ private:
 								 const web_mercator &wm, const layer_style &style,
 								 const OGRFeature *feat);
 
+	/**
+	 * Show the name of a named area at the centroid of the piece of land
+	 */
+	void render_named_area(cairo_t *cr, const OGRPolygon *geo,
+						   const web_mercator &wm, const layer_style &style,
+						   const OGRFeature *feat);
+
     /**
      * Set Render Color
      *

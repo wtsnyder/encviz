@@ -178,11 +178,19 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
             
             // Certain layers we need to take the centroid of the polygon
 			// so we can't crop out only the part we need
-			if (layer_name == "TSSLPT")
+			if (layer_name == "TSSLPT"
+				|| layer_name == "ACHBRT")
+				//|| layer_name == "LNDARE")
 			{
 				// Copy all features from this layer
 				for (const auto &feat : ilayer)
 				{
+
+					// TODO! - This needs to check if the feature already exists
+					// from a neighboring chart and merge the geometry if it does
+					// instead of wholesale replacing the feature
+
+					
 					if (olayer->SetFeature(feat.get()) != OGRERR_NONE)
 					{
 						throw std::runtime_error("Cannot copy feature to output layer");

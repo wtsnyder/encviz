@@ -196,7 +196,8 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 				}
 			}
 			// Render DEPARE
-			else if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE")
+			else if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE"
+					 || std::string(feat->GetDefnRef()->GetName()) == "DRGARE")
 			{
 				OGRwkbGeometryType gtype = geo->getGeometryType();
 				switch (gtype)
@@ -279,6 +280,11 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 			{
 				render_traffic_sep_part(cr, geo->toPolygon(), wm, lstyle, feat.get());
 			}
+			// Render name of a land area
+			else if (std::string(feat->GetDefnRef()->GetName()) == "LNDARE")
+			{
+				render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+			}
 			
         }
 
@@ -287,7 +293,8 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 		// union them together.
 		// Skip if DEPARE though because those are all touching
 		// but need to be different colors
-		if (lstyle.layer_name != "DEPARE")
+		if (lstyle.layer_name != "DEPARE"
+			&& lstyle.layer_name != "DRGARE")
 		{
 			render_multipoly(cr, multi_poly.get(), wm, lstyle);
 		}
@@ -653,7 +660,18 @@ void enc_renderer::render_depare(cairo_t *cr, const OGRPolygon *geo,
 								 const web_mercator &wm, const layer_style &style,
 								 const OGRFeature *feat)
 {
+	float mindepth = feat->GetFieldAsDouble("DRVAL1");
 	float maxdepth = feat->GetFieldAsDouble("DRVAL2");
+	if (style.verbose)
+	{
+		std::cout << "min_depth: " << mindepth << std::endl;
+		std::cout << "max_depth: " << maxdepth << std::endl;
+	}
+
+	// DRGARE seems to not always have a max depth??
+	if (mindepth > maxdepth)
+		maxdepth = mindepth;
+	
 	layer_style tweaked_style = style;
 	if (maxdepth < 3)
 	{
@@ -1216,6 +1234,40 @@ void enc_renderer::render_traffic_sep_part(cairo_t *cr, const OGRPolygon *geo,
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet, direction);
 
 	return;
+}
+
+void enc_renderer::render_named_area(cairo_t *cr, const OGRPolygon *geo,
+									 const web_mercator &wm, const layer_style &style,
+									 const OGRFeature *feat)
+{
+	// Get centroid of area
+	OGRPoint centroid;
+	geo->Centroid(&centroid);
+	// Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(centroid);
+
+	std::string place_name = feat->GetFieldAsString("OBJNAM");
+
+	if (place_name != "")
+	{
+		char name[place_name.length() + 1];
+		strcpy(name, place_name.c_str());
+
+		// Set text style
+		set_color(cr, style.line_color);
+		cairo_select_font_face(cr, "monospace",
+							   CAIRO_FONT_SLANT_NORMAL,
+							   CAIRO_FONT_WEIGHT_BOLD);
+		cairo_set_font_size(cr, 10);
+    
+		// Determine text render size
+		cairo_text_extents_t name_extents = {};
+		cairo_text_extents(cr, name, &name_extents);
+
+		// Draw text
+		cairo_move_to(cr, c.x - name_extents.width/2, c.y + name_extents.height/2);
+		cairo_show_text(cr, name);
+    }
 }
 
 /**

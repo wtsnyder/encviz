@@ -23,12 +23,30 @@
       <deep>d9edde</deep>
     </depare_colors>
   </layer>
+
+  <!-- Dredged areas -->
+  <layer>
+    <layer_name>DRGARE</layer_name>
+    <verbose>true</verbose>
+    <fill_color>d9edde</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+    <depare_colors>
+      <foreshore>74b98f</foreshore>
+      <very_shallow>7fc0e9</very_shallow>
+      <medium_shallow>7fc0e9</medium_shallow>
+      <medium_deep>b9e1de</medium_deep>
+      <deep>d9edde</deep>
+    </depare_colors>
+  </layer>
     
   <!-- Land Areas -->
   <layer>
     <layer_name>LNDARE</layer_name>
     <fill_color>C8B87A</fill_color>
-    <line_color>00000000</line_color>
+    <line_color>00000000</line_color> <!-- no lines to skip place names -->
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
@@ -178,9 +196,9 @@
   <!-- Fairway -->
   <layer>
     <layer_name>FAIRWY</layer_name>
-    <fill_color>d9edde</fill_color>
-    <line_color>000000</line_color>
-    <line_width>0</line_width>
+    <fill_color>00000000</fill_color>
+    <line_color>ffdfc9e3</line_color>
+    <line_width>2</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>
@@ -384,6 +402,9 @@
     <line_width>1</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+
+    <icon_color>ffffff</icon_color>
+    <icon_size>50</icon_size>
     <icons>
       <icon>
 	<name>LNDMRK</name>
@@ -420,6 +441,9 @@
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
+
+    <icon_color>ffffff</icon_color>
+    <icon_size>50</icon_size>
     <icons>
       <icon>
 	<name>SILTNK</name>
@@ -933,6 +957,16 @@
 	<file>P_lights/light.svg</file>
     </icon>
     </icons>
+  </layer>
+
+  <!-- Land Areas Names -->
+  <layer>
+    <layer_name>LNDARE</layer_name>
+    <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
+    <line_color>ff000000</line_color> 
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
   </layer>
 
   <!-- Chart boundaries -->
