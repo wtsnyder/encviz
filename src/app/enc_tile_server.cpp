@@ -16,6 +16,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -137,9 +138,11 @@ int main(int argc, char **argv)
 					  &request_handler, &enc_rend, MHD_OPTION_END);
     if (daemon == nullptr)
     {
-	return 1;
+		std::cerr << "Failed to start MHD Daemon!" << std::endl;
+		return 1;
     }
 
+	std::cerr << "Daemon Running, waiting for requests!" << std::endl;
     // Wait for input
     (void)getchar();
 

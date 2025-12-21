@@ -205,6 +205,25 @@
     <marker_size>0</marker_size>
   </layer>
 
+  <!-- Traffic separation scheme lane part -->
+  <layer>
+    <layer_name>TSSLPT</layer_name>
+    <fill_color>00000000</fill_color>
+    <line_color>00000000</line_color>
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>20</marker_size>
+
+    <icon_color>ef0093</icon_color>
+    <icon_size>50</icon_size>
+    <icons>
+      <icon>
+	<name>TSSLPT</name>
+	<file>M_tracks_routes/mandatory_direction.svg</file>
+      </icon>
+    </icons>
+  </layer>
+
   <!-- Recommended Track (aka. channels) -->
   <layer>
     <layer_name>RECTRC</layer_name>
@@ -916,6 +935,16 @@
     </icons>
   </layer>
 
+  <!-- Chart boundaries -->
+  <layer>
+    <layer_name>M_COVR</layer_name>
+    <verbose>true</verbose>
+    <fill_color>0000</fill_color>
+    <line_color>ffff0000</line_color>
+    <line_width>2</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
 
   
 </style>

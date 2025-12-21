@@ -197,6 +197,13 @@ private:
 					  const web_mercator &wm, const layer_style &style,
 					  const OGRFeature *feat);
 
+	/**
+	 * Experiment with TSSLPT
+	 */
+	void render_traffic_sep_part(cairo_t *cr, const OGRPolygon *geo,
+								 const web_mercator &wm, const layer_style &style,
+								 const OGRFeature *feat);
+
     /**
      * Set Render Color
      *

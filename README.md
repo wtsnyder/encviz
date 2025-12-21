@@ -117,7 +117,7 @@ Check that you have an `encviz-dev:latest` listed in `docker images`
 
 4. Build encviz using the container
 ```
-docker run -it -v ./:/encviz encviz-dev /bin/bash -c 'cd encviz && mkdir build-docker && cd build-docker && cmake .. && make -j'
+docker run -it -v ./:/encviz encviz-dev /bin/bash -c 'cd encviz && mkdir -p build-docker && cd build-docker && cmake .. && make -j'
 ```
 
 5. Build an encviz container

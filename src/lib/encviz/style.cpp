@@ -123,6 +123,23 @@ layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path 
     // Parse layer XML
     layer_style parsed;
     parsed.layer_name = xml_text(xml_query(node, "layer_name"));
+	tinyxml2::XMLElement* verbose = node->FirstChildElement("verbose");
+	if (verbose)
+	{
+		std::string shape = xml_text(xml_query(node, "verbose"));
+		if (shape == "true")
+			parsed.verbose = true;
+		else if (shape == "false")
+			parsed.verbose = false;
+		else
+			throw std::runtime_error("<verbose> must be either true or false");
+	}
+	else
+	{
+		parsed.verbose = false;
+	}
+
+	
     parsed.fill_color = parse_color(xml_query(node, "fill_color"));
     parsed.line_color = parse_color(xml_query(node, "line_color"));
     parsed.line_width = atoi(xml_text(xml_query(node, "line_width")));

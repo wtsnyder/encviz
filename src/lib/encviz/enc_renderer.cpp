@@ -124,9 +124,20 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 
     // Compute minimum presentation scale, based on average latitude and zoom
     // TODO - Is this the right computation?
-    double avgLat = (bbox.MinY + bbox.MaxY) / 2;
-    int scale_min = (int)round(min_scale0_ * cos(avgLat * M_PI / 180) / pow(2, z));
+    //double avgLat = (bbox.MinY + bbox.MaxY) / 2;
+    //int scale_min = (int)round(min_scale0_ * cos(avgLat * M_PI / 180) / pow(2, z));
 
+	// Hard-code presentation scales that look ok for now
+	int scale_min = 1200000;
+	if (z >= 7)
+		scale_min = 675000;
+	if (z >= 11)
+		scale_min = 35000;
+	if (z >= 13)
+		scale_min = 4500;
+	if (z >= 15)
+		scale_min = 2200;
+			
     // Export all data in this tile
     GDALDataset *tile_data = GetGDALDriverManager()->GetDriverByName("Memory")->
         Create("", 0, 0, 0, GDT_Unknown, nullptr);
@@ -148,39 +159,44 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         cairo_paint(cr);
     }
 
-    printf("Render Tile:\n");
+	std::cout << "Render Tile: " << std::endl;
+	std::cout << " min scale: " << scale_min << std::endl;
     // Render style layers
     for (const auto &lstyle : style.layers)
     {
-	printf("  Layer: %s\n", lstyle.layer_name.c_str());
+		if (lstyle.verbose)
+			printf("  Layer: %s\n", lstyle.layer_name.c_str());
 
-	// New geometry collection to compile all the polygons
-	GeoPtr multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
+		// New geometry collection to compile all the polygons
+		GeoPtr multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
 	
         // Render feature geometry in this layer
         OGRLayer *tile_layer = tile_data->GetLayerByName(lstyle.layer_name.c_str());
         for (const auto &feat : tile_layer)
         {
-	    /*
-	      if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
-	      {
-	      // Loop over all fields in this feature and print their names
-	      for (const auto &field : feat->GetDefnRef()->GetFields())
-	      {
-	      printf("    Field: %s type: %d\n", field->GetNameRef(), field->GetType());
-	      }
-	      
-	      //printf(" %s : %s \n", "OBJNAM", feat->GetFieldAsString("OBJNAM"));
-	      //printf(" %s : %s \n", "BOYSHP", feat->GetFieldAsString("BOYSHP"));
-	      }
-	    */
-	    
-	    // render basic geometries
             OGRGeometry *geo = feat->GetGeometryRef();
-            render_geo(cr, geo, wm, lstyle, multi_poly.get());
-
+			
+			// Render M_COVR
+			if (std::string(feat->GetDefnRef()->GetName()) == "M_COVR")
+			{
+				OGRwkbGeometryType gtype = geo->getGeometryType();
+				switch (gtype)
+				{
+				case wkbPolygon: // 6
+					render_poly(cr, geo->toPolygon(), wm, lstyle);
+					break;
+				case wkbMultiPolygon: // 10
+					for (const OGRPolygon *child : geo->toMultiPolygon())
+					{
+						render_poly(cr, child, wm, lstyle);
+					}
+					break;
+				default:
+					break;
+				}
+			}
 			// Render DEPARE
-			if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE")
+			else if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE")
 			{
 				OGRwkbGeometryType gtype = geo->getGeometryType();
 				switch (gtype)
@@ -197,7 +213,11 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 				default:
 					break;
 				}
-
+			}
+			else
+			{
+				// render basic geometries
+				render_geo(cr, geo, wm, lstyle, multi_poly.get());
 			}
 			
 			// Render anything with a buoy shape as a buoy
@@ -219,53 +239,47 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 			{
 				render_fog(cr, geo->toPoint(), wm, lstyle, feat.get());
 			}
-
 			// Render Lights
-			if (std::string(feat->GetDefnRef()->GetName()) == "LIGHTS")
+			else if (std::string(feat->GetDefnRef()->GetName()) == "LIGHTS")
 			{
 				render_light(cr, geo->toPoint(), wm, lstyle, feat.get());
 			}
-
 			// Render Landmark
-			if (std::string(feat->GetDefnRef()->GetName()) == "LNDMRK")
+			else if (std::string(feat->GetDefnRef()->GetName()) == "LNDMRK")
 			{
 				render_landmark(cr, geo->toPoint(), wm, lstyle, feat.get());
 			}
-
 			// Render Silo/Tank
-			if (std::string(feat->GetDefnRef()->GetName()) == "SILTNK")
+			else if (std::string(feat->GetDefnRef()->GetName()) == "SILTNK")
 			{
 				render_silotank(cr, geo->toPoint(), wm, lstyle, feat.get());
 			}
-
 			// Render Rocks
-			if (std::string(feat->GetDefnRef()->GetName()) == "UWTROC")
+			else if (std::string(feat->GetDefnRef()->GetName()) == "UWTROC")
 			{
 				render_rock(cr, geo->toPoint(), wm, lstyle, feat.get());
 			}
-
 			// Render Obstructions
-			if (std::string(feat->GetDefnRef()->GetName()) == "OBSTRN")
+			else if (std::string(feat->GetDefnRef()->GetName()) == "OBSTRN")
 			{
 				render_obstruction(cr, geo->toPoint(), wm, lstyle, feat.get());
 			}
-
 			// Render Wrecks
-			if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
+			else if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
 			{
 				render_wreck(cr, geo->toPoint(), wm, lstyle, feat.get());
 			}
-
 			// Render Anchor Berths
-			if (std::string(feat->GetDefnRef()->GetName()) == "ACHBRT")
+			else if (std::string(feat->GetDefnRef()->GetName()) == "ACHBRT")
 			{
 				render_anchor(cr, geo->toPoint(), wm, lstyle, feat.get());
 			}
+			// Render traffic separation scheme parts
+			else if (std::string(feat->GetDefnRef()->GetName()) == "TSSLPT")
+			{
+				render_traffic_sep_part(cr, geo->toPolygon(), wm, lstyle, feat.get());
+			}
 			
-	    
-			//printf("    Feature: %s : %d\n", feat->GetDefnRef()->GetName(), feat->GetDefnRef()->GetFieldCount());
-
-			//printf("    Field: %s : %d\n", feat->GetDefnRef()->GetFieldDefn(), feat->GetDefnRef()->GetFieldCount());
         }
 
 		// Render all polygons together after other features
@@ -313,7 +327,8 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
                               const web_mercator &wm, const layer_style &style,
 							  OGRGeometry *late_render_polygons)
 {
-    std::cout << "Render GEO: " << geo->getGeometryName() << std::endl;
+	if (style.verbose)
+		std::cout << "Render GEO: " << geo->getGeometryName() << std::endl;
     // What sort of geometry were we passed?
     OGRwkbGeometryType gtype = geo->getGeometryType();
     switch (gtype)
@@ -724,7 +739,9 @@ void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Buoy: " << svg_tag << " -> " << svg << "  size: " << style.icon_size << std::endl;
+
+	if (style.verbose)
+		std::cout << "Render Buoy: " << svg_tag << " -> " << svg << "  size: " << style.icon_size << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
@@ -783,7 +800,9 @@ void enc_renderer::render_beacon(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Beacon: " << svg_tag << " -> " << svg << "  size: " << style.icon_size << std::endl;
+
+	if (style.verbose)
+		std::cout << "Render Beacon: " << svg_tag << " -> " << svg << "  size: " << style.icon_size << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
@@ -807,7 +826,9 @@ void enc_renderer::render_fog(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Fog Signal: " << svg_tag << " -> " << svg << std::endl;
+
+	if (style.verbose)
+		std::cout << "Render Fog Signal: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, 50, 50, stylesheet);
 }
@@ -861,7 +882,9 @@ void enc_renderer::render_light(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Light: " << svg_tag << " -> " << svg << std::endl;
+
+	if (style.verbose)
+		std::cout << "Render Light: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, 50, 50, stylesheet);
 }
@@ -893,8 +916,6 @@ void enc_renderer::render_landmark(cairo_t *cr, const OGRPoint *geo,
 	std::string type = "";
 	for (auto cat : categories_list_int)
 	{
-		std::cout << "---------------- Category: " << cat << std::endl;
-
 		switch (cat)
 		{
 		case 3: // chimney
@@ -922,7 +943,9 @@ void enc_renderer::render_landmark(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Landmark: " << svg_tag << " -> " << svg << std::endl;
+
+	if (style.verbose)
+		std::cout << "Render Landmark: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
@@ -946,7 +969,9 @@ void enc_renderer::render_silotank(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Silo/Tank: " << svg_tag << " -> " << svg << std::endl;
+
+	if (style.verbose)
+		std::cout << "Render Silo/Tank: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
@@ -992,7 +1017,9 @@ void enc_renderer::render_rock(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Rock: " << svg_tag << " -> " << svg << std::endl;
+
+	if (style.verbose)
+		std::cout << "Render Rock: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 
@@ -1055,7 +1082,9 @@ void enc_renderer::render_obstruction(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Obstruction: " << svg_tag << " -> " << svg << std::endl;
+
+	if (style.verbose)
+		std::cout << "Render Obstruction: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 
@@ -1096,7 +1125,9 @@ void enc_renderer::render_wreck(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Wreck: " << svg_tag << " -> " << svg << std::endl;
+
+	if (style.verbose)
+		std::cout << "Render Wreck: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
@@ -1116,8 +1147,6 @@ void enc_renderer::render_anchor(cairo_t *cr, const OGRPoint *geo,
 
 	int category = feat->GetFieldAsInteger("CATACH");
 	float radius = feat->GetFieldAsDouble("RADIUS");
-	std::cout << "anchor category: " << category << std::endl;
-	std::cout << "anchor radius: " << radius << std::endl;
 
     fs::path svg = "";
 	std::string svg_tag = "ACHBRT";
@@ -1125,7 +1154,13 @@ void enc_renderer::render_anchor(cairo_t *cr, const OGRPoint *geo,
 	{
 		svg = style.icons.at(svg_tag);
 	}
-	std::cout << "Render Anchor Berth: " << svg_tag << " -> " << svg << std::endl;
+
+	if (style.verbose)
+	{
+		std::cout << "anchor category: " << category << std::endl;
+		std::cout << "anchor radius: " << radius << std::endl;
+		std::cout << "Render Anchor Berth: " << svg_tag << " -> " << svg << std::endl;
+	}
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 
@@ -1140,6 +1175,47 @@ void enc_renderer::render_anchor(cairo_t *cr, const OGRPoint *geo,
 	cairo_set_dash(cr, nullptr, 0, 0);
     cairo_set_line_width(cr, style.line_width);
     cairo_stroke(cr);
+}
+
+void argle()
+{
+
+}
+
+void enc_renderer::render_traffic_sep_part(cairo_t *cr, const OGRPolygon *geo,
+										   const web_mercator &wm, const layer_style &style,
+										   const OGRFeature *feat)
+{
+	// Get centroid of traffic lane
+	OGRPoint centroid;
+	geo->Centroid(&centroid);
+	// Convert lat/lon to pixel coordinates
+    coord c = wm.point_to_pixels(centroid);
+
+	std::stringstream ss;
+	ss << ".icon {\n"
+	   << "  fill: " << style.icon_color << ";\n"
+	   << "}\n";
+	std::string stylesheet = ss.str();
+
+	float direction = feat->GetFieldAsDouble("ORIENT");
+
+    fs::path svg = "";
+	std::string svg_tag = "TSSLPT";
+	if (style.icons.find(svg_tag) != style.icons.end())
+	{
+		svg = style.icons.at(svg_tag);
+	}
+
+	if (style.verbose)
+	{
+		std::cout << "traffic direction: " << direction << std::endl;
+		std::cout << "Render Traffic Direction: " << svg_tag << " -> " << svg << std::endl;
+	}
+
+    svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet, direction);
+
+	return;
 }
 
 /**

@@ -176,10 +176,26 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
                 continue;
             }
             
-            // Copy over features
-			if (ilayer->Clip(clip_layer, olayer) != OGRERR_NONE)
+            // Certain layers we need to take the centroid of the polygon
+			// so we can't crop out only the part we need
+			if (layer_name == "TSSLPT")
 			{
-				throw std::runtime_error("Cannot perform layer clip operation");
+				// Copy all features from this layer
+				for (const auto &feat : ilayer)
+				{
+					if (olayer->SetFeature(feat.get()) != OGRERR_NONE)
+					{
+						throw std::runtime_error("Cannot copy feature to output layer");
+					}
+				}
+			}
+			else
+			{
+				// Clip out only the features in this tile for most layers
+				if (ilayer->Clip(clip_layer, olayer) != OGRERR_NONE)
+				{
+					throw std::runtime_error("Cannot perform layer clip operation");
+				}
 			}
         }
 
@@ -205,6 +221,35 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
     }
 
     return true;
+}
+
+void enc_dataset::print_layer(OGRLayer *layer)
+{
+	for (const auto &feat : layer)
+	{
+		std::cout << "Feature: " << std::string(feat->GetDefnRef()->GetName())
+				  << " Fields : " << feat->GetDefnRef()->GetFieldCount() << std::endl;
+		
+		for (const auto &field : feat->GetDefnRef()->GetFields())
+		{
+			std::cout << std::string(field->GetNameRef()) << " : " << field->GetType() << "  ";
+			switch (field->GetType())
+			{
+			case OFTInteger:
+				std::cout << "int: " << feat->GetFieldAsInteger(field->GetNameRef());
+				break;
+			case OFTString:
+				std::cout << "string: " << std::string(feat->GetFieldAsString(field->GetNameRef()));
+				break;
+			case OFTReal:
+				std::cout << "double: " << double(feat->GetFieldAsDouble(field->GetNameRef()));
+				break;
+			default:
+				std::cout << "other";
+			}
+			std::cout << std::endl;
+		}
+	}
 }
 
 /**

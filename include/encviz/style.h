@@ -61,6 +61,9 @@ struct layer_style
     /// Name of layer
     std::string layer_name;
 
+	/// Verbose printing
+	bool verbose;
+
     /// Fill color
     color fill_color;
 
@@ -102,9 +105,6 @@ struct render_style
 
     /// Layers
     std::vector<layer_style> layers;
-
-	/// SVG Icons
-	IconStyle icons;
 };
 
 /**
