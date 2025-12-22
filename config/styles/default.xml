@@ -963,7 +963,37 @@
   <layer>
     <layer_name>LNDARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>ff000000</line_color> 
+    <line_color>C0000000</line_color> 
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Sea Areas Names -->
+  <layer>
+    <layer_name>SEAARE</layer_name>
+    <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
+    <line_color>C0000000</line_color> 
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- City Names -->
+  <layer>
+    <layer_name>BUAARE</layer_name>
+    <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
+    <line_color>C0000000</line_color> 
+    <line_width>0</line_width>
+    <line_dash>0</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Land Region Names -->
+  <layer>
+    <layer_name>LNDRGN</layer_name>
+    <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
+    <line_color>C0000000</line_color> 
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>

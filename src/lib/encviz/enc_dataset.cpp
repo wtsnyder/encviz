@@ -17,6 +17,9 @@
 // Helper macro for data presence
 #define CHECKNULL(ptr, msg) if ((ptr) == nullptr) throw std::runtime_error((msg))
 
+typedef std::unique_ptr<OGRGeometry, decltype(&OGRGeometryFactory::destroyGeometry)> GeoPtr;
+typedef std::unique_ptr<OGRFeature, decltype(&OGRFeature::DestroyFeature)> FeatPtr;
+
 namespace encviz
 {
 
@@ -177,34 +180,61 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
             }
             
             // Certain layers we need to take the centroid of the polygon
-			// so we can't crop out only the part we need
-			if (layer_name == "TSSLPT"
-				|| layer_name == "ACHBRT")
-				//|| layer_name == "LNDARE")
-			{
-				// Copy all features from this layer
-				for (const auto &feat : ilayer)
-				{
+            // so we can't crop out only the part we need
+            if (layer_name == "TSSLPT"
+                || layer_name == "ACHBRT"
+                || layer_name == "LNDARE"
+                || layer_name == "SEAARE"
+                || layer_name == "BUAARE"
+                || layer_name == "LNDRGN")
+            {
+                // Copy all features from this layer
+                for (const auto &feat : ilayer)
+                {
+                    // TODO! - This needs to check if the feature already exists
+                    // from a neighboring chart and merge the geometry if it does
+                    // instead of wholesale replacing the feature
+                    GIntBig ifid = feat->GetFID();
 
-					// TODO! - This needs to check if the feature already exists
-					// from a neighboring chart and merge the geometry if it does
-					// instead of wholesale replacing the feature
+                    // Get copy of the output feature
+                    FeatPtr ofeat(olayer->GetFeature(ifid), &OGRFeature::DestroyFeature);
+                    if (ofeat)
+                    {
+                        // already have this feature, merge the geometries
+                        //std::cout << "repeat feature: " << ifid << std::endl;
 
-					
-					if (olayer->SetFeature(feat.get()) != OGRERR_NONE)
-					{
-						throw std::runtime_error("Cannot copy feature to output layer");
-					}
-				}
-			}
-			else
-			{
-				// Clip out only the features in this tile for most layers
-				if (ilayer->Clip(clip_layer, olayer) != OGRERR_NONE)
-				{
-					throw std::runtime_error("Cannot perform layer clip operation");
-				}
-			}
+                        // Steal geometry from output feature
+                        GeoPtr ogeo(ofeat->StealGeometry(), &OGRGeometryFactory::destroyGeometry);
+                        // Merge the geometries
+                        OGRGeometry *uniongeo = ogeo->Union(feat->GetGeometryRef());
+                        // Give the output feature copy its geometry back
+                        ofeat->SetGeometryDirectly(uniongeo);
+                        // Replace output layer feature with one with new geo
+                        if (olayer->SetFeature(ofeat.get()) != OGRERR_NONE)
+                        {
+                            throw std::runtime_error("Cannot copy feature to output layer");
+                        }
+                        // ogeo is deleted, uniongeo now owned by the feature
+                    }
+                    else
+                    {
+                        // no feature in the output layer yet, just copy it over
+                        if (olayer->SetFeature(feat.get()) != OGRERR_NONE)
+                        {
+                            throw std::runtime_error("Cannot copy feature to output layer");
+                        }
+                    }
+                    
+                }
+            }
+            else
+            {
+                // Clip out only the features in this tile for most layers
+                if (ilayer->Clip(clip_layer, olayer) != OGRERR_NONE)
+                {
+                    throw std::runtime_error("Cannot perform layer clip operation");
+                }
+            }
         }
 
         // Remove any coverage from the clipping layer
@@ -233,31 +263,31 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
 
 void enc_dataset::print_layer(OGRLayer *layer)
 {
-	for (const auto &feat : layer)
-	{
-		std::cout << "Feature: " << std::string(feat->GetDefnRef()->GetName())
-				  << " Fields : " << feat->GetDefnRef()->GetFieldCount() << std::endl;
-		
-		for (const auto &field : feat->GetDefnRef()->GetFields())
-		{
-			std::cout << std::string(field->GetNameRef()) << " : " << field->GetType() << "  ";
-			switch (field->GetType())
-			{
-			case OFTInteger:
-				std::cout << "int: " << feat->GetFieldAsInteger(field->GetNameRef());
-				break;
-			case OFTString:
-				std::cout << "string: " << std::string(feat->GetFieldAsString(field->GetNameRef()));
-				break;
-			case OFTReal:
-				std::cout << "double: " << double(feat->GetFieldAsDouble(field->GetNameRef()));
-				break;
-			default:
-				std::cout << "other";
-			}
-			std::cout << std::endl;
-		}
-	}
+    for (const auto &feat : layer)
+    {
+        std::cout << "Feature: " << std::string(feat->GetDefnRef()->GetName())
+                  << " Fields : " << feat->GetDefnRef()->GetFieldCount() << std::endl;
+        
+        for (const auto &field : feat->GetDefnRef()->GetFields())
+        {
+            std::cout << std::string(field->GetNameRef()) << " : " << field->GetType() << "  ";
+            switch (field->GetType())
+            {
+            case OFTInteger:
+                std::cout << "int: " << feat->GetFieldAsInteger(field->GetNameRef());
+                break;
+            case OFTString:
+                std::cout << "string: " << std::string(feat->GetFieldAsString(field->GetNameRef()));
+                break;
+            case OFTReal:
+                std::cout << "double: " << double(feat->GetFieldAsDouble(field->GetNameRef()));
+                break;
+            default:
+                std::cout << "other";
+            }
+            std::cout << std::endl;
+        }
+    }
 }
 
 /**
@@ -312,9 +342,9 @@ bool enc_dataset::load_chart_cache(const std::filesystem::path &path)
             // Ensure no EOF, and path matches before saving metadata
             if (handle.good() && (path == next.path))
             {
-				std::cout << "Load Chart bounds from cache: " << path << std::endl;
-				charts_[path.stem().string()] = next;
-				return true;
+                std::cout << "Load Chart bounds from cache: " << path << std::endl;
+                charts_[path.stem().string()] = next;
+                return true;
             }
         }
     }
@@ -354,7 +384,7 @@ bool enc_dataset::load_chart_disk(const std::filesystem::path &path)
 
         // .. that has "Dataset Parameter" (DSPM) "Compilation of Scale" (CSCL)
         next.scale = get_feat_field_int(feat.get(), "DSPM_CSCL");
-	std::cout << "  scale: " << next.scale << std::endl;
+    std::cout << "  scale: " << next.scale << std::endl;
     }
 
     // Get Chart Coverage Bounds
@@ -384,8 +414,8 @@ bool enc_dataset::load_chart_disk(const std::filesystem::path &path)
             next.bbox.Merge(covr);
         }
 
-	std::cout << "  coverage X: " << next.bbox.MinX << "," << next.bbox.MaxX << std::endl;
-	std::cout << "  coverage Y: " << next.bbox.MinY << "," << next.bbox.MaxY << std::endl;
+    std::cout << "  coverage X: " << next.bbox.MinX << "," << next.bbox.MaxX << std::endl;
+    std::cout << "  coverage Y: " << next.bbox.MinY << "," << next.bbox.MaxY << std::endl;
     }
 
     // Cleanup

@@ -285,6 +285,21 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 			{
 				render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
 			}
+			// Render name of a sea areas
+			else if (std::string(feat->GetDefnRef()->GetName()) == "SEAARE")
+			{
+				render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+			}
+			// Render name of a land regions
+			else if (std::string(feat->GetDefnRef()->GetName()) == "LNDRGN")
+			{
+				render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+			}
+			// Render name of a cities
+			else if (std::string(feat->GetDefnRef()->GetName()) == "BUAARE")
+			{
+				render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+			}
 			
         }
 
