@@ -127,23 +127,23 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     //double avgLat = (bbox.MinY + bbox.MaxY) / 2;
     //int scale_min = (int)round(min_scale0_ * cos(avgLat * M_PI / 180) / pow(2, z));
 
-	// Hard-code presentation scales that look ok for now
-	int scale_min = 1200000;
-	if (z >= 7)
-		scale_min = 675000;
-	if (z >= 11)
-		scale_min = 35000;
-	if (z >= 13)
-		scale_min = 4500;
-	if (z >= 15)
-		scale_min = 2200;
-			
+    // Hard-code presentation scales that look ok for now
+    int scale_min = 1200000;
+    if (z >= 7)
+        scale_min = 675000;
+    if (z >= 11)
+        scale_min = 35000;
+    if (z >= 13)
+        scale_min = 4500;
+    if (z >= 15)
+        scale_min = 2200;
+            
     // Export all data in this tile
     GDALDataset *tile_data = GetGDALDriverManager()->GetDriverByName("Memory")->
         Create("", 0, 0, 0, GDT_Unknown, nullptr);
     if (!enc_.export_data(tile_data, layers, bbox, scale_min))
     {
-	printf("Error exporting tile data\n");
+    printf("Error exporting tile data\n");
         return false;
     }
 
@@ -159,160 +159,181 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         cairo_paint(cr);
     }
 
-	std::cout << "Render Tile: " << std::endl;
-	std::cout << " min scale: " << scale_min << std::endl;
+    std::cout << "Render Tile: " << std::endl;
+    std::cout << " min scale: " << scale_min << std::endl;
+    auto render_start = std::chrono::high_resolution_clock::now();
+    std::string longest_layer = "";
+    std::chrono::microseconds longest_layer_duration = std::chrono::microseconds(0);
+    
     // Render style layers
     for (const auto &lstyle : style.layers)
     {
-		if (lstyle.verbose)
-			printf("  Layer: %s\n", lstyle.layer_name.c_str());
+        auto layer_start = std::chrono::high_resolution_clock::now();
+        if (lstyle.verbose)
+            printf("  Layer: %s\n", lstyle.layer_name.c_str());
 
-		// New geometry collection to compile all the polygons
-		GeoPtr multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
-	
+        // New geometry collection to compile all the polygons
+        GeoPtr multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
+    
         // Render feature geometry in this layer
         OGRLayer *tile_layer = tile_data->GetLayerByName(lstyle.layer_name.c_str());
         for (const auto &feat : tile_layer)
         {
             OGRGeometry *geo = feat->GetGeometryRef();
-			
-			// Render M_COVR
-			if (std::string(feat->GetDefnRef()->GetName()) == "M_COVR")
-			{
-				OGRwkbGeometryType gtype = geo->getGeometryType();
-				switch (gtype)
-				{
-				case wkbPolygon: // 6
-					render_poly(cr, geo->toPolygon(), wm, lstyle);
-					break;
-				case wkbMultiPolygon: // 10
-					for (const OGRPolygon *child : geo->toMultiPolygon())
-					{
-						render_poly(cr, child, wm, lstyle);
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			// Render DEPARE
-			else if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE"
-					 || std::string(feat->GetDefnRef()->GetName()) == "DRGARE")
-			{
-				OGRwkbGeometryType gtype = geo->getGeometryType();
-				switch (gtype)
-				{
-				case wkbPolygon: // 6
-					render_depare(cr, geo->toPolygon(), wm, lstyle, feat.get());
-					break;
-				case wkbMultiPolygon: // 10
-					for (const OGRPolygon *child : geo->toMultiPolygon())
-					{
-						render_depare(cr, child, wm, lstyle, feat.get());
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			else
-			{
-				// render basic geometries
-				render_geo(cr, geo, wm, lstyle, multi_poly.get());
-			}
-			
-			// Render anything with a buoy shape as a buoy
-			int buoy_shape_idx = feat->GetFieldIndex("BOYSHP");
-			if (buoy_shape_idx != -1)
-			{
-				render_buoy(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
+            
+            // Render M_COVR
+            if (std::string(feat->GetDefnRef()->GetName()) == "M_COVR")
+            {
+                OGRwkbGeometryType gtype = geo->getGeometryType();
+                switch (gtype)
+                {
+                case wkbPolygon: // 6
+                    render_poly(cr, geo->toPolygon(), wm, lstyle);
+                    break;
+                case wkbMultiPolygon: // 10
+                    for (const OGRPolygon *child : geo->toMultiPolygon())
+                    {
+                        render_poly(cr, child, wm, lstyle);
+                    }
+                    break;
+                default:
+                    break;
+                }
+            }
+            // Render DEPARE
+            else if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE"
+                     || std::string(feat->GetDefnRef()->GetName()) == "DRGARE")
+            {
+                OGRwkbGeometryType gtype = geo->getGeometryType();
+                switch (gtype)
+                {
+                case wkbPolygon: // 6
+                    render_depare(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                    break;
+                case wkbMultiPolygon: // 10
+                    for (const OGRPolygon *child : geo->toMultiPolygon())
+                    {
+                        render_depare(cr, child, wm, lstyle, feat.get());
+                    }
+                    break;
+                default:
+                    break;
+                }
+            }
+            else
+            {
+                // render basic geometries
+                float phase = 0;
+                render_geo(cr, geo, wm, lstyle, phase, multi_poly.get());
+            }
+            
+            // Render anything with a buoy shape as a buoy
+            int buoy_shape_idx = feat->GetFieldIndex("BOYSHP");
+            if (buoy_shape_idx != -1)
+            {
+                render_buoy(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
 
-			// Render anything with a beacon shape as a beacon
-			int beacon_shape_idx = feat->GetFieldIndex("BCNSHP");
-			if (beacon_shape_idx != -1)
-			{
-				render_beacon(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
+            // Render anything with a beacon shape as a beacon
+            int beacon_shape_idx = feat->GetFieldIndex("BCNSHP");
+            if (beacon_shape_idx != -1)
+            {
+                render_beacon(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
 
-			// Render Fog Signals
-			if (std::string(feat->GetDefnRef()->GetName()) == "FOGSIG")
-			{
-				render_fog(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
-			// Render Lights
-			else if (std::string(feat->GetDefnRef()->GetName()) == "LIGHTS")
-			{
-				render_light(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
-			// Render Landmark
-			else if (std::string(feat->GetDefnRef()->GetName()) == "LNDMRK")
-			{
-				render_landmark(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
-			// Render Silo/Tank
-			else if (std::string(feat->GetDefnRef()->GetName()) == "SILTNK")
-			{
-				render_silotank(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
-			// Render Rocks
-			else if (std::string(feat->GetDefnRef()->GetName()) == "UWTROC")
-			{
-				render_rock(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
-			// Render Obstructions
-			else if (std::string(feat->GetDefnRef()->GetName()) == "OBSTRN")
-			{
-				render_obstruction(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
-			// Render Wrecks
-			else if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
-			{
-				render_wreck(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
-			// Render Anchor Berths
-			else if (std::string(feat->GetDefnRef()->GetName()) == "ACHBRT")
-			{
-				render_anchor(cr, geo->toPoint(), wm, lstyle, feat.get());
-			}
-			// Render traffic separation scheme parts
-			else if (std::string(feat->GetDefnRef()->GetName()) == "TSSLPT")
-			{
-				render_traffic_sep_part(cr, geo->toPolygon(), wm, lstyle, feat.get());
-			}
-			// Render name of a land area
-			else if (std::string(feat->GetDefnRef()->GetName()) == "LNDARE")
-			{
-				render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
-			}
-			// Render name of a sea areas
-			else if (std::string(feat->GetDefnRef()->GetName()) == "SEAARE")
-			{
-				render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
-			}
-			// Render name of a land regions
-			else if (std::string(feat->GetDefnRef()->GetName()) == "LNDRGN")
-			{
-				render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
-			}
-			// Render name of a cities
-			else if (std::string(feat->GetDefnRef()->GetName()) == "BUAARE")
-			{
-				render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
-			}
-			
+            // Render Fog Signals
+            if (std::string(feat->GetDefnRef()->GetName()) == "FOGSIG")
+            {
+                render_fog(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
+            // Render Lights
+            else if (std::string(feat->GetDefnRef()->GetName()) == "LIGHTS")
+            {
+                render_light(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
+            // Render Landmark
+            else if (std::string(feat->GetDefnRef()->GetName()) == "LNDMRK")
+            {
+                render_landmark(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
+            // Render Silo/Tank
+            else if (std::string(feat->GetDefnRef()->GetName()) == "SILTNK")
+            {
+                render_silotank(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
+            // Render Rocks
+            else if (std::string(feat->GetDefnRef()->GetName()) == "UWTROC")
+            {
+                render_rock(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
+            // Render Obstructions
+            else if (std::string(feat->GetDefnRef()->GetName()) == "OBSTRN")
+            {
+                render_obstruction(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
+            // Render Wrecks
+            else if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
+            {
+                render_wreck(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
+            // Render Anchor Berths
+            else if (std::string(feat->GetDefnRef()->GetName()) == "ACHBRT")
+            {
+                render_anchor(cr, geo->toPoint(), wm, lstyle, feat.get());
+            }
+            // Render traffic separation scheme parts
+            else if (std::string(feat->GetDefnRef()->GetName()) == "TSSLPT")
+            {
+                render_traffic_sep_part(cr, geo->toPolygon(), wm, lstyle, feat.get());
+            }
+            // Render name of a land area
+            else if (std::string(feat->GetDefnRef()->GetName()) == "LNDARE")
+            {
+                render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+            }
+            // Render name of a sea areas
+            else if (std::string(feat->GetDefnRef()->GetName()) == "SEAARE")
+            {
+                render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+            }
+            // Render name of a land regions
+            else if (std::string(feat->GetDefnRef()->GetName()) == "LNDRGN")
+            {
+                render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+            }
+            // Render name of a cities
+            else if (std::string(feat->GetDefnRef()->GetName()) == "BUAARE")
+            {
+                render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+            }
+            
         }
 
-		// Render all polygons together after other features
-		// because we have now built up the whole list and can
-		// union them together.
-		// Skip if DEPARE though because those are all touching
-		// but need to be different colors
-		if (lstyle.layer_name != "DEPARE"
-			&& lstyle.layer_name != "DRGARE")
-		{
-			render_multipoly(cr, multi_poly.get(), wm, lstyle);
-		}
+        // Render all polygons together after other features
+        // because we have now built up the whole list and can
+        // union them together.
+        // Skip if DEPARE though because those are all touching
+        // but need to be different colors
+        if (lstyle.layer_name != "DEPARE"
+            && lstyle.layer_name != "DRGARE")
+        {
+            render_multipoly(cr, multi_poly.get(), wm, lstyle);
+        }
+
+        auto layer_end = std::chrono::high_resolution_clock::now();
+        auto layer_duration = std::chrono::duration_cast<std::chrono::microseconds>(layer_end - layer_start);
+
+        if (layer_duration > longest_layer_duration)
+        {
+            longest_layer_duration = layer_duration;
+            longest_layer = lstyle.layer_name;
+        }
+        
+        if (lstyle.verbose)
+        {
+            std::cout << lstyle.layer_name.c_str() << " Time: " << layer_duration.count() << " usec" << std::endl;
+        }
+
     }
 
     // Write out image
@@ -328,7 +349,11 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     }
 
     printf("Png Size: %lu\n", data.size());
-
+    auto render_end = std::chrono::high_resolution_clock::now();
+    auto render_duration = std::chrono::duration_cast<std::chrono::microseconds>(render_end - render_start);
+    std::cout << "Render Time: " << render_duration.count() << " usec" << std::endl;
+    std::cout << "Longest Layer: " << longest_layer << " " << longest_layer_duration.count() << " usec" << std::endl;
+    
     // Cleanup
     cairo_destroy(cr);
     cairo_surface_destroy(surface);
@@ -344,13 +369,16 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
  * \param[in] geo Feature geometry
  * \param[in] wm Web Mercator point mapper
  * \param[in] style Feature style
+ * \param[out] phase Phase tracking for multi-line strings
+ * \param[out] late_render_polygons All polygons to be rendered at once afterwards
  */
 void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
                               const web_mercator &wm, const layer_style &style,
-							  OGRGeometry *late_render_polygons)
+                              float &phase,
+                              OGRGeometry *late_render_polygons)
 {
-	if (style.verbose)
-		std::cout << "Render GEO: " << geo->getGeometryName() << std::endl;
+    if (style.verbose)
+        std::cout << "Render GEO: " << geo->getGeometryName() << std::endl;
     // What sort of geometry were we passed?
     OGRwkbGeometryType gtype = geo->getGeometryType();
     switch (gtype)
@@ -380,35 +408,46 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
             break;
 
         case wkbLineString: // 2
-            render_line(cr, geo->toLineString(), wm, style);
+            if (style.line_dash == 4) // wavy
+            {
+                render_wavy_line(cr, geo->toLineString(), wm, style, phase);
+            }
+            else if (style.line_dash == 5) // dots
+            {
+                render_line_with_dots(cr, geo->toLineString(), wm, style);
+            }
+            else
+            {
+                render_line(cr, geo->toLineString(), wm, style);
+            }
             break;
 
         case wkbMultiLineString: // 5
             for (const OGRGeometry *child : geo->toMultiLineString())
             {
-                render_geo(cr, child, wm, style, late_render_polygons);
+                render_geo(cr, child, wm, style, phase, late_render_polygons);
             }
             break;
 
         case wkbPolygon: // 6
             //render_poly(cr, geo->toPolygon(), wm, style);
-			// Copy all polygons on this layer into one geometry object
-			late_render_polygons->toMultiPolygon()->addGeometry(geo);
+            // Copy all polygons on this layer into one geometry object
+            late_render_polygons->toMultiPolygon()->addGeometry(geo);
             break;
 
         case wkbMultiPolygon: // 10
             for (const OGRPolygon *child : geo->toMultiPolygon())
             {
                 //render_poly(cr, child, wm, style);
-				// Copy all polygons on this layer into one geometry object
-				late_render_polygons->toMultiPolygon()->addGeometry(child);
+                // Copy all polygons on this layer into one geometry object
+                late_render_polygons->toMultiPolygon()->addGeometry(child);
             }
             break;
 
         case wkbGeometryCollection: // 7
             for (const OGRGeometry *child : geo->toGeometryCollection())
             {
-                render_geo(cr, child, wm, style, late_render_polygons);
+                render_geo(cr, child, wm, style, phase, late_render_polygons);
             }
             break;
 
@@ -419,32 +458,32 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
 }
 
 void enc_renderer::render_multipoly(cairo_t *cr, const OGRGeometry *geo,
-									const web_mercator &wm, const layer_style &style)
+                                    const web_mercator &wm, const layer_style &style)
 {
-	OGRwkbGeometryType gtype = geo->getGeometryType();
-	if (gtype != wkbMultiPolygon)
-	{
-		return;
-	}
+    OGRwkbGeometryType gtype = geo->getGeometryType();
+    if (gtype != wkbMultiPolygon)
+    {
+        return;
+    }
 
-	// Perform union of all polygons before drawing
-	// TODO: would it be faster to just cheat in render poly and draw a 2px
-	// border of the same color... probably
-	GeoPtr union_polygons(geo->UnionCascaded(), &OGRGeometryFactory::destroyGeometry);
-	gtype = union_polygons->getGeometryType();
-	
-	if (gtype == wkbPolygon)
-	{
-		render_poly(cr, union_polygons->toPolygon(), wm, style);
-	}
-	else if (gtype == wkbMultiPolygon)
-	{
-		for (const OGRPolygon *child : union_polygons->toMultiPolygon())
-		{
-			render_poly(cr, child, wm, style);
-		}
-	}
-	return;
+    // Perform union of all polygons before drawing
+    // TODO: would it be faster to just cheat in render poly and draw a 2px
+    // border of the same color... probably
+    GeoPtr union_polygons(geo->UnionCascaded(), &OGRGeometryFactory::destroyGeometry);
+    gtype = union_polygons->getGeometryType();
+    
+    if (gtype == wkbPolygon)
+    {
+        render_poly(cr, union_polygons->toPolygon(), wm, style);
+    }
+    else if (gtype == wkbMultiPolygon)
+    {
+        for (const OGRPolygon *child : union_polygons->toMultiPolygon())
+        {
+            render_poly(cr, child, wm, style);
+        }
+    }
+    return;
 }
 
 /**
@@ -486,25 +525,25 @@ void enc_renderer::render_depth(cairo_t *cr, const OGRPoint *geo, double depth,
     // Draw text
     if (depth_dm == 0)
     {
-		// draw sounding text without a subscript
-		cairo_move_to(cr, c.x - m_extents.width/2, c.y + m_extents.height/2);
-		cairo_show_text(cr, m_text);
+        // draw sounding text without a subscript
+        cairo_move_to(cr, c.x - m_extents.width/2, c.y + m_extents.height/2);
+        cairo_show_text(cr, m_text);
     }
     else
     {
-		// draw sounding with a dm subscript
-		float width = m_extents.width + dm_extents.width;
-		float height = m_extents.height + dm_extents.height/2;
-		// center of the whole text is c.x, c.y
-		// top left of big text is x,y
-		float x = c.x - width / 2;
-		float y = c.y + height / 2;
-		// big number
-		cairo_move_to(cr, x, y);
-		cairo_show_text(cr, m_text);
-		// subscript is to the right and half way down the big number
-		cairo_move_to(cr, x + m_extents.width, y + m_extents.height / 2);
-		cairo_show_text(cr, dm_text);
+        // draw sounding with a dm subscript
+        float width = m_extents.width + dm_extents.width;
+        float height = m_extents.height + dm_extents.height/2;
+        // center of the whole text is c.x, c.y
+        // top left of big text is x,y
+        float x = c.x - width / 2;
+        float y = c.y + height / 2;
+        // big number
+        cairo_move_to(cr, x, y);
+        cairo_show_text(cr, m_text);
+        // subscript is to the right and half way down the big number
+        cairo_move_to(cr, x + m_extents.width, y + m_extents.height / 2);
+        cairo_show_text(cr, dm_text);
     }
 }
 
@@ -529,18 +568,18 @@ void enc_renderer::render_point(cairo_t *cr, const OGRPoint *geo,
     coord c = wm.point_to_pixels(*geo);
 
     // Draw circle
-	if (style.marker_shape == SQUARE_MARKER)
-	{
-		cairo_rectangle(cr,
-						c.x - style.marker_size / 2,
-						c.y - style.marker_size / 2,
-						style.marker_size,
-						style.marker_size);
-	}
-	else
-	{
-		cairo_arc(cr, c.x, c.y, style.marker_size, 0, 2 * M_PI);
-	}
+    if (style.marker_shape == SQUARE_MARKER)
+    {
+        cairo_rectangle(cr,
+                        c.x - style.marker_size / 2,
+                        c.y - style.marker_size / 2,
+                        style.marker_size,
+                        style.marker_size);
+    }
+    else
+    {
+        cairo_arc(cr, c.x, c.y, style.marker_size, 0, 2 * M_PI);
+    }
 
     // Draw line and fill
     set_color(cr, style.fill_color);
@@ -561,6 +600,10 @@ void enc_renderer::render_point(cairo_t *cr, const OGRPoint *geo,
 void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
                                const web_mercator &wm, const layer_style &style)
 {
+    if (style.line_color.alpha == 0
+        || style.line_width == 0)
+        return;
+    
     // Pass OGR points to cairo
     bool first = true;
     for (auto &point : geo)
@@ -585,23 +628,129 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
     cairo_set_line_width(cr, style.line_width);
     switch (style.line_dash)
     {
-		double dash;
+        double dash;
     case 0:
-		cairo_set_dash(cr, nullptr, 0, 0);
-		break;
+        cairo_set_dash(cr, nullptr, 0, 0);
+        break;
     case 1:
-		dash = style.line_width;
-		cairo_set_dash(cr, &dash, 1, 0);
-		break;
+        dash = style.line_width;
+        cairo_set_dash(cr, &dash, 1, 0);
+        break;
     case 2:
-		dash = style.line_width * 2;
-		cairo_set_dash(cr, &dash, 1, 0);
-		break;
+        dash = style.line_width * 2;
+        cairo_set_dash(cr, &dash, 1, 0);
+        break;
     case 3:
-		dash = style.line_width * 10;
-		cairo_set_dash(cr, &dash, 1, 0);
-		break;	
+        dash = style.line_width * 10;
+        cairo_set_dash(cr, &dash, 1, 0);
+        break;  
     }
+    cairo_stroke(cr);
+
+    // reset dash to none
+    cairo_set_dash(cr, nullptr, 0, 0);
+}
+
+/**
+ * Render LineString With Points Geometry
+ * Put a dot at every point allong line, mostly for debug purposes
+ *
+ * \param[out] cr Image context
+ * \param[in] geo Feature geometry
+ * \param[in] wm Web Mercator point mapper
+ * \param[in] style Feature style
+ */
+void enc_renderer::render_line_with_dots(cairo_t *cr, const OGRLineString *geo,
+                                         const web_mercator &wm, const layer_style &style)
+{
+    // Pass OGR points to cairo
+    bool first = true;
+    for (auto &point : geo)
+    {
+        // Convert lat/lon to pixel coordinates
+        coord c = wm.point_to_pixels(point);
+
+        // Mark first point as pen-down
+        if (first)
+        {
+            cairo_move_to(cr, c.x, c.y);
+            first = false;
+        }
+        else
+        {
+            cairo_line_to(cr, c.x, c.y);
+        }
+    }
+
+    // Draw line
+    set_color(cr, style.line_color);
+    cairo_set_line_width(cr, style.line_width);
+    cairo_set_dash(cr, nullptr, 0, 0); // dash always none
+    cairo_stroke(cr);
+
+    // Draw points
+    for (auto &point : geo)
+    {
+        render_point(cr, &point, wm, style);
+    }
+}
+
+/**
+ * Render Wavy LineString Geometry
+ *
+ * \param[out] cr Image context
+ * \param[in] geo Feature geometry
+ * \param[in] wm Web Mercator point mapper
+ * \param[in] style Feature style
+ * \param[out] phase Phase of the sin wave for connecting multiple segments
+ */
+void enc_renderer::render_wavy_line(cairo_t *cr, const OGRLineString *geo,
+                                    const web_mercator &wm, const layer_style &style,
+                                    float &phase)
+{
+    bool first = true;
+    coord prev;
+    for (auto &point : geo)
+    {
+        // Convert lat/lon to pixel coordinates
+        coord c = wm.point_to_pixels(point);
+
+        // Mark first point as pen-down
+        if (first)
+        {
+            //cairo_move_to(cr, c.x, c.y);
+            first = false;
+            prev = c;
+        }
+        else
+        {
+            double angle = std::atan2((c.y - prev.y), (c.x - prev.x));
+            float length = std::hypot((c.x - prev.x),(c.y - prev.y));
+
+            cairo_matrix_t matrix;
+            cairo_get_matrix(cr, &matrix);
+            
+            cairo_translate(cr, prev.x, prev.y);
+            cairo_rotate(cr, angle);
+
+            cairo_move_to(cr, 0, (5 * sin((phase)/2)));
+
+            for (float x = 0; x <= length; x+=0.05)
+            {
+                float y = 5 * sin((x + phase)/2);
+                cairo_line_to(cr, x, y);
+            }
+            phase += length;
+
+            cairo_set_matrix(cr, &matrix);
+            cairo_move_to(cr, c.x, c.y);
+            prev = c;
+        }
+    }
+    
+    set_color(cr, style.line_color);
+    cairo_set_line_width(cr, style.line_width);
+    cairo_set_dash(cr, nullptr, 0, 0); // dash always none
     cairo_stroke(cr);
 }
 
@@ -651,91 +800,94 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
     cairo_set_line_width(cr, style.line_width);
     switch (style.line_dash)
     {
-	double dash;
+    double dash;
     case 0:
-	cairo_set_dash(cr, nullptr, 0, 0);
-	break;
+        cairo_set_dash(cr, nullptr, 0, 0);
+        break;
     case 1:
-	dash = style.line_width;
-	cairo_set_dash(cr, &dash, 1, 0);
-	break;
+        dash = style.line_width;
+        cairo_set_dash(cr, &dash, 1, 0);
+        break;
     case 2:
-	dash = style.line_width * 2;
-	cairo_set_dash(cr, &dash, 1, 0);
-	break;
+        dash = style.line_width * 2;
+        cairo_set_dash(cr, &dash, 1, 0);
+    break;
     case 3:
-	dash = style.line_width * 10;
-	cairo_set_dash(cr, &dash, 1, 0);
-	break;
+        dash = style.line_width * 10;
+        cairo_set_dash(cr, &dash, 1, 0);
+    break;
     }
     cairo_stroke(cr);
+
+    // reset dash to none
+    cairo_set_dash(cr, nullptr, 0, 0);
 }
 
 void enc_renderer::render_depare(cairo_t *cr, const OGRPolygon *geo,
-								 const web_mercator &wm, const layer_style &style,
-								 const OGRFeature *feat)
+                                 const web_mercator &wm, const layer_style &style,
+                                 const OGRFeature *feat)
 {
-	float mindepth = feat->GetFieldAsDouble("DRVAL1");
-	float maxdepth = feat->GetFieldAsDouble("DRVAL2");
-	if (style.verbose)
-	{
-		std::cout << "min_depth: " << mindepth << std::endl;
-		std::cout << "max_depth: " << maxdepth << std::endl;
-	}
+    float mindepth = feat->GetFieldAsDouble("DRVAL1");
+    float maxdepth = feat->GetFieldAsDouble("DRVAL2");
+    if (style.verbose)
+    {
+        std::cout << "min_depth: " << mindepth << std::endl;
+        std::cout << "max_depth: " << maxdepth << std::endl;
+    }
 
-	// DRGARE seems to not always have a max depth??
-	if (mindepth > maxdepth)
-		maxdepth = mindepth;
-	
-	layer_style tweaked_style = style;
-	if (maxdepth < 3)
-	{
-		tweaked_style.fill_color = style.depare_colors.foreshore;
-		tweaked_style.line_color = style.depare_colors.foreshore;
-	}
-	else if (maxdepth < 5)
-	{
-		tweaked_style.fill_color = style.depare_colors.very_shallow;
-		tweaked_style.line_color = style.depare_colors.very_shallow;
-	}
-	else if (maxdepth < 10)
-	{
-		tweaked_style.fill_color = style.depare_colors.medium_shallow;
-		tweaked_style.line_color = style.depare_colors.medium_shallow;
-	}
-	else if (maxdepth < 25)
-	{
-		tweaked_style.fill_color = style.depare_colors.medium_deep;
-		tweaked_style.line_color = style.depare_colors.medium_deep;
-	}
-	else
-	{
-		tweaked_style.fill_color = style.depare_colors.deep;
-		tweaked_style.line_color = style.depare_colors.deep;
-	}
-	tweaked_style.line_width = 2; // overdraw by 1 px to hide gaps
+    // DRGARE seems to not always have a max depth??
+    if (mindepth > maxdepth)
+        maxdepth = mindepth;
+    
+    layer_style tweaked_style = style;
+    if (maxdepth < 3)
+    {
+        tweaked_style.fill_color = style.depare_colors.foreshore;
+        tweaked_style.line_color = style.depare_colors.foreshore;
+    }
+    else if (maxdepth < 5)
+    {
+        tweaked_style.fill_color = style.depare_colors.very_shallow;
+        tweaked_style.line_color = style.depare_colors.very_shallow;
+    }
+    else if (maxdepth < 10)
+    {
+        tweaked_style.fill_color = style.depare_colors.medium_shallow;
+        tweaked_style.line_color = style.depare_colors.medium_shallow;
+    }
+    else if (maxdepth < 25)
+    {
+        tweaked_style.fill_color = style.depare_colors.medium_deep;
+        tweaked_style.line_color = style.depare_colors.medium_deep;
+    }
+    else
+    {
+        tweaked_style.fill_color = style.depare_colors.deep;
+        tweaked_style.line_color = style.depare_colors.deep;
+    }
+    tweaked_style.line_width = 2; // overdraw by 1 px to hide gaps
 
-	render_poly(cr, geo, wm, tweaked_style);
+    render_poly(cr, geo, wm, tweaked_style);
 }
 
 void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
-							   const web_mercator &wm, const layer_style &style,
-							   const OGRFeature *feat)
+                               const web_mercator &wm, const layer_style &style,
+                               const OGRFeature *feat)
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	// Get buoy colors
-	// Get colors if this elemnt has a list of colors
-	std::vector<std::string> colors_list;
-	std::vector<int> colors_list_int;
-	char** colors = feat->GetFieldAsStringList("COLOUR");
-	if ( colors )
-	{
-		colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
-		for (auto color : colors_list)
-			colors_list_int.push_back(std::stoi(color));
-	}
+    // Get buoy colors
+    // Get colors if this elemnt has a list of colors
+    std::vector<std::string> colors_list;
+    std::vector<int> colors_list_int;
+    char** colors = feat->GetFieldAsStringList("COLOUR");
+    if ( colors )
+    {
+        colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
+        for (auto color : colors_list)
+            colors_list_int.push_back(std::stoi(color));
+    }
 
     // create style sheet to set buoy colors
     // Note right now this is blindly assigning colors to
@@ -744,59 +896,59 @@ void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
     // (horizontal stripes, vert, etc.) of the colors
     int i = 0;
     std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n";
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n";
     for (auto color_code : colors_list_int)
     {
-		i++;
-		try
-		{
-			ss << "#buoy_color_" << i << "{\n"
-			   << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
-			   << "}\n";
-		}
-		catch (const std::out_of_range &e)
-		{
-			// bad color
-		}
+        i++;
+        try
+        {
+            ss << "#buoy_color_" << i << "{\n"
+               << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
+               << "}\n";
+        }
+        catch (const std::out_of_range &e)
+        {
+            // bad color
+        }
     }
     std::string stylesheet = ss.str();
 
-	// Get buoy shape
-	int buoy_shape = feat->GetFieldAsInteger("BOYSHP");
+    // Get buoy shape
+    int buoy_shape = feat->GetFieldAsInteger("BOYSHP");
 
     fs::path svg = "";
-	std::string svg_tag = "BOYSHP_" + std::to_string(buoy_shape);
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "BOYSHP_" + std::to_string(buoy_shape);
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-		std::cout << "Render Buoy: " << svg_tag << " -> " << svg << "  size: " << style.icon_size << std::endl;
+    if (style.verbose)
+        std::cout << "Render Buoy: " << svg_tag << " -> " << svg << "  size: " << style.icon_size << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
 
 void enc_renderer::render_beacon(cairo_t *cr, const OGRPoint *geo,
-								 const web_mercator &wm, const layer_style &style,
-								 const OGRFeature *feat)
+                                 const web_mercator &wm, const layer_style &style,
+                                 const OGRFeature *feat)
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	// Get buoy colors
-	// Get colors if this elemnt has a list of colors
-	std::vector<std::string> colors_list;
-	std::vector<int> colors_list_int;
-	char** colors = feat->GetFieldAsStringList("COLOUR");
-	if ( colors )
-	{
-		colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
-		for (auto color : colors_list)
-			colors_list_int.push_back(std::stoi(color));
-	}
+    // Get buoy colors
+    // Get colors if this elemnt has a list of colors
+    std::vector<std::string> colors_list;
+    std::vector<int> colors_list_int;
+    char** colors = feat->GetFieldAsStringList("COLOUR");
+    if ( colors )
+    {
+        colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
+        for (auto color : colors_list)
+            colors_list_int.push_back(std::stoi(color));
+    }
 
     // create style sheet to set buoy colors
     // Note right now this is blindly assigning colors to
@@ -805,407 +957,407 @@ void enc_renderer::render_beacon(cairo_t *cr, const OGRPoint *geo,
     // (horizontal stripes, vert, etc.) of the colors
     int i = 0;
     std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n";
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n";
     for (auto color_code : colors_list_int)
     {
-		i++;
-		try
-		{
-			ss << "#beacon_color_" << i << "{\n"
-			   << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
-			   << "}\n";
-		}
-		catch (const std::out_of_range &e)
-		{
-			// bad color
-		}
+        i++;
+        try
+        {
+            ss << "#beacon_color_" << i << "{\n"
+               << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
+               << "}\n";
+        }
+        catch (const std::out_of_range &e)
+        {
+            // bad color
+        }
     }
     std::string stylesheet = ss.str();
 
-	// Get beacon shape
-	int beacon_shape = feat->GetFieldAsInteger("BCNSHP");
+    // Get beacon shape
+    int beacon_shape = feat->GetFieldAsInteger("BCNSHP");
 
     fs::path svg = "";
-	std::string svg_tag = "BCNSHP_" + std::to_string(beacon_shape);
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "BCNSHP_" + std::to_string(beacon_shape);
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-		std::cout << "Render Beacon: " << svg_tag << " -> " << svg << "  size: " << style.icon_size << std::endl;
+    if (style.verbose)
+        std::cout << "Render Beacon: " << svg_tag << " -> " << svg << "  size: " << style.icon_size << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
 
 void enc_renderer::render_fog(cairo_t *cr, const OGRPoint *geo,
-							  const web_mercator &wm, const layer_style &style,
-							  const OGRFeature *feat)
+                              const web_mercator &wm, const layer_style &style,
+                              const OGRFeature *feat)
 {
-	// Convert lat/lon to pixel coordinates
+    // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n";
-	std::string stylesheet = ss.str();
+    std::stringstream ss;
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n";
+    std::string stylesheet = ss.str();
 
     fs::path svg = "";
-	std::string svg_tag = "FOGSIG";
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "FOGSIG";
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-		std::cout << "Render Fog Signal: " << svg_tag << " -> " << svg << std::endl;
+    if (style.verbose)
+        std::cout << "Render Fog Signal: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, 50, 50, stylesheet);
 }
 
 void enc_renderer::render_light(cairo_t *cr, const OGRPoint *geo,
-								const web_mercator &wm, const layer_style &style,
-								const OGRFeature *feat)
+                                const web_mercator &wm, const layer_style &style,
+                                const OGRFeature *feat)
 {
-	// Convert lat/lon to pixel coordinates
+    // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	// Get light color
-	// Get colors if this elemnt has a list of colors
-	std::vector<std::string> colors_list;
-	std::vector<int> colors_list_int;
-	char** colors = feat->GetFieldAsStringList("COLOUR");
-	if ( colors )
-	{
-		colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
-		for (auto color : colors_list)
-			colors_list_int.push_back(std::stoi(color));
-	}
+    // Get light color
+    // Get colors if this elemnt has a list of colors
+    std::vector<std::string> colors_list;
+    std::vector<int> colors_list_int;
+    char** colors = feat->GetFieldAsStringList("COLOUR");
+    if ( colors )
+    {
+        colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
+        for (auto color : colors_list)
+            colors_list_int.push_back(std::stoi(color));
+    }
 
     // create style sheet to set light colors
     // Note right now this is blindly assigning colors to
     // named svg element "light_color" that must exist
     int i = 0;
     std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n";
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n";
     for (auto color_code : colors_list_int)
     {
-		i++;
-		try
-		{
-			ss << "#light_color" << "{\n"
-			   << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
-			   << "}\n";
-		}
-		catch (const std::out_of_range &e)
-		{
-			// bad color
-		}
+        i++;
+        try
+        {
+            ss << "#light_color" << "{\n"
+               << "  fill: " << ENC_COLORS.at(color_code) << ";\n"
+               << "}\n";
+        }
+        catch (const std::out_of_range &e)
+        {
+            // bad color
+        }
     }
     std::string stylesheet = ss.str();
 
     fs::path svg = "";
-	std::string svg_tag = "LIGHTS";
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "LIGHTS";
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-		std::cout << "Render Light: " << svg_tag << " -> " << svg << std::endl;
+    if (style.verbose)
+        std::cout << "Render Light: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, 50, 50, stylesheet);
 }
 
 void enc_renderer::render_landmark(cairo_t *cr, const OGRPoint *geo,
-								   const web_mercator &wm, const layer_style &style,
-								   const OGRFeature *feat)
+                                   const web_mercator &wm, const layer_style &style,
+                                   const OGRFeature *feat)
 {
-	// Convert lat/lon to pixel coordinates
+    // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n";
-	std::string stylesheet = ss.str();
+    std::stringstream ss;
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n";
+    std::string stylesheet = ss.str();
 
-	// Get list of landmark's categories
-	char** categories = feat->GetFieldAsStringList("CATLMK");
-	std::vector<int> categories_list_int;
-	std::vector<std::string> categories_list;
-	if ( categories )
-	{
-		categories_list = std::vector<std::string>(categories, categories + CSLCount(categories));
-		for (auto cat : categories_list)
-			categories_list_int.push_back(std::stoi(cat));
-	}
+    // Get list of landmark's categories
+    char** categories = feat->GetFieldAsStringList("CATLMK");
+    std::vector<int> categories_list_int;
+    std::vector<std::string> categories_list;
+    if ( categories )
+    {
+        categories_list = std::vector<std::string>(categories, categories + CSLCount(categories));
+        for (auto cat : categories_list)
+            categories_list_int.push_back(std::stoi(cat));
+    }
 
-	std::string type = "";
-	for (auto cat : categories_list_int)
-	{
-		switch (cat)
-		{
-		case 3: // chimney
-			type = "_chimney";
-			break;
-		case 6: // flare stack
-			type = "_flarestack";
-			break;
-		case 7: // mast
-			type = "_mast";
-			break;
-		case 17: // tower
-			type = "_tower";
-			break;
-		case 18:
-		case 19:
-			type = "_windturbine";
-			break;
-		}
-	}
+    std::string type = "";
+    for (auto cat : categories_list_int)
+    {
+        switch (cat)
+        {
+        case 3: // chimney
+            type = "_chimney";
+            break;
+        case 6: // flare stack
+            type = "_flarestack";
+            break;
+        case 7: // mast
+            type = "_mast";
+            break;
+        case 17: // tower
+            type = "_tower";
+            break;
+        case 18:
+        case 19:
+            type = "_windturbine";
+            break;
+        }
+    }
 
     fs::path svg = "";
-	std::string svg_tag = "LNDMRK" + type;
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "LNDMRK" + type;
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-		std::cout << "Render Landmark: " << svg_tag << " -> " << svg << std::endl;
+    if (style.verbose)
+        std::cout << "Render Landmark: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
 
 void enc_renderer::render_silotank(cairo_t *cr, const OGRPoint *geo,
-								   const web_mercator &wm, const layer_style &style,
-								   const OGRFeature *feat)
+                                   const web_mercator &wm, const layer_style &style,
+                                   const OGRFeature *feat)
 {
-	// Convert lat/lon to pixel coordinates
+    // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n";
-	std::string stylesheet = ss.str();
+    std::stringstream ss;
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n";
+    std::string stylesheet = ss.str();
 
     fs::path svg = "";
-	std::string svg_tag = "SILTNK";
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "SILTNK";
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-		std::cout << "Render Silo/Tank: " << svg_tag << " -> " << svg << std::endl;
+    if (style.verbose)
+        std::cout << "Render Silo/Tank: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
 
 void enc_renderer::render_rock(cairo_t *cr, const OGRPoint *geo,
-							   const web_mercator &wm, const layer_style &style,
-							   const OGRFeature *feat)
+                               const web_mercator &wm, const layer_style &style,
+                               const OGRFeature *feat)
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	encviz::color depare_color = {0,0,0,0};
-	std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n"
-	   << ".obstruction {\n"
-	   << "  fill: " << depare_color << ";\n"
-	   << "}\n";
-	std::string stylesheet = ss.str();
+    encviz::color depare_color = {0,0,0,0};
+    std::stringstream ss;
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n"
+       << ".obstruction {\n"
+       << "  fill: " << depare_color << ";\n"
+       << "}\n";
+    std::string stylesheet = ss.str();
 
-	int water_level = feat->GetFieldAsInteger("WATLEV");
-	int exposition = feat->GetFieldAsInteger("EXPSOU");
-	//int quality = feat->GetFieldAsInteger("QUASOU");
-	float depth = feat->GetFieldAsDouble("VALSOU");
+    int water_level = feat->GetFieldAsInteger("WATLEV");
+    int exposition = feat->GetFieldAsInteger("EXPSOU");
+    //int quality = feat->GetFieldAsInteger("QUASOU");
+    float depth = feat->GetFieldAsDouble("VALSOU");
 
-	std::string wl = "awash";
-	if (water_level == 3) // always submerged
-		wl = "submerged";
+    std::string wl = "awash";
+    if (water_level == 3) // always submerged
+        wl = "submerged";
 
-	if (exposition == 2) // Rock shallower than surrounding area
-	{
-		// Deeper or shallower than 20 m are displayed differently
-		if (depth < 20.0)
-			wl = "shoaler"; 
-		else
-			wl = "shoaler_deep";
-	}
+    if (exposition == 2) // Rock shallower than surrounding area
+    {
+        // Deeper or shallower than 20 m are displayed differently
+        if (depth < 20.0)
+            wl = "shoaler"; 
+        else
+            wl = "shoaler_deep";
+    }
 
     fs::path svg = "";
-	std::string svg_tag = "UWTROC_" + wl;
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "UWTROC_" + wl;
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-		std::cout << "Render Rock: " << svg_tag << " -> " << svg << std::endl;
+    if (style.verbose)
+        std::cout << "Render Rock: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 
-	// render text if shoaler
-	if (exposition == 2) // Rock shallower than surrounding area
-	{
-		render_depth(cr, geo, depth, wm, style);
-	}
+    // render text if shoaler
+    if (exposition == 2) // Rock shallower than surrounding area
+    {
+        render_depth(cr, geo, depth, wm, style);
+    }
 }
 
 void enc_renderer::render_obstruction(cairo_t *cr, const OGRPoint *geo,
-									  const web_mercator &wm, const layer_style &style,
-									  const OGRFeature *feat)
+                                      const web_mercator &wm, const layer_style &style,
+                                      const OGRFeature *feat)
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	//int category = feat->GetFieldAsInteger("CATOBS");
-	int water_level = feat->GetFieldAsInteger("WATLEV");
-	int exposition = feat->GetFieldAsInteger("EXPSOU");
-	//int quality = feat->GetFieldAsInteger("QUASOU");
-	float depth = feat->GetFieldAsDouble("VALSOU");
+    //int category = feat->GetFieldAsInteger("CATOBS");
+    int water_level = feat->GetFieldAsInteger("WATLEV");
+    int exposition = feat->GetFieldAsInteger("EXPSOU");
+    //int quality = feat->GetFieldAsInteger("QUASOU");
+    float depth = feat->GetFieldAsDouble("VALSOU");
 
-	encviz::color depare_color = style.depare_colors.foreshore;
-	
-	std::string wl = "awash";
-	if (water_level == 3) // always submerged
-	{
-		wl = "submerged";
-		depare_color = {0,0,0,0}; // transparent background when submerged
-	}
+    encviz::color depare_color = style.depare_colors.foreshore;
+    
+    std::string wl = "awash";
+    if (water_level == 3) // always submerged
+    {
+        wl = "submerged";
+        depare_color = {0,0,0,0}; // transparent background when submerged
+    }
 
-	if (exposition == 2) // Rock shallower than surrounding area
-	{
-		// Deeper or shallower than 20 m are displayed differently
-		if (depth < 20.0)
-		{
-			wl = "shoaler";
-			depare_color = style.depare_colors.very_shallow;
-		}
-		else
-		{
-			wl = "shoaler_deep";
-			depare_color = style.depare_colors.medium_shallow;
-		}
-	}
+    if (exposition == 2) // Rock shallower than surrounding area
+    {
+        // Deeper or shallower than 20 m are displayed differently
+        if (depth < 20.0)
+        {
+            wl = "shoaler";
+            depare_color = style.depare_colors.very_shallow;
+        }
+        else
+        {
+            wl = "shoaler_deep";
+            depare_color = style.depare_colors.medium_shallow;
+        }
+    }
 
-	std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n"
-	   << ".obstruction {\n"
-	   << "  fill: " << depare_color << ";\n"
-	   << "}\n";
-	std::string stylesheet = ss.str();
+    std::stringstream ss;
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n"
+       << ".obstruction {\n"
+       << "  fill: " << depare_color << ";\n"
+       << "}\n";
+    std::string stylesheet = ss.str();
 
     fs::path svg = "";
-	std::string svg_tag = "OBSTRN_" + wl;
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "OBSTRN_" + wl;
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-		std::cout << "Render Obstruction: " << svg_tag << " -> " << svg << std::endl;
+    if (style.verbose)
+        std::cout << "Render Obstruction: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 
-	// render text if shoaler
-	if (exposition == 2) // Rock shallower than surrounding area
-	{
-		render_depth(cr, geo, depth, wm, style);
-	}
+    // render text if shoaler
+    if (exposition == 2) // Rock shallower than surrounding area
+    {
+        render_depth(cr, geo, depth, wm, style);
+    }
 }
 
 void enc_renderer::render_wreck(cairo_t *cr, const OGRPoint *geo,
-								const web_mercator &wm, const layer_style &style,
-								const OGRFeature *feat)
+                                const web_mercator &wm, const layer_style &style,
+                                const OGRFeature *feat)
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	int category = feat->GetFieldAsInteger("CATWRK");
+    int category = feat->GetFieldAsInteger("CATWRK");
 
-	encviz::color depare_color = {0,0,0,0};
-	if (category == 2) // dangerous wreck, set background color
-	{
-		depare_color = style.depare_colors.very_shallow;
-	}
+    encviz::color depare_color = {0,0,0,0};
+    if (category == 2) // dangerous wreck, set background color
+    {
+        depare_color = style.depare_colors.very_shallow;
+    }
 
-	std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n"
-	   << ".obstruction {\n"
-	   << "  fill: " << depare_color << ";\n"
-	   << "}\n";
-	std::string stylesheet = ss.str();
+    std::stringstream ss;
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n"
+       << ".obstruction {\n"
+       << "  fill: " << depare_color << ";\n"
+       << "}\n";
+    std::string stylesheet = ss.str();
 
     fs::path svg = "";
-	std::string svg_tag = "WRECKS_" + std::to_string(category);
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "WRECKS_" + std::to_string(category);
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-		std::cout << "Render Wreck: " << svg_tag << " -> " << svg << std::endl;
+    if (style.verbose)
+        std::cout << "Render Wreck: " << svg_tag << " -> " << svg << std::endl;
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 }
 
 void enc_renderer::render_anchor(cairo_t *cr, const OGRPoint *geo,
-								 const web_mercator &wm, const layer_style &style,
-								 const OGRFeature *feat)
+                                 const web_mercator &wm, const layer_style &style,
+                                 const OGRFeature *feat)
 {
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(*geo);
 
-	std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n";
-	std::string stylesheet = ss.str();
+    std::stringstream ss;
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n";
+    std::string stylesheet = ss.str();
 
-	int category = feat->GetFieldAsInteger("CATACH");
-	float radius = feat->GetFieldAsDouble("RADIUS");
+    int category = feat->GetFieldAsInteger("CATACH");
+    float radius = feat->GetFieldAsDouble("RADIUS");
 
     fs::path svg = "";
-	std::string svg_tag = "ACHBRT";
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "ACHBRT";
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-	{
-		std::cout << "anchor category: " << category << std::endl;
-		std::cout << "anchor radius: " << radius << std::endl;
-		std::cout << "Render Anchor Berth: " << svg_tag << " -> " << svg << std::endl;
-	}
+    if (style.verbose)
+    {
+        std::cout << "anchor category: " << category << std::endl;
+        std::cout << "anchor radius: " << radius << std::endl;
+        std::cout << "Render Anchor Berth: " << svg_tag << " -> " << svg << std::endl;
+    }
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet);
 
-	// Render anchor radius
-	coord m = wm.point_to_meters(*geo);
-	coord m1 = m; m1.x += radius; m1.y += radius;
-	coord c1 = wm.meters_to_pixels(m1);
-	float radius_pixels = (std::abs(c1.x - c.x) + std::abs(c1.y - c.y))/2;
+    // Render anchor radius
+    coord m = wm.point_to_meters(*geo);
+    coord m1 = m; m1.x += radius; m1.y += radius;
+    coord c1 = wm.meters_to_pixels(m1);
+    float radius_pixels = (std::abs(c1.x - c.x) + std::abs(c1.y - c.y))/2;
 
-	cairo_arc(cr, c.x, c.y, radius_pixels, 0, 2 * M_PI);
-	set_color(cr, style.icon_color);
-	cairo_set_dash(cr, nullptr, 0, 0);
+    cairo_arc(cr, c.x, c.y, radius_pixels, 0, 2 * M_PI);
+    set_color(cr, style.icon_color);
+    cairo_set_dash(cr, nullptr, 0, 0);
     cairo_set_line_width(cr, style.line_width);
     cairo_stroke(cr);
 }
@@ -1216,72 +1368,76 @@ void argle()
 }
 
 void enc_renderer::render_traffic_sep_part(cairo_t *cr, const OGRPolygon *geo,
-										   const web_mercator &wm, const layer_style &style,
-										   const OGRFeature *feat)
+                                           const web_mercator &wm, const layer_style &style,
+                                           const OGRFeature *feat)
 {
-	// Get centroid of traffic lane
-	OGRPoint centroid;
-	geo->Centroid(&centroid);
-	// Convert lat/lon to pixel coordinates
+    // Get centroid of traffic lane
+    OGRPoint centroid;
+    geo->Centroid(&centroid);
+    // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(centroid);
 
-	std::stringstream ss;
-	ss << ".icon {\n"
-	   << "  fill: " << style.icon_color << ";\n"
-	   << "}\n";
-	std::string stylesheet = ss.str();
+    std::stringstream ss;
+    ss << ".icon {\n"
+       << "  fill: " << style.icon_color << ";\n"
+       << "}\n";
+    std::string stylesheet = ss.str();
 
-	float direction = feat->GetFieldAsDouble("ORIENT");
+    float direction = feat->GetFieldAsDouble("ORIENT");
 
     fs::path svg = "";
-	std::string svg_tag = "TSSLPT";
-	if (style.icons.find(svg_tag) != style.icons.end())
-	{
-		svg = style.icons.at(svg_tag);
-	}
+    std::string svg_tag = "TSSLPT";
+    if (style.icons.find(svg_tag) != style.icons.end())
+    {
+        svg = style.icons.at(svg_tag);
+    }
 
-	if (style.verbose)
-	{
-		std::cout << "traffic direction: " << direction << std::endl;
-		std::cout << "Render Traffic Direction: " << svg_tag << " -> " << svg << std::endl;
-	}
+    if (style.verbose)
+    {
+        std::cout << "traffic direction: " << direction << std::endl;
+        std::cout << "Render Traffic Direction: " << svg_tag << " -> " << svg << std::endl;
+    }
 
     svg_.render_svg(cr, svg, c, style.icon_size, style.icon_size, stylesheet, direction);
 
-	return;
+    return;
 }
 
 void enc_renderer::render_named_area(cairo_t *cr, const OGRPolygon *geo,
-									 const web_mercator &wm, const layer_style &style,
-									 const OGRFeature *feat)
+                                     const web_mercator &wm, const layer_style &style,
+                                     const OGRFeature *feat)
 {
-	// Get centroid of area
-	OGRPoint centroid;
-	geo->Centroid(&centroid);
-	// Convert lat/lon to pixel coordinates
+    // Nothing to do if no color
+    if (style.line_color.alpha == 0)
+        return;
+    
+    // Get centroid of area
+    OGRPoint centroid;
+    geo->Centroid(&centroid);
+    // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(centroid);
 
-	std::string place_name = feat->GetFieldAsString("OBJNAM");
+    std::string place_name = feat->GetFieldAsString("OBJNAM");
 
-	if (place_name != "")
-	{
-		char name[place_name.length() + 1];
-		strcpy(name, place_name.c_str());
+    if (place_name != "")
+    {
+        char name[place_name.length() + 1];
+        strcpy(name, place_name.c_str());
 
-		// Set text style
-		set_color(cr, style.line_color);
-		cairo_select_font_face(cr, "monospace",
-							   CAIRO_FONT_SLANT_NORMAL,
-							   CAIRO_FONT_WEIGHT_BOLD);
-		cairo_set_font_size(cr, 10);
+        // Set text style
+        set_color(cr, style.line_color);
+        cairo_select_font_face(cr, "monospace",
+                               CAIRO_FONT_SLANT_NORMAL,
+                               CAIRO_FONT_WEIGHT_BOLD);
+        cairo_set_font_size(cr, 10);
     
-		// Determine text render size
-		cairo_text_extents_t name_extents = {};
-		cairo_text_extents(cr, name, &name_extents);
+        // Determine text render size
+        cairo_text_extents_t name_extents = {};
+        cairo_text_extents(cr, name, &name_extents);
 
-		// Draw text
-		cairo_move_to(cr, c.x - name_extents.width/2, c.y + name_extents.height/2);
-		cairo_show_text(cr, name);
+        // Draw text
+        cairo_move_to(cr, c.x - name_extents.width/2, c.y + name_extents.height/2);
+        cairo_show_text(cr, name);
     }
 }
 
@@ -1310,7 +1466,7 @@ void enc_renderer::load_config(const fs::path &config_file)
     printf("Using config file: %s ...\n", config_file.string().c_str());
 
     // Load XML document 
-	fs::path config_path = config_file.parent_path();
+    fs::path config_path = config_file.parent_path();
     printf(" - Reading %s ...\n", config_file.string().c_str());
     tinyxml2::XMLDocument doc;
     if (doc.LoadFile(config_file.string().c_str()))

@@ -27,7 +27,6 @@
   <!-- Dredged areas -->
   <layer>
     <layer_name>DRGARE</layer_name>
-    <verbose>true</verbose>
     <fill_color>d9edde</fill_color>
     <line_color>000</line_color>
     <line_width>0</line_width>
@@ -129,6 +128,16 @@
     <line_color>ef0093</line_color>
     <line_width>2</line_width>
     <line_dash>3</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Subsea Cables -->
+  <layer>
+    <layer_name>CBLSUB</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>ef0093</line_color>
+    <line_width>1</line_width>
+    <line_dash>4</line_dash>
     <marker_size>0</marker_size>
   </layer>
 
@@ -403,7 +412,7 @@
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
 
-    <icon_color>ffffff</icon_color>
+    <icon_color>000000</icon_color>
     <icon_size>50</icon_size>
     <icons>
       <icon>
@@ -963,7 +972,7 @@
   <layer>
     <layer_name>LNDARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>C0000000</line_color> 
+    <line_color>C0000000</line_color>
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
@@ -973,7 +982,7 @@
   <layer>
     <layer_name>SEAARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>C0000000</line_color> 
+    <line_color>C0000000</line_color>
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
@@ -983,7 +992,7 @@
   <layer>
     <layer_name>BUAARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>C0000000</line_color> 
+    <line_color>C0000000</line_color>
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
@@ -993,7 +1002,7 @@
   <layer>
     <layer_name>LNDRGN</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>C0000000</line_color> 
+    <line_color>C0000000</line_color>
     <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>

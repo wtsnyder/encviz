@@ -53,18 +53,20 @@ private:
      * \param[in] geo Feature geometry
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
-	 * \param[out] late_render_polygons All polygons to be rendered at once afterwards
+     * \param[out] phase Phase tracking for multi-line strings
+     * \param[out] late_render_polygons All polygons to be rendered at once afterwards
      */
     void render_geo(cairo_t *cr, const OGRGeometry *geo,
                     const web_mercator &wm, const layer_style &style,
-					OGRGeometry *late_render_polygons);
+                    float &phase,
+                    OGRGeometry *late_render_polygons);
 
-	/**
-	 * Render multi-polygons
-	 */
-	void render_multipoly(cairo_t *cr, const OGRGeometry *geo,
-						  const web_mercator &wm, const layer_style &style);
-	
+    /**
+     * Render multi-polygons
+     */
+    void render_multipoly(cairo_t *cr, const OGRGeometry *geo,
+                          const web_mercator &wm, const layer_style &style);
+    
     /**
      * Render Depth Value
      *
@@ -99,6 +101,30 @@ private:
                      const web_mercator &wm, const layer_style &style);
 
     /**
+     * Render LineString With Points Geometry
+     * Put a dot at every point allong line, mostly for debug purposes
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     */
+    void render_line_with_dots(cairo_t *cr, const OGRLineString *geo,
+                               const web_mercator &wm, const layer_style &style);
+
+    /**
+     * Render Wavy LineString Geometry
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[out] phase Phase of the sin wave for connecting multiple segments
+     */
+    void render_wavy_line(cairo_t *cr, const OGRLineString *geo,
+                          const web_mercator &wm, const layer_style &style, float &phase);
+
+    /**
      * Render Polygon Geometry
      *
      * \param[out] cr Image context
@@ -109,107 +135,107 @@ private:
     void render_poly(cairo_t *cr, const OGRPolygon *geo,
                      const web_mercator &wm, const layer_style &style);
 
-	/**
+    /**
      * Render depth areas with special colors
      *
      */
     void render_depare(cairo_t *cr, const OGRPolygon *geo,
-					 const web_mercator &wm, const layer_style &style,
-					 const OGRFeature *feat);
-	
+                     const web_mercator &wm, const layer_style &style,
+                     const OGRFeature *feat);
+    
     /**
      * Render a buoy with the right shape
      *
      */
     void render_buoy(cairo_t *cr, const OGRPoint *geo,
-					 const web_mercator &wm, const layer_style &style,
-					 const OGRFeature *feat);
+                     const web_mercator &wm, const layer_style &style,
+                     const OGRFeature *feat);
 
     /**
      * Render a beacon with the right shape
      *
      */
     void render_beacon(cairo_t *cr, const OGRPoint *geo,
-					   const web_mercator &wm, const layer_style &style,
-					   const OGRFeature *feat);
+                       const web_mercator &wm, const layer_style &style,
+                       const OGRFeature *feat);
 
-	/**
+    /**
      * Render a fog signal
      *
      */
     void render_fog(cairo_t *cr, const OGRPoint *geo,
-					const web_mercator &wm, const layer_style &style,
-					const OGRFeature *feat);
+                    const web_mercator &wm, const layer_style &style,
+                    const OGRFeature *feat);
 
-	/**
+    /**
      * Render a light
      *
      */
     void render_light(cairo_t *cr, const OGRPoint *geo,
-					  const web_mercator &wm, const layer_style &style,
-					  const OGRFeature *feat);
+                      const web_mercator &wm, const layer_style &style,
+                      const OGRFeature *feat);
 
-	/**
+    /**
      * Render landmarks
      *
      */
     void render_landmark(cairo_t *cr, const OGRPoint *geo,
-						 const web_mercator &wm, const layer_style &style,
-						 const OGRFeature *feat);
+                         const web_mercator &wm, const layer_style &style,
+                         const OGRFeature *feat);
 
-	/**
+    /**
      * Render silo/tank
      *
      */
     void render_silotank(cairo_t *cr, const OGRPoint *geo,
-						 const web_mercator &wm, const layer_style &style,
-						 const OGRFeature *feat);
+                         const web_mercator &wm, const layer_style &style,
+                         const OGRFeature *feat);
 
-	/**
+    /**
      * Render a rock using an icon
      *
      */
     void render_rock(cairo_t *cr, const OGRPoint *geo,
-					 const web_mercator &wm, const layer_style &style,
-					 const OGRFeature *feat);
+                     const web_mercator &wm, const layer_style &style,
+                     const OGRFeature *feat);
 
-	/**
+    /**
      * Render an obstruction using an icon
      *
      */
     void render_obstruction(cairo_t *cr, const OGRPoint *geo,
-							const web_mercator &wm, const layer_style &style,
-							const OGRFeature *feat);
+                            const web_mercator &wm, const layer_style &style,
+                            const OGRFeature *feat);
 
-	/**
+    /**
      * Render a wreck using an icon
      *
      */
     void render_wreck(cairo_t *cr, const OGRPoint *geo,
-					  const web_mercator &wm, const layer_style &style,
-					  const OGRFeature *feat);
+                      const web_mercator &wm, const layer_style &style,
+                      const OGRFeature *feat);
 
-	/**
+    /**
      * Render an archor berth using an icon
      *
      */
     void render_anchor(cairo_t *cr, const OGRPoint *geo,
-					  const web_mercator &wm, const layer_style &style,
-					  const OGRFeature *feat);
+                      const web_mercator &wm, const layer_style &style,
+                      const OGRFeature *feat);
 
-	/**
-	 * Experiment with TSSLPT
-	 */
-	void render_traffic_sep_part(cairo_t *cr, const OGRPolygon *geo,
-								 const web_mercator &wm, const layer_style &style,
-								 const OGRFeature *feat);
+    /**
+     * Experiment with TSSLPT
+     */
+    void render_traffic_sep_part(cairo_t *cr, const OGRPolygon *geo,
+                                 const web_mercator &wm, const layer_style &style,
+                                 const OGRFeature *feat);
 
-	/**
-	 * Show the name of a named area at the centroid of the piece of land
-	 */
-	void render_named_area(cairo_t *cr, const OGRPolygon *geo,
-						   const web_mercator &wm, const layer_style &style,
-						   const OGRFeature *feat);
+    /**
+     * Show the name of a named area at the centroid of the piece of land
+     */
+    void render_named_area(cairo_t *cr, const OGRPolygon *geo,
+                           const web_mercator &wm, const layer_style &style,
+                           const OGRFeature *feat);
 
     /**
      * Set Render Color

@@ -186,7 +186,8 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
                 || layer_name == "LNDARE"
                 || layer_name == "SEAARE"
                 || layer_name == "BUAARE"
-                || layer_name == "LNDRGN")
+                || layer_name == "LNDRGN"
+				|| layer_name == "CBLSUB")
             {
                 // Copy all features from this layer
                 for (const auto &feat : ilayer)
