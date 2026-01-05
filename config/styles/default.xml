@@ -141,6 +141,57 @@
     <marker_size>0</marker_size>
   </layer>
 
+  <!-- Caution Areas -->
+  <layer>
+    <layer_name>CTNARE</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>ef0093</line_color>
+    <line_width>2</line_width>
+    <line_dash>3</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Precautionary Areas -->
+  <layer>
+    <layer_name>PRCARE</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>ef0093</line_color>
+    <line_width>2</line_width>
+    <line_dash>3</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Restricted Area -->
+  <layer>
+    <layer_name>RESARE</layer_name>
+    <verbose>true</verbose>
+    <fill_color>0000</fill_color>
+    <line_color>ef0093</line_color>
+    <line_width>2</line_width>
+    <line_dash>3</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Administrative areas -->
+  <layer>
+   <layer_name>ADMARE</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>5e6865</line_color>
+    <line_width>1</line_width>
+    <line_dash>2</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Pilot Boarding areas -->
+  <layer>
+   <layer_name>PILBOP</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>ef0093</line_color>
+    <line_width>1</line_width>
+    <line_dash>2</line_dash>
+    <marker_size>0</marker_size>
+  </layer>
+
   <!-- Coastline -->
   <layer>
     <layer_name>COALNE</layer_name>
@@ -215,7 +266,7 @@
   <!-- Traffic Separation Zone -->
   <layer>
     <layer_name>TSEZNE</layer_name>
-    <fill_color>dfc9e3</fill_color>
+    <fill_color>80dfc9e3</fill_color>
     <line_color>dfc9e3</line_color>
     <line_width>0</line_width>
     <line_dash>0</line_dash>
@@ -1014,7 +1065,7 @@
     <verbose>true</verbose>
     <fill_color>0000</fill_color>
     <line_color>ffff0000</line_color>
-    <line_width>2</line_width>
+    <line_width>0</line_width>
     <line_dash>0</line_dash>
     <marker_size>0</marker_size>
   </layer>

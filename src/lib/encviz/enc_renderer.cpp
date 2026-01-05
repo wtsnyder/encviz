@@ -133,10 +133,12 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         scale_min = 675000;
     if (z >= 11)
         scale_min = 35000;
+    if (z >= 12)
+        scale_min = 45000;
     if (z >= 13)
-        scale_min = 4500;
-    if (z >= 15)
-        scale_min = 2200;
+        scale_min = 22000 - 1;
+    if (z >= 14)
+        scale_min = 12000;
             
     // Export all data in this tile
     GDALDataset *tile_data = GetGDALDriverManager()->GetDriverByName("Memory")->
@@ -152,11 +154,41 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         cairo_image_surface_create(CAIRO_FORMAT_ARGB32, tile_size_, tile_size_);
     cairo_t *cr = cairo_create(surface);
                                                           
-    // Flood background w/ white 0xffffff
+    // Flood background w/ fixed color
     if (style.background.has_value())
     {
         set_color(cr, style.background.value());
         cairo_paint(cr);
+    }
+
+    // M_COVR polygons...
+    OGRLayer *coverage_layer = tile_data->GetLayerByName("M_COVR");
+    // New geometry collection to compile all coverage polygons
+    GeoPtr coverage_multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
+    if (coverage_layer)
+    {
+        for (const auto &feat : coverage_layer)
+        {
+            OGRGeometry *geo = feat->GetGeometryRef();
+            OGRwkbGeometryType gtype = geo->getGeometryType();
+            switch (gtype)
+            {
+                case wkbPolygon: // 6
+                    // Copy all coverage polygons on this layer into one geometry object
+                    coverage_multi_poly->toMultiPolygon()->addGeometry(geo);
+                    break;
+            case wkbMultiPolygon: // 10
+                for (const OGRPolygon *child : geo->toMultiPolygon())
+                {
+                    // Copy all coverage polygons on this layer into one geometry object
+                    coverage_multi_poly->toMultiPolygon()->addGeometry(child);
+                }
+                break;
+            default:
+                break;
+            }
+            
+        }
     }
 
     std::cout << "Render Tile: " << std::endl;
@@ -171,9 +203,6 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         auto layer_start = std::chrono::high_resolution_clock::now();
         if (lstyle.verbose)
             printf("  Layer: %s\n", lstyle.layer_name.c_str());
-
-        // New geometry collection to compile all the polygons
-        GeoPtr multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
     
         // Render feature geometry in this layer
         OGRLayer *tile_layer = tile_data->GetLayerByName(lstyle.layer_name.c_str());
@@ -188,12 +217,12 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
                 switch (gtype)
                 {
                 case wkbPolygon: // 6
-                    render_poly(cr, geo->toPolygon(), wm, lstyle);
+                    render_poly_borders(cr, geo->toPolygon(), wm, lstyle);
                     break;
                 case wkbMultiPolygon: // 10
                     for (const OGRPolygon *child : geo->toMultiPolygon())
                     {
-                        render_poly(cr, child, wm, lstyle);
+                        render_poly_borders(cr, child, wm, lstyle);
                     }
                     break;
                 default:
@@ -223,8 +252,8 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
             else
             {
                 // render basic geometries
-                float phase = 0;
-                render_geo(cr, geo, wm, lstyle, phase, multi_poly.get());
+                double phase = 0;
+                render_geo(cr, geo, wm, lstyle, phase, coverage_multi_poly.get());
             }
             
             // Render anything with a buoy shape as a buoy
@@ -309,17 +338,6 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
             
         }
 
-        // Render all polygons together after other features
-        // because we have now built up the whole list and can
-        // union them together.
-        // Skip if DEPARE though because those are all touching
-        // but need to be different colors
-        if (lstyle.layer_name != "DEPARE"
-            && lstyle.layer_name != "DRGARE")
-        {
-            render_multipoly(cr, multi_poly.get(), wm, lstyle);
-        }
-
         auto layer_end = std::chrono::high_resolution_clock::now();
         auto layer_duration = std::chrono::duration_cast<std::chrono::microseconds>(layer_end - layer_start);
 
@@ -374,8 +392,8 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
  */
 void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
                               const web_mercator &wm, const layer_style &style,
-                              float &phase,
-                              OGRGeometry *late_render_polygons)
+                              double &phase,
+                              OGRGeometry *coverage_polygons)
 {
     if (style.verbose)
         std::cout << "Render GEO: " << geo->getGeometryName() << std::endl;
@@ -418,36 +436,34 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
             }
             else
             {
-                render_line(cr, geo->toLineString(), wm, style);
+                render_line(cr, geo->toLineString(), wm, style, phase);
             }
             break;
 
         case wkbMultiLineString: // 5
             for (const OGRGeometry *child : geo->toMultiLineString())
             {
-                render_geo(cr, child, wm, style, phase, late_render_polygons);
+                render_geo(cr, child, wm, style, phase, coverage_polygons);
             }
             break;
 
         case wkbPolygon: // 6
-            //render_poly(cr, geo->toPolygon(), wm, style);
-            // Copy all polygons on this layer into one geometry object
-            late_render_polygons->toMultiPolygon()->addGeometry(geo);
+            render_poly(cr, geo->toPolygon(), wm, style);
+            render_poly_borders(cr, geo->toPolygon(), wm, style, coverage_polygons);
             break;
 
         case wkbMultiPolygon: // 10
             for (const OGRPolygon *child : geo->toMultiPolygon())
             {
-                //render_poly(cr, child, wm, style);
-                // Copy all polygons on this layer into one geometry object
-                late_render_polygons->toMultiPolygon()->addGeometry(child);
+                render_poly(cr, child, wm, style);
+                render_poly_borders(cr, child, wm, style, coverage_polygons);
             }
             break;
 
         case wkbGeometryCollection: // 7
             for (const OGRGeometry *child : geo->toGeometryCollection())
             {
-                render_geo(cr, child, wm, style, phase, late_render_polygons);
+                render_geo(cr, child, wm, style, phase, coverage_polygons);
             }
             break;
 
@@ -457,6 +473,7 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
     }
 }
 
+// TODO: Currently not used
 void enc_renderer::render_multipoly(cairo_t *cr, const OGRGeometry *geo,
                                     const web_mercator &wm, const layer_style &style)
 {
@@ -598,7 +615,7 @@ void enc_renderer::render_point(cairo_t *cr, const OGRPoint *geo,
  * \param[in] style Feature style
  */
 void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
-                               const web_mercator &wm, const layer_style &style)
+                               const web_mercator &wm, const layer_style &style, double &phase)
 {
     if (style.line_color.alpha == 0
         || style.line_width == 0)
@@ -606,6 +623,8 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
     
     // Pass OGR points to cairo
     bool first = true;
+    coord prev;
+    double new_phase = phase;
     for (auto &point : geo)
     {
         // Convert lat/lon to pixel coordinates
@@ -616,10 +635,15 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
         {
             cairo_move_to(cr, c.x, c.y);
             first = false;
+            prev = c;
         }
         else
         {
+            float length = std::hypot((c.x - prev.x),(c.y - prev.y));
             cairo_line_to(cr, c.x, c.y);
+            prev = c;
+
+            new_phase += length;
         }
     }
 
@@ -634,18 +658,20 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
         break;
     case 1:
         dash = style.line_width;
-        cairo_set_dash(cr, &dash, 1, 0);
+        cairo_set_dash(cr, &dash, 1, phase);
         break;
     case 2:
         dash = style.line_width * 2;
-        cairo_set_dash(cr, &dash, 1, 0);
+        cairo_set_dash(cr, &dash, 1, phase);
         break;
     case 3:
         dash = style.line_width * 10;
-        cairo_set_dash(cr, &dash, 1, 0);
+        cairo_set_dash(cr, &dash, 1, phase);
         break;  
     }
     cairo_stroke(cr);
+
+    phase = new_phase;
 
     // reset dash to none
     cairo_set_dash(cr, nullptr, 0, 0);
@@ -706,7 +732,7 @@ void enc_renderer::render_line_with_dots(cairo_t *cr, const OGRLineString *geo,
  */
 void enc_renderer::render_wavy_line(cairo_t *cr, const OGRLineString *geo,
                                     const web_mercator &wm, const layer_style &style,
-                                    float &phase)
+                                    double &phase)
 {
     bool first = true;
     coord prev;
@@ -735,11 +761,13 @@ void enc_renderer::render_wavy_line(cairo_t *cr, const OGRLineString *geo,
 
             cairo_move_to(cr, 0, (5 * sin((phase)/2)));
 
-            for (float x = 0; x <= length; x+=0.05)
+            for (float x = 0; x < length; x+=1.0)
             {
                 float y = 5 * sin((x + phase)/2);
                 cairo_line_to(cr, x, y);
             }
+            cairo_line_to(cr,length, 5 * sin((length + phase)/2));
+            
             phase += length;
 
             cairo_set_matrix(cr, &matrix);
@@ -765,7 +793,7 @@ void enc_renderer::render_wavy_line(cairo_t *cr, const OGRLineString *geo,
 void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
                                const web_mercator &wm, const layer_style &style)
 {
-    if (geo->IsEmpty() || !geo->IsValid())
+    if (geo->IsEmpty() || !geo->IsValid() || style.fill_color.alpha == 0)
         return;
     //std::cout << "Render polygon: " << geo->exportToJson() << std::endl;
     // FIXME - Throw a fit if we see interior rings (not handled)
@@ -793,9 +821,81 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
         }
     }
 
-    // Draw line and fill
+    // Fill the polygon
     set_color(cr, style.fill_color);
-    cairo_fill_preserve(cr);
+    cairo_fill(cr);
+}
+
+/**
+ * Render Polygon Geometry
+ *
+ * \param[out] cr Image context
+ * \param[in] geo Feature geometry
+ * \param[in] wm Web Mercator point mapper
+ * \param[in] style Feature style
+ * \param[in] coverage_polygons Lines will not be rendered where they overlap with
+ *                              with coverage bounds
+ */
+void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
+                                       const web_mercator &wm, const layer_style &style,
+                                       const OGRGeometry *coverage_polygons)
+{
+    if (geo->IsEmpty() || !geo->IsValid()
+        || style.line_color.alpha == 0
+        || style.line_width == 0)
+        return;
+    //std::cout << "Render polygon: " << geo->exportToJson() << std::endl;
+    // FIXME - Throw a fit if we see interior rings (not handled)
+    if (geo->getNumInteriorRings() != 0)
+    {
+        //throw std::runtime_error("Unhandled polygon with interior rings");
+    }
+
+    bool clip_coverage = (coverage_polygons != nullptr && !coverage_polygons->IsEmpty());
+
+    // Pass OGR points to cairo
+    bool first = true;
+    OGRPoint last_point;
+    for (auto &point : geo->getExteriorRing())
+    {
+        // Convert lat/lon to pixel coordinates
+        coord c = wm.point_to_pixels(point);
+
+        // Mark first point as pen-down
+        if (first)
+        {
+            cairo_move_to(cr, c.x, c.y);
+            first = false;
+        }
+        else
+        {
+            if (clip_coverage)
+            {
+                bool last_touches = false;
+                bool this_touches = false;
+                for (const OGRPolygon *child : coverage_polygons->toMultiPolygon())
+                {
+                    last_touches = last_touches || child->Touches(&last_point);
+                    this_touches = this_touches || child->Touches(&point);
+                }
+                
+                if (last_touches && this_touches)
+                    // don't draw the line on the border between maps
+                    cairo_move_to(cr, c.x, c.y);
+                else
+                    // line not co-linear with the border
+                    cairo_line_to(cr, c.x, c.y);
+            }
+            else
+            {
+                cairo_line_to(cr, c.x, c.y);
+            }
+        }
+
+        last_point = point;
+    }
+
+    // Draw the border
     set_color(cr, style.line_color);
     cairo_set_line_width(cr, style.line_width);
     switch (style.line_dash)
@@ -868,6 +968,7 @@ void enc_renderer::render_depare(cairo_t *cr, const OGRPolygon *geo,
     tweaked_style.line_width = 2; // overdraw by 1 px to hide gaps
 
     render_poly(cr, geo, wm, tweaked_style);
+    render_poly_borders(cr, geo, wm, tweaked_style);
 }
 
 void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,

@@ -54,12 +54,13 @@ private:
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
      * \param[out] phase Phase tracking for multi-line strings
-     * \param[out] late_render_polygons All polygons to be rendered at once afterwards
+     * \param[in] coverage_polygons Lines will not be rendered where they overlap with
+     *                              with coverage bounds
      */
     void render_geo(cairo_t *cr, const OGRGeometry *geo,
                     const web_mercator &wm, const layer_style &style,
-                    float &phase,
-                    OGRGeometry *late_render_polygons);
+                    double &phase,
+                    OGRGeometry *coverage_polygons);
 
     /**
      * Render multi-polygons
@@ -96,9 +97,10 @@ private:
      * \param[in] geo Feature geometry
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
+     * \param[in/out] phase Phase of dashing for connecting multiple segments
      */
     void render_line(cairo_t *cr, const OGRLineString *geo,
-                     const web_mercator &wm, const layer_style &style);
+                     const web_mercator &wm, const layer_style &style, double &phase);
 
     /**
      * Render LineString With Points Geometry
@@ -119,10 +121,10 @@ private:
      * \param[in] geo Feature geometry
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
-     * \param[out] phase Phase of the sin wave for connecting multiple segments
+     * \param[in/out] phase Phase of the sin wave for connecting multiple segments
      */
     void render_wavy_line(cairo_t *cr, const OGRLineString *geo,
-                          const web_mercator &wm, const layer_style &style, float &phase);
+                          const web_mercator &wm, const layer_style &style, double &phase);
 
     /**
      * Render Polygon Geometry
@@ -134,6 +136,20 @@ private:
      */
     void render_poly(cairo_t *cr, const OGRPolygon *geo,
                      const web_mercator &wm, const layer_style &style);
+
+    /**
+     * Render Polygon Border Geometry
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[in] coverage_polygons Lines will not be rendered where they overlap with
+     *                              with coverage bounds
+     */
+    void render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
+                             const web_mercator &wm, const layer_style &style,
+                             const OGRGeometry *coverage_polygons = nullptr);
 
     /**
      * Render depth areas with special colors
