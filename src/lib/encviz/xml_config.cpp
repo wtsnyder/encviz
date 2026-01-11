@@ -67,7 +67,7 @@ tinyxml2::XMLElement *xml_query(tinyxml2::XMLElement *root,
 
     if (nodes.empty())
     {
-        throw std::runtime_error("Tag " + std::string(name) + " not found");
+        throw std::runtime_error("Tag " + std::string(name) + " not found in " + std::string(root->Value()) + " on line " + std::to_string(root->GetLineNum()));
     }
     else if (nodes.size() > 1)
     {

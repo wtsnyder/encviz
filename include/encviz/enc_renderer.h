@@ -101,6 +101,18 @@ private:
      */
     void render_line(cairo_t *cr, const OGRLineString *geo,
                      const web_mercator &wm, const layer_style &style, double &phase);
+    
+    /**
+     * Render LineString Geometry as basic solid or dashed lines
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[in/out] phase Phase of dashing for connecting multiple segments
+     */
+    void render_line_basic(cairo_t *cr, const OGRLineString *geo,
+                           const web_mercator &wm, const layer_style &style, double &phase);
 
     /**
      * Render LineString With Points Geometry
@@ -123,11 +135,35 @@ private:
      * \param[in] style Feature style
      * \param[in/out] phase Phase of the sin wave for connecting multiple segments
      */
-    void render_wavy_line(cairo_t *cr, const OGRLineString *geo,
+    void render_line_wavy(cairo_t *cr, const OGRLineString *geo,
                           const web_mercator &wm, const layer_style &style, double &phase);
 
     /**
-     * Render Polygon Geometry
+     * Render LineString Geometry with T Dashed lines
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[in/out] phase Phase of the sin wave for connecting multiple segments
+     */
+    void render_line_dash_t(cairo_t *cr, const OGRLineString *geo,
+                            const web_mercator &wm, const layer_style &style, double &phase);
+
+    /**
+     * Render LineString Geometry with Triangle Dashed lines
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[in/out] phase Phase of the sin wave for connecting multiple segments
+     */
+    void render_line_dash_triangles(cairo_t *cr, const OGRLineString *geo,
+                                    const web_mercator &wm, const layer_style &style, double &phase);
+
+    /**
+     * Render Polygon Geometry, just filled in polygon, no borders
      *
      * \param[out] cr Image context
      * \param[in] geo Feature geometry
