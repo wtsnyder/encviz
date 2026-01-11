@@ -2,27 +2,48 @@
 
 ![build](https://github.com/wtsnyder/encviz/actions/workflows/cmake-build.yml/badge.svg)
 
+## WARNING
+**ENCVIZ IS NOT FOR NAVIGATION**
+
+ENCVIZ is not an S-52 conformant ECDIS or commercial chartplotter.
+Rendered chart data may be incomplete or incorrect.
+Do not rely on it for navigating a vessel.
+
 ## Overview
 
-ENCVIZ is a simple tool for visualization of ENC(S-57) chart data. It includes a
-basic WTMS tile server compatible with various GIS and web mapping tools such as
-Leaflet.
+ENCVIZ is a tool for rendering ENC(S-57) chart data. 
+It includes a basic WTMS tile server compatible with various GIS and web mapping tools such as Leaflet.
+Tiles are rendered dynamically from the S-57 chart files on request.
+This keeps storage requirements low and makes updating charts easy.
+The rendering of png tiles is much more CPU intensive than serving static png tiles though so it is best suited for applications with only a few clients.
 
-The application is currently Linux native, and targets an Ubuntu 24.04 Operating
-System. Other environments may be added as time and interest permits.
+The order and representation of S-57 objects rendered by ENCVIZ is driven by a config file.
+Multiple style config files may be defined to provide charts with different day/dusk/night color schemes or different types of data displayed as seperate tile sets from the same WTMS server.
+ENCVIZ can not yet render all S-57 objects properly but many of the basics (Land, Shoreline, Lakes/Rivers, Depth Contours, Soundings, Buoys, Channels, Rocks, Wrecks, Obstructions) do work.
+
+A sample tile rendering in Leaflet of Newport Harbor:
+
+![sample](https://github.com/wtsnyder/encviz/raw/master/doc/sample_images/NewportHarbor.png "Rendering Of Newport Harbor")
+
+ENCVIZ is currently Linux native, and targets an Ubuntu 24.04 Operating System.
+Instructions to build the WTMS server as a Docker container are below.
+See the [docker compose file](https://github.com/wtsnyder/encviz/tree/master/docker/docker-compose.yml) and [sample leaflet webpage](https://github.com/wtsnyder/encviz/tree/master/web/index.html) to get a sample up and running.
 
 ## Helpful References
+
+NOAA's S-57 Chart Download Page: https://charts.noaa.gov/ENCs/ENCs.shtml
+
+An excelent browser for the S-57 data schema:
 https://www.teledynecaris.com/s-57/frames/S57catalog.htm
 
+Comparison of NOAA and ECDIS symbology:
 https://nauticalcharts.noaa.gov/publications/docs/us-chart-1/ChartNo1.pdf
 
-This appears broken right now but it is usually great
-
-https://nauticalcharts.noaa.gov/enconline/enconline.html
-
+NOAA Browser tools for exploring rendered charts:
+https://nauticalcharts.noaa.gov/enconline/enconline.html ,
 https://devgis.charttools.noaa.gov/pod/
 
-S-52 Standard
+S-52 (ECDIS) Chart Representation Standards:
 
 https://iho.int/uploads/user/pubs/standards/s-52/S-52%20Edition%206.1.1%20-%20June%202015.pdf
 
