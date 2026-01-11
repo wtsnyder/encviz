@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.0"
+   width="150"
+   height="150"
+   id="svg2"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="lattice_beacon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title2982">Q111: Latice Tower</title>
+  <metadata
+     id="metadata3562">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:title>Q111: Latice Tower</dc:title>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3440"
+     inkscape:window-height="1371"
+     id="namedview3560"
+     showgrid="false"
+     inkscape:zoom="5.1925947"
+     inkscape:cx="72.314521"
+     inkscape:cy="65.477862"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="75.106959,76.81886"
+       orientation="1,0"
+       id="guide112"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="42.368028,74.893041"
+       orientation="0,-1"
+       id="guide114"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4" />
+  <path
+     style="fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.921488"
+     d="M 53.42587,6.8780342 49.163989,72.188489 h -7.515886 v 5.212166 h 22.11571 c 1.186249,5.098546 5.743882,8.898108 11.201837,8.898117 5.45977,0 10.017449,-3.797009 11.201837,-8.898117 h 22.115703 v -5.212166 h -7.51588 L 96.188668,6.8780342 Z m 6.191247,6.5368048 H 90.314183 L 90.717334,18.82858 74.96565,25.509367 59.213966,19.202935 Z m 31.416978,10.10757 0.66232,8.926914 -11.057855,-4.204519 z m -32.22328,1.036674 9.301269,3.685721 -9.848402,4.089333 z m 16.154835,6.104857 17.105119,7.055142 0.604726,8.322188 -17.709845,7.199124 -17.681049,-7.4007 0.57593,-8.178205 z m 18.026607,20.071159 0.719912,9.963588 -12.3249,-4.722626 z m -36.110807,0.48954 11.950546,4.751422 -12.670459,5.269759 z m 18.0842,7.170328 19.120874,7.544682 0.460744,6.24884 H 86.167487 C 84.983099,67.087381 80.42542,63.289911 74.96565,63.289911 c -5.457955,9e-6 -10.015588,3.800031 -11.201837,8.898578 h -8.379781 l 0.403151,-5.615317 z m 0,9.474047 c 3.81496,0 6.911159,3.0962 6.911159,6.91116 0,3.814959 -3.096199,6.911159 -6.911159,6.911159 -3.81496,0 -6.911159,-3.0962 -6.911159,-6.911159 0,-3.81496 3.096199,-6.91116 6.911159,-6.91116 z"
+     id="path2558"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccccscccccccccccccccccccccccccccccccccccccccsccccsssss"
+     class="icon" />
+</svg>

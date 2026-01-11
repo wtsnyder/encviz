@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.0"
+   width="150"
+   height="150"
+   id="svg2"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="E23.svg"
+   sodipodi:version="0.32"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title2982">E23: Flare</title>
+  <metadata
+     id="metadata3080">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:title>E23: Flare</dc:title>
+      </cc:Work>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     id="namedview3078"
+     showgrid="false"
+     inkscape:zoom="20.74857"
+     inkscape:cx="74.559354"
+     inkscape:cy="49.497387"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="75,143.22621"
+       orientation="-1,0"
+       id="guide5039"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="-57.755471,75"
+       orientation="0,1"
+       id="guide5041"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4" />
+  <path
+     style="fill:#000407;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.455"
+     d="m 72.721353,36.903392 0.184915,33.165423 c -1.273416,0.171047 -2.876968,2.662826 -3.128724,3.74805 h -3.839062 l -0.05688,2.573594 h 3.895937 c 0.585731,2.517492 2.836138,4.393587 5.531094,4.393597 2.695853,0 4.946282,-1.87484 5.531093,-4.393597 l 3.782188,-0.0142 v -2.573594 l -3.782188,0.0142 c -0.266934,-1.150676 -2.17915,-3.632894 -3.438341,-3.706249 L 77.569653,36.93988 Z m 2.587285,34.780661 c 1.8837,0 3.4125,1.5288 3.4125,3.4125 0,1.8837 -1.5288,3.4125 -3.4125,3.4125 -1.8837,0 -3.4125,-1.5288 -3.4125,-3.4125 0,-1.8837 1.5288,-3.4125 3.4125,-3.4125 z"
+     id="path2520"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccscccccccsssss" />
+  <path
+     style="fill:#000407;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.455"
+     d="m 79.071719,22.31944 c -3.36523,1.44885 -5.280839,5.143439 -5.843259,6.292169 -0.732049,1.521191 -1.078148,3.416495 -0.469327,5.189099 0.419457,1.087304 1.470456,1.98755 2.644146,2.069203 1.12178,0.0021 2.327704,-2.167891 2.360024,-3.255194 0.18484,-3.848541 1.123566,-6.446733 1.308416,-10.295277 z"
+     id="path2520-6"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccccc" />
+</svg>

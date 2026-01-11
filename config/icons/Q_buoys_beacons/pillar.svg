@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.0"
+   width="150"
+   height="150"
+   id="svg2"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="pillar.svg"
+   sodipodi:version="0.32"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title2983">Q23: Green pillar buoy</title>
+  <metadata
+     id="metadata3263">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:title>Q23: Green pillar buoy</dc:title>
+      </cc:Work>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3440"
+     inkscape:window-height="1371"
+     id="namedview3261"
+     showgrid="false"
+     inkscape:zoom="4.742657"
+     inkscape:cx="60.409176"
+     inkscape:cy="72.954886"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="74.852556,102.34739"
+       orientation="1,0"
+       id="guide236"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="8.2232386,74.936591"
+       orientation="0,-1"
+       id="guide238"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 44.876778,75.711673 74.576047,47.663261 86.842524,15.339688 c 3.433474,0.688728 10.715003,0.7902 14.148476,1.478928 l -5.814104,34.977013 2.496657,22.046923 -11.756545,-0.116689 -3.97163,-6.6194 -3.97164,-1.32387 h -5.95745 l -5.29551,4.63357 -1.98582,4.63357 z"
+     id="buoy_color_1"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccccc" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 45.000465,75.23729 29.209591,-27.522258 20.45201,4.725439 2.282707,22.340244 -10.904078,-1.529235 -3.97163,-6.6194 -3.97164,-1.32387 h -5.95745 l -5.29551,4.63357 -1.98582,4.63357 z"
+     id="buoy_color_2"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccc" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:0.809684px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 71.450477,49.797107 3.003329,-6.554955 21.309583,4.740996 -0.606922,7.270662 z"
+     id="buoy_color_3"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     inkscape:connector-curvature="0"
+     d="M 85.79377,12.875166 72.190063,45.89212 43.866705,72.581528 h -6.82826 l -0.109692,4.963516 h 27.258195 c 1.129657,4.855308 5.469864,8.473613 10.667441,8.473624 5.199306,0 9.539557,-3.615863 10.667442,-8.473624 H 106.69216 V 72.581528 H 99.863918 L 97.697524,52.974273 103.28494,14.399252 Z m 2.677087,4.263835 10.312945,1.311683 -7.311237,34.523589 2.166395,19.607255 h -8.117129 c -1.125437,-4.861119 -5.465749,-8.501049 -10.667442,-8.501049 -5.200016,0 -9.540284,3.642296 -10.667441,8.501049 H 52.25806 L 76.753994,47.715207 Z m -7.045981,57.921538 c 0,3.632966 -2.948492,6.581466 -6.581456,6.581466 -3.632962,0 -6.581456,-2.9485 -6.581456,-6.581466 0,-3.632967 2.948494,-6.581451 6.581456,-6.581451 3.632964,0 6.581456,2.948484 6.581456,6.581451 z"
+     id="path27763"
+     style="fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.877528"
+     sodipodi:nodetypes="ccccccsccccccccccccsccccsssss"
+     class="icon" />
+</svg>

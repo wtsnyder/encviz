@@ -38,7 +38,8 @@ void usage(int exit_code)
 int main(int argc, char **argv)
 {
     int opt;
-    encviz::tile_coords tc = encviz::tile_coords::XYZ;
+    //encviz::tile_coords tc = encviz::tile_coords::XYZ;
+    encviz::tile_coords tc = encviz::tile_coords::WTMS;
     std::string out_file = "out.png";
     const char *config_path = nullptr;
     const char *style_name = "default";

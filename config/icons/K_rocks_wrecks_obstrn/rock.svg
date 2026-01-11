@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.0"
+   width="150"
+   height="150"
+   id="svg3425"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="rock.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title2982">K11: Rocks that cover and uncover</title>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>K11: Rocks that cover and uncover</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3440"
+     inkscape:window-height="1371"
+     id="namedview5"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="1.6857143"
+     inkscape:cx="-110.04237"
+     inkscape:cy="37.966101"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3425"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="-78.898304,75"
+       orientation="0,1"
+       id="guide3006"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="75,150"
+       orientation="-1,0"
+       id="guide3008"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+  </sodipodi:namedview>
+  <defs
+     id="defs3427" />
+  <path
+     style="stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
+     d="m 50.058594,45.199219 a 2.53935,2.53935 0 0 0 -1.828125,0.65625 2.53935,2.53935 0 0 0 -0.173828,3.58789 L 69.171875,72.707031 H 43.164062 A 2.53935,2.53935 0 0 0 40.625,75.246094 2.53935,2.53935 0 0 0 43.164062,77.785156 H 69.171875 L 48.056641,101.04883 a 2.53935,2.53935 0 0 0 0.173828,3.58594 2.53935,2.53935 0 0 0 3.585937,-0.17188 L 74.90625,79.025391 97.996094,104.46289 a 2.53935,2.53935 0 0 0 3.587886,0.17188 2.53935,2.53935 0 0 0 0.17383,-3.58594 L 80.640625,77.785156 h 26.007815 a 2.53935,2.53935 0 0 0 2.53906,-2.539062 2.53935,2.53935 0 0 0 -2.53906,-2.539063 H 80.640625 L 101.75781,49.443359 a 2.53935,2.53935 0 0 0 -0.17383,-3.58789 2.53935,2.53935 0 0 0 -3.587886,0.173828 l -23.089844,25.4375 -23.089844,-25.4375 a 2.53935,2.53935 0 0 0 -1.757812,-0.830078 z"
+     id="path3553"
+     class="icon" />
+</svg>

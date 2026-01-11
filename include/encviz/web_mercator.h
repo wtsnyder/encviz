@@ -82,9 +82,17 @@ public:
      * Convert OGR Point to pixels
      *
      * \param[in] point OGR point (deg)
-     * \return Output coordinate (meters)
+     * \return Output coordinate (pixels)
      */
     coord point_to_pixels(const OGRPoint &point) const;
+
+	/**
+     * Convert OGR Point to meters
+     *
+     * \param[in] point OGR point (deg)
+     * \return Output coordinate (meters)
+     */
+    coord point_to_meters(const OGRPoint &point) const;
 
 private:
 

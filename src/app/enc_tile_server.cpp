@@ -16,6 +16,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -31,7 +32,7 @@ void usage(int exit_code)
            "\n"
            "Options:\n"
            "  -h         - Show help\n"
-           "  -c <path>  - Set config directory (default=~/.config)\n");
+           "  -c <path>  - Set config file (default=~/.encviz/config.xml)\n");
     exit(exit_code);
 }
 
@@ -101,7 +102,7 @@ MHD_Result request_handler(void *cls, struct MHD_Connection *connection,
 int main(int argc, char **argv)
 {
     int opt;
-    const char *config_path = nullptr;
+    const char *config_file = nullptr;
 
     // Parse args
     while ((opt = getopt(argc, argv, "hc:")) != -1)
@@ -115,7 +116,7 @@ int main(int argc, char **argv)
 
             case 'c':
                 // Set config path
-                config_path = optarg;
+                config_file = optarg;
                 break;
 
             default:
@@ -129,7 +130,7 @@ int main(int argc, char **argv)
     GDALAllRegister();
 
     // ENC renderer context
-    encviz::enc_renderer enc_rend(config_path);
+    encviz::enc_renderer enc_rend(config_file);
 
     // Start MHD
     MHD_Daemon *daemon = MHD_start_daemon(MHD_USE_AUTO | MHD_USE_THREAD_PER_CONNECTION,
@@ -137,9 +138,11 @@ int main(int argc, char **argv)
 					  &request_handler, &enc_rend, MHD_OPTION_END);
     if (daemon == nullptr)
     {
-	return 1;
+		std::cerr << "Failed to start MHD Daemon!" << std::endl;
+		return 1;
     }
 
+	std::cerr << "Daemon Running, waiting for requests!" << std::endl;
     // Wait for input
     (void)getchar();
 

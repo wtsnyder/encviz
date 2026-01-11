@@ -39,6 +39,7 @@
 
     // ENCVIZ layers
     var encviz1 = L.tileLayer('http://127.0.0.1:8888/default/{z}/{y}/{x}.png', {
+	maxNativeZoom: 17,
         maxZoom: 30});
     var encviz2 = L.tileLayer('http://127.0.0.1:8888/dusk/{z}/{y}/{x}.png', {
         maxZoom: 30});
@@ -48,12 +49,16 @@
     // Create layer manager
     var baseMaps = {
         "OpenStreetMap": osm,
+
+    };
+    var overlayMaps = {
         "Default": encviz1,
         "Dusk": encviz2,
-        "Night": encviz3
+        "Night": encviz3    
     };
-    var overlayMaps = {};
     var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+    map.addLayer(encviz1)
 
     // Mouse Lat/Long
     let Position = L.Control.extend({ 

@@ -14,6 +14,7 @@
 #include <filesystem>
 #include <gdal_priv.h>
 #include <ogrsf_frmts.h>
+#include <ogr_geometry.h>
 
 namespace encviz
 {
@@ -82,6 +83,11 @@ public:
      */
     bool export_data(GDALDataset *ods, std::vector<std::string> layers,
                      OGREnvelope bbox, int scale_min);
+
+	/**
+	 * Print the contents of a layer
+	 */
+	void print_layer(OGRLayer *layer);
 
 private:
 

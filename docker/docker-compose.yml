@@ -1,0 +1,21 @@
+version: '3'
+services:
+  encviz:
+    image: 'encviz:latest'
+    container_name: encviz
+    pull_policy: never
+    #restart: unless-stopped
+    tty: true # turns out we need this due to console printing?
+    ports:
+      - '8888:8888'
+    volumes:
+      - /home/will/Documents/charts/02Region_ENCs:/encviz/config/charts
+      - /home/will/Documents/charts/meta:/encviz/config/meta
+
+  nginx:
+    image: nginx:1-alpine
+    container_name: encviz_web
+    ports:
+      - 8089:80
+    volumes:
+      - /home/will/Code/encviz/web:/usr/share/nginx/html

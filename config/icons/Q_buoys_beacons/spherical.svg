@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.0"
+   width="150"
+   height="150"
+   id="svg2"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="spherical.svg"
+   sodipodi:version="0.32"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title2983">Q22: White spherical buoy</title>
+  <metadata
+     id="metadata3422">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:title>Q22: White spherical buoy</dc:title>
+      </cc:Work>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3440"
+     inkscape:window-height="1371"
+     id="namedview3420"
+     showgrid="false"
+     inkscape:zoom="4.95874"
+     inkscape:cx="32.568757"
+     inkscape:cy="79.254004"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="75.003303,61.316622"
+       orientation="1,0"
+       id="guide236"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="-6.049924,74.980942"
+       orientation="0,-1"
+       id="guide238"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 53.571798,73.490609 c 0,0 -5.167784,-31.655091 6.976173,-39.680932 16.066543,-10.618247 34.761711,-2.945622 44.099139,8.778568 6.32171,7.937624 -0.88841,30.429265 -0.88841,30.429265 l -18.534295,-0.66194 -3.97163,-6.6194 -3.97164,-1.32387 h -5.95745 l -5.29551,4.63357 -1.98582,4.63357 z"
+     id="buoy_color_1"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="csscccccccc" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 51.637714,64.74359 c -1.704518,-8.335003 2.277985,-16.753079 2.277985,-16.753079 l 53.803071,14.967844 -3.12206,10.856521 -18.534295,-0.66194 -3.97163,-6.6194 -3.97164,-1.32387 h -5.95745 l -5.29551,4.63357 -1.98582,4.63357 c 0,0 -10.81665,2.129803 -13.242651,-9.733216 z"
+     id="buoy_color_2"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="scccccccccs" />
+  <path
+     fill="none"
+     style="display:inline;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 51.16671,51.047786 3.442798,-8.722257 54.245352,16.230392 -1.69961,8.414171 z"
+     id="buoy_color_3"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     d="m 79.492962,25.291524 c -5.67213,0.04898 -11.40588,1.52368 -16.625,4.59375 -14.66147,8.6244 -20.34244,26.81223 -13.8125,42.0625 h -8.0625 v 5.65625 h 21.71875 c 1.28732,5.53295 6.23327,9.65624 12.15625,9.65625 5.92495,0 10.87095,-4.12052 12.15625,-9.65625 l 32.281248,0.03125 v -5.65625 l -8.59375,-0.03125 c 4.23899,-9.77187 3.57606,-20.76132 -1.96875,-30.1875 -5.84775,-9.94118 -16.072408,-15.72806 -26.812498,-16.40625 -0.80551,-0.05086 -1.6272,-0.0695 -2.4375,-0.0625 z m 0.75,6.9375 c 8.94702,0.12249 17.58881,4.79785 22.468748,13.09375 5.04512,8.5767 5.07245,18.06388 0.125,26.625 l -15.812498,-0.03125 c -1.2853,-5.53573 -6.2313,-9.65625 -12.15625,-9.65625 -5.92298,10e-6 -10.86893,4.1233 -12.15625,9.65625 h -5.84375 c -7.20997,-12.59943 -2.98519,-28.61901 9.5625,-36 4.34547,-2.55616 9.12597,-3.75166 13.8125,-3.6875 z m -5.375,35.03125 c 4.14,0 7.5,3.36 7.5,7.5 0,4.14 -3.36,7.5 -7.5,7.5 -4.14,0 -7.5,-3.36 -7.5,-7.5 0,-4.14 3.36,-7.5 7.5,-7.5 z"
+     id="path93160"
+     style="fill-opacity:1;fill-rule:evenodd;stroke:none"
+     class="icon" />
+</svg>

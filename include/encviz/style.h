@@ -9,9 +9,12 @@
 
 #include <cstdint>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <optional>
 #include <tinyxml2.h>
+#include <filesystem>
+#include <map>
 
 namespace encviz
 {
@@ -19,7 +22,7 @@ namespace encviz
 /// Simple color map
 struct color
 {
-    /// Red channel (8 bit)
+    /// Alpha channel
     uint8_t alpha{255};
 
     /// Red channel (8 bit)
@@ -32,11 +35,34 @@ struct color
     uint8_t green{0};
 };
 
+// Print colors to css color format
+std::ostream& operator<<(std::ostream& os, const color& c);
+
+enum MarkerShape
+{
+	CIRCLE_MARKER,
+	SQUARE_MARKER
+};
+
+struct DepareColors
+{
+	color foreshore;
+	color very_shallow;
+	color medium_shallow;
+	color medium_deep;
+	color deep;
+};
+
+typedef std::map<std::string, std::filesystem::path> IconStyle;
+
 /// Style for a single layer
 struct layer_style
 {
     /// Name of layer
     std::string layer_name;
+
+	/// Verbose printing
+	bool verbose;
 
     /// Fill color
     color fill_color;
@@ -44,11 +70,28 @@ struct layer_style
     /// Line color
     color line_color;
 
-    /// Line color
+    /// Line width
     int line_width{1};
 
-    /// Circular marker radius
+    /// Line dash style
+    int line_dash;
+
+    /// Circular marker radius, or box edge
     int marker_size;
+
+	/// Shape of marker
+	MarkerShape marker_shape;
+
+	/// Color of icon
+	color icon_color;
+
+	/// Size of icon
+	int icon_size;
+
+	IconStyle icons;
+
+	/// Colors only used for DEPARE, WRECKS, OBSTRN layers
+	DepareColors depare_colors;
 
     /// Text render attribute
     std::string attr_name;
@@ -84,7 +127,12 @@ color parse_color(tinyxml2::XMLElement *node);
  * \param[in] node Layer element
  * \return Parsed layer style
  */
-layer_style parse_layer(tinyxml2::XMLElement *node);
+layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path &svg_path);
+
+ /**
+  * Parse Icon
+  */
+std::pair<std::string, std::filesystem::path> parse_icon(tinyxml2::XMLElement *node, std::filesystem::path svg_path);
 
 /**
  * Load Style from File
@@ -92,6 +140,6 @@ layer_style parse_layer(tinyxml2::XMLElement *node);
  * \param[in] filename Path to style file
  * \return Loaded style
  */
-render_style load_style(const std::string &filename);
+render_style load_style(const std::string &filename, std::filesystem::path svg_path);
 
 }; // ~namespace encviz
