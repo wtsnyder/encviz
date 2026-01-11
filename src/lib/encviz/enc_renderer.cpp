@@ -426,17 +426,25 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
             break;
 
         case wkbLineString: // 2
-            if (style.line_dash == 4) // wavy
+            switch (style.line_style)
             {
-                render_wavy_line(cr, geo->toLineString(), wm, style, phase);
-            }
-            else if (style.line_dash == 5) // dots
-            {
-                render_line_with_dots(cr, geo->toLineString(), wm, style);
-            }
-            else
-            {
+            case LineStyle::SOLID:
+            case LineStyle::DASH:
+            case LineStyle::WIDE_DASH:
                 render_line(cr, geo->toLineString(), wm, style, phase);
+                break;
+            case LineStyle::WAVY:
+                render_wavy_line(cr, geo->toLineString(), wm, style, phase);
+                break;
+            case LineStyle::SOLID_WITH_VERTEXES:
+                render_line_with_dots(cr, geo->toLineString(), wm, style);
+                break;
+            case LineStyle::DASH_T:
+                // Not implemented
+                break;
+            case LineStyle::DASH_TRIANGLES:
+                // Not implemented
+                break;
             }
             break;
 
@@ -650,24 +658,23 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
     // Draw line
     set_color(cr, style.line_color);
     cairo_set_line_width(cr, style.line_width);
-    switch (style.line_dash)
+    double dash;
+    switch (style.line_style)
     {
-        double dash;
-    case 0:
+    case LineStyle::SOLID:
         cairo_set_dash(cr, nullptr, 0, 0);
         break;
-    case 1:
+    case LineStyle::DASH:
         dash = style.line_width;
         cairo_set_dash(cr, &dash, 1, phase);
         break;
-    case 2:
-        dash = style.line_width * 2;
-        cairo_set_dash(cr, &dash, 1, phase);
-        break;
-    case 3:
+    case LineStyle::WIDE_DASH:
         dash = style.line_width * 10;
         cairo_set_dash(cr, &dash, 1, phase);
-        break;  
+        break;
+    default:
+        // other line styles not handled here
+        break;
     }
     cairo_stroke(cr);
 
@@ -898,24 +905,23 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
     // Draw the border
     set_color(cr, style.line_color);
     cairo_set_line_width(cr, style.line_width);
-    switch (style.line_dash)
+    double dash = 0;
+    switch (style.line_style)
     {
-    double dash;
-    case 0:
+    case LineStyle::SOLID:
         cairo_set_dash(cr, nullptr, 0, 0);
         break;
-    case 1:
+    case LineStyle::DASH:
         dash = style.line_width;
         cairo_set_dash(cr, &dash, 1, 0);
         break;
-    case 2:
-        dash = style.line_width * 2;
-        cairo_set_dash(cr, &dash, 1, 0);
-    break;
-    case 3:
+    case LineStyle::WIDE_DASH:
         dash = style.line_width * 10;
         cairo_set_dash(cr, &dash, 1, 0);
-    break;
+        break;
+    default:
+        // other line styles not handled here 
+        break;
     }
     cairo_stroke(cr);
 

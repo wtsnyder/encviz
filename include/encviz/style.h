@@ -40,17 +40,28 @@ std::ostream& operator<<(std::ostream& os, const color& c);
 
 enum MarkerShape
 {
-	CIRCLE_MARKER,
-	SQUARE_MARKER
+    CIRCLE_MARKER,
+    SQUARE_MARKER
+};
+
+enum LineStyle
+{
+    SOLID,  ///< A standard stroked line
+    DASH,   ///< A 50/50 dashed line
+    WIDE_DASH, ///< A line with larger dashes
+    WAVY,      ///< A Sin wave (submerged cables)
+    SOLID_WITH_VERTEXES,  ///< Also plot markers at vertex point, largely for debug
+    DASH_T,    ///< A dashed line with inward pointing T shaped dashes
+    DASH_TRIANGLES  ///< A dashed line with inward pointing triangles
 };
 
 struct DepareColors
 {
-	color foreshore;
-	color very_shallow;
-	color medium_shallow;
-	color medium_deep;
-	color deep;
+    color foreshore;
+    color very_shallow;
+    color medium_shallow;
+    color medium_deep;
+    color deep;
 };
 
 typedef std::map<std::string, std::filesystem::path> IconStyle;
@@ -61,8 +72,8 @@ struct layer_style
     /// Name of layer
     std::string layer_name;
 
-	/// Verbose printing
-	bool verbose;
+    /// Verbose printing
+    bool verbose;
 
     /// Fill color
     color fill_color;
@@ -74,24 +85,24 @@ struct layer_style
     int line_width{1};
 
     /// Line dash style
-    int line_dash;
+    LineStyle line_style;
 
     /// Circular marker radius, or box edge
     int marker_size;
 
-	/// Shape of marker
-	MarkerShape marker_shape;
+    /// Shape of marker
+    MarkerShape marker_shape;
 
-	/// Color of icon
-	color icon_color;
+    /// Color of icon
+    color icon_color;
 
-	/// Size of icon
-	int icon_size;
+    /// Size of icon
+    int icon_size;
 
-	IconStyle icons;
+    IconStyle icons;
 
-	/// Colors only used for DEPARE, WRECKS, OBSTRN layers
-	DepareColors depare_colors;
+    /// Colors only used for DEPARE, WRECKS, OBSTRN layers
+    DepareColors depare_colors;
 
     /// Text render attribute
     std::string attr_name;
@@ -120,6 +131,12 @@ struct render_style
  * \return Parsed color code
  */
 color parse_color(tinyxml2::XMLElement *node);
+
+/**
+ * Parse line style strings to enum
+ *
+ */
+LineStyle parse_line_style(tinyxml2::XMLElement *node);
 
 /**
  * Parse Layer Style
