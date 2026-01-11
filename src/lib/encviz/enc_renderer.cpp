@@ -426,26 +426,7 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
             break;
 
         case wkbLineString: // 2
-            switch (style.line_style)
-            {
-            case LineStyle::SOLID:
-            case LineStyle::DASH:
-            case LineStyle::WIDE_DASH:
-                render_line(cr, geo->toLineString(), wm, style, phase);
-                break;
-            case LineStyle::WAVY:
-                render_wavy_line(cr, geo->toLineString(), wm, style, phase);
-                break;
-            case LineStyle::SOLID_WITH_VERTEXES:
-                render_line_with_dots(cr, geo->toLineString(), wm, style);
-                break;
-            case LineStyle::DASH_T:
-                // Not implemented
-                break;
-            case LineStyle::DASH_TRIANGLES:
-                // Not implemented
-                break;
-            }
+            render_line(cr, geo->toLineString(), wm, style, phase);
             break;
 
         case wkbMultiLineString: // 5
@@ -621,9 +602,43 @@ void enc_renderer::render_point(cairo_t *cr, const OGRPoint *geo,
  * \param[in] geo Feature geometry
  * \param[in] wm Web Mercator point mapper
  * \param[in] style Feature style
+ * \param[in/out] phase Phase of dashing for connecting multiple segments
  */
 void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
-                               const web_mercator &wm, const layer_style &style, double &phase)
+                 const web_mercator &wm, const layer_style &style, double &phase)
+{
+    switch (style.line_style)
+    {
+    case LineStyle::SOLID:
+    case LineStyle::DASH:
+    case LineStyle::WIDE_DASH:
+        render_line_basic(cr, geo, wm, style, phase);
+        break;
+    case LineStyle::WAVY:
+        render_line_wavy(cr, geo, wm, style, phase);
+        break;
+    case LineStyle::SOLID_WITH_VERTEXES:
+        render_line_with_dots(cr, geo, wm, style);
+        break;
+    case LineStyle::DASH_T:
+        render_line_dash_t(cr, geo, wm, style, phase);
+        break;
+    case LineStyle::DASH_TRIANGLES:
+        render_line_dash_triangles(cr, geo, wm, style, phase);
+        break;
+    }
+}
+
+/**
+ * Render LineString Geometry as basic solid or dashed lines
+ *
+ * \param[out] cr Image context
+ * \param[in] geo Feature geometry
+ * \param[in] wm Web Mercator point mapper
+ * \param[in] style Feature style
+ */
+void enc_renderer::render_line_basic(cairo_t *cr, const OGRLineString *geo,
+                                     const web_mercator &wm, const layer_style &style, double &phase)
 {
     if (style.line_color.alpha == 0
         || style.line_width == 0)
@@ -696,6 +711,10 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
 void enc_renderer::render_line_with_dots(cairo_t *cr, const OGRLineString *geo,
                                          const web_mercator &wm, const layer_style &style)
 {
+    if (style.line_color.alpha == 0
+        || style.line_width == 0)
+        return;
+    
     // Pass OGR points to cairo
     bool first = true;
     for (auto &point : geo)
@@ -737,10 +756,14 @@ void enc_renderer::render_line_with_dots(cairo_t *cr, const OGRLineString *geo,
  * \param[in] style Feature style
  * \param[out] phase Phase of the sin wave for connecting multiple segments
  */
-void enc_renderer::render_wavy_line(cairo_t *cr, const OGRLineString *geo,
+void enc_renderer::render_line_wavy(cairo_t *cr, const OGRLineString *geo,
                                     const web_mercator &wm, const layer_style &style,
                                     double &phase)
 {
+    if (style.line_color.alpha == 0
+        || style.line_width == 0)
+        return;
+    
     bool first = true;
     coord prev;
     for (auto &point : geo)
@@ -751,34 +774,42 @@ void enc_renderer::render_wavy_line(cairo_t *cr, const OGRLineString *geo,
         // Mark first point as pen-down
         if (first)
         {
-            //cairo_move_to(cr, c.x, c.y);
             first = false;
             prev = c;
         }
         else
         {
+            // Render sin wave wavy line
+
+            // Get line segment angle/length
             double angle = std::atan2((c.y - prev.y), (c.x - prev.x));
             float length = std::hypot((c.x - prev.x),(c.y - prev.y));
 
+            // Store previous tranform matrix
             cairo_matrix_t matrix;
             cairo_get_matrix(cr, &matrix);
-            
+
+            // Rotate so 0,0 is beginning of line,
+            // x is along line and y in perpendicular
             cairo_translate(cr, prev.x, prev.y);
             cairo_rotate(cr, angle);
 
+            // Move to starting y coordinate at x=0
             cairo_move_to(cr, 0, (5 * sin((phase)/2)));
 
+            // Plot the sin wave line points
             for (float x = 0; x < length; x+=1.0)
             {
                 float y = 5 * sin((x + phase)/2);
                 cairo_line_to(cr, x, y);
             }
             cairo_line_to(cr,length, 5 * sin((length + phase)/2));
-            
+
+            // Compute the new sin wave phase
             phase += length;
 
+            // Restore transform
             cairo_set_matrix(cr, &matrix);
-            cairo_move_to(cr, c.x, c.y);
             prev = c;
         }
     }
@@ -789,8 +820,130 @@ void enc_renderer::render_wavy_line(cairo_t *cr, const OGRLineString *geo,
     cairo_stroke(cr);
 }
 
+void enc_renderer::render_line_dash_t(cairo_t *cr, const OGRLineString *geo,
+                        const web_mercator &wm, const layer_style &style, double &phase)
+{
+    if (style.line_color.alpha == 0
+        || style.line_width == 0)
+        return;
+
+    bool first = true;
+    coord prev;
+    for (auto &point : geo)
+    {
+        // Convert lat/lon to pixel coordinates
+        coord c = wm.point_to_pixels(point);
+
+        // Mark first point as pen-down
+        if (first)
+        {
+            first = false;
+            prev = c;
+        }
+        else
+        {
+            // Render T dash line segment
+
+            // Get line segment angle/length
+            double angle = std::atan2((c.y - prev.y), (c.x - prev.x));
+            double length = std::hypot((c.x - prev.x),(c.y - prev.y));
+
+            // Store previous tranform matrix
+            cairo_matrix_t matrix;
+            cairo_get_matrix(cr, &matrix);
+
+            // Rotate so 0,0 is beginning of line,
+            // x is along line and y in perpendicular
+            cairo_translate(cr, prev.x, prev.y);
+            cairo_rotate(cr, angle);
+
+            // Render T's here
+            //
+            // -----------
+            //      |
+            //
+
+            float dash_size = style.line_width * 10;
+            float gap_size = style.line_width * 5;
+            float stem_pos =  style.line_width * 5.5;
+            float stem_height =  style.line_width * 5;
+            double pattern_len = dash_size + gap_size;
+
+            // Move to start
+            cairo_move_to(cr, 0, 0);
+
+            // Draw dashes
+            float x = 0;
+            while (x < length)
+            {
+                double pattern_pos = std::fmod((x + phase), pattern_len);
+                if (pattern_pos < dash_size)
+                {
+                    // Draw up to the end of this dash
+                    x += std::min(dash_size - pattern_pos, length);
+                    cairo_line_to(cr, x, 0);
+                    x += 1;
+                }
+                else
+                {
+                    // Move to beginning of next dash
+                    x += pattern_len - pattern_pos;
+                    cairo_move_to(cr, x, 0);
+                    x += 1;
+                }
+            }
+
+            // Draw ticks
+            x = 0;
+            while (x < length)
+            {
+                double pattern_pos = std::fmod((x + phase), pattern_len);
+                if (pattern_pos < stem_pos)
+                {
+                    // Move to and draw next tick
+                    x += std::min(stem_pos - pattern_pos, length);
+                    if (x < length)
+                    {
+                        cairo_move_to(cr, x, 0);
+                        cairo_line_to(cr, x, stem_height);
+                    }
+                    x += .1;
+                }
+                else
+                {
+                    // advance to the next pattern instance
+                    x += pattern_len - pattern_pos + 0.1;
+                }
+            }
+            
+            // Compute the new pattern phase
+            phase += length;
+
+            // Restore transform
+            cairo_set_matrix(cr, &matrix);
+            prev = c;
+        }
+    }
+    
+    set_color(cr, style.line_color);
+    cairo_set_line_width(cr, style.line_width);
+    cairo_set_dash(cr, nullptr, 0, 0); // dash always none
+    cairo_stroke(cr);
+    
+}
+
+void enc_renderer::render_line_dash_triangles(cairo_t *cr, const OGRLineString *geo,
+                                              const web_mercator &wm, const layer_style &style, double &phase)
+{
+    if (style.line_color.alpha == 0
+        || style.line_width == 0)
+        return;
+
+    // TODO: Draw Triangle fancy border
+}
+
 /**
- * Render Polygon Geometry
+ * Render Polygon Geometry, just filled in polygon, no borders
  *
  * \param[out] cr Image context
  * \param[in] geo Feature geometry
@@ -862,16 +1015,24 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
 
     // Pass OGR points to cairo
     bool first = true;
+    //OGRPoint last_point;
+    double phase = 0;
     OGRPoint last_point;
+    OGRPoint point_copy;
+    OGRLineString next_segment;
+    next_segment.setNumPoints(2);
+    
     for (auto &point : geo->getExteriorRing())
     {
         // Convert lat/lon to pixel coordinates
-        coord c = wm.point_to_pixels(point);
+        //coord c = wm.point_to_pixels(point);
 
-        // Mark first point as pen-down
+        point_copy = point;
+
+        // Add the first point to the linestring
         if (first)
         {
-            cairo_move_to(cr, c.x, c.y);
+            next_segment.setPoint(0, &point_copy);
             first = false;
         }
         else
@@ -887,15 +1048,27 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
                 }
                 
                 if (last_touches && this_touches)
-                    // don't draw the line on the border between maps
-                    cairo_move_to(cr, c.x, c.y);
+                {
+                    // don't draw the line where it touches the other polygon
+                    //next_segment.getPoint(1, &last_point);
+                    next_segment.setPoint(0, &last_point);
+                    next_segment.setPoint(1, &point_copy);
+                }
                 else
-                    // line not co-linear with the border
-                    cairo_line_to(cr, c.x, c.y);
+                {
+                    // line not co-linear with the border, draw it
+                    //next_segment.getPoint(1, &last_point);
+                    next_segment.setPoint(0, &last_point);
+                    next_segment.setPoint(1, &point_copy);
+                    render_line(cr, &next_segment, wm, style, phase);
+                }
             }
             else
             {
-                cairo_line_to(cr, c.x, c.y);
+                //next_segment.getPoint(1, &last_point);
+                next_segment.setPoint(0, &last_point);
+                next_segment.setPoint(1, &point_copy);
+                render_line(cr, &next_segment, wm, style, phase);
             }
         }
 
@@ -903,6 +1076,7 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
     }
 
     // Draw the border
+    /*
     set_color(cr, style.line_color);
     cairo_set_line_width(cr, style.line_width);
     double dash = 0;
@@ -927,6 +1101,7 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
 
     // reset dash to none
     cairo_set_dash(cr, nullptr, 0, 0);
+    */
 }
 
 void enc_renderer::render_depare(cairo_t *cr, const OGRPolygon *geo,
