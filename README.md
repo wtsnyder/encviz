@@ -1,5 +1,7 @@
 # ENCVIZ
 
+![build](https://github.com/wtsnyder/encviz/actions/workflows/cmake-build.yml/badge.svg)
+
 ## Overview
 
 ENCVIZ is a simple tool for visualization of ENC(S-57) chart data. It includes a
