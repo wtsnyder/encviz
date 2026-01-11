@@ -60,43 +60,47 @@ $ sudo apt install cmake libcairo2-dev libgdal-dev libgtest-dev libmicrohttpd-de
 2. Compile the software
 
 ```
-~ $ cd encviz
-encviz $ mkdir build
-encviz $ cd build
-build $ cmake ..
-build $ make -j$(nproc)
-build $ make test
+$ cd encviz
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make -j$(nproc)
+$ make test
 ```
 
 3. Obtain a set of ENC(S-57) charts, such as from NOAA ENC Chart Downloader
 
-4. Create a local user configuration and point ENCVIZ at them
+4. Point ENCVIZ at your chart files
 
+The easiest method is to create a symlink to the charts in the config directory
 ```
-build $ cd ..
-encviz $ rm -rf ~/.encviz
-encviz $ cp config ~/.encviz
-encviz $ gedit ~/.encviz/config.xml
+$ cd encviz/config
+$ ln -s path/to/dir/with/ENC_ROOT charts
 ```
 
+You could also edit the path in `encviz/config/config.xml`
 ```
   <!-- Location of ENC charts -->
   <chart_path>/path/to/your/ENC_ROOT</chart_path>
 ```
 
-5. Start the tile server (be patient on first start)
+5. Start the tile server with the config file (be patient on first start)
 
 ```
-encviz $ cd build
-build $ ./bin/enc_tile_server
-Using config directory: /home/user/.encviz ...
- - Reading /home/user/.encviz/config.xml ...
- - Charts: /home/user/Charts
- - Metadata: /home/user/.encviz/meta
- - Styles: /home/user/.encviz/styles
+$ cd encviz/build
+$ ./bin/enc_tile_server -c ../config/config.xml 
+Using config file: ../config/config.xml ...
+ - Reading ../config/config.xml ...
+ - Charts: ../config/charts
+ - Metadata: ../config/meta
+ - Styles: ../config/styles
+ - SVGs: ../config/icons
  - Tile Size: 256
- - Scale Base: 2e+08
-3562 charts loaded
+ - Scale Base: 1e+08
+Load Chart bounds from cache: "../config/charts/ENC_ROOT/US4NC20M/US4NC20M.000"
+.....
+Load Chart bounds from cache: "../config/charts/ENC_ROOT/US4AK6RW/US4AK6RW.000"
+6598 charts loaded
 ```
 
 6. Point your GIS or Web Map application at ENCVIZ
@@ -105,7 +109,13 @@ Using config directory: /home/user/.encviz ...
 http://127.0.0.1:8888/default/{z}/{y}/{x}.png
 ```
 
-7. Scroll around and enjoy.
+7. For a demo using Leaflet
+```
+$ cd encviz
+$ firefox ./web/index.html
+```
+
+8. Scroll around and enjoy.
 
 ## Docker workflow
 
