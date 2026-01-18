@@ -130,6 +130,26 @@
     <marker_size>0</marker_size>
   </layer>
 
+    <!-- Pipeline Areas -->
+  <layer>
+    <layer_name>PIPARE</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>ef0093</line_color>
+    <line_width>1</line_width>
+    <line_style>dash_triangles</line_style>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Pipeline (Submarine / Land) -->
+  <layer>
+    <layer_name>PIPSOL</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>ff000000</line_color>
+    <line_width>10</line_width>
+    <line_style>solid</line_style>
+    <marker_size>0</marker_size>
+  </layer>
+
   <!-- Caution Areas -->
   <layer>
     <layer_name>CTNARE</layer_name>
@@ -173,6 +193,16 @@
   <!-- Pilot Boarding areas -->
   <layer>
    <layer_name>PILBOP</layer_name>
+    <fill_color>0000</fill_color>
+    <line_color>ef0093</line_color>
+    <line_width>1</line_width>
+    <line_style>dash_triangles</line_style>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Military Practice areas -->
+  <layer>
+   <layer_name>MIPARE</layer_name>
     <fill_color>0000</fill_color>
     <line_color>ef0093</line_color>
     <line_width>1</line_width>
@@ -969,6 +999,51 @@
       <icon>
 	<name>BOYSHP_7</name>
 	<file>Q_buoys_beacons/super_buoy.svg</file>
+      </icon>
+    </icons>
+  </layer>
+
+  <!-- Mooring Facility -->
+  <layer>
+    <layer_name>MORFAC</layer_name>
+    <fill_color>000</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_style>solid</line_style>
+    <marker_size>1</marker_size>
+    <icon_color>000000</icon_color>
+    <icons>
+      <icon>
+	    <name>BOYSHP_0</name>
+	    <file>Q_buoys_beacons/installation_mooring.svg</file>
+      </icon>
+      <icon>
+	    <name>BOYSHP_1</name>
+	    <file>Q_buoys_beacons/conical.svg</file>
+      </icon>
+      <icon>
+	    <name>BOYSHP_2</name>
+	    <file>Q_buoys_beacons/can.svg</file>
+      </icon>
+      <icon>
+	    <name>BOYSHP_3</name>
+	    <file>Q_buoys_beacons/spherical.svg</file>
+      </icon>
+      <icon>
+	    <name>BOYSHP_4</name>
+	    <file>Q_buoys_beacons/pillar.svg</file>
+      </icon>
+      <icon>
+	    <name>BOYSHP_5</name>
+	    <file>Q_buoys_beacons/spar.svg</file>
+      </icon>
+      <icon>
+	    <name>BOYSHP_6</name>
+	    <file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+	    <name>BOYSHP_7</name>
+	    <file>Q_buoys_beacons/super_buoy.svg</file>
       </icon>
     </icons>
   </layer>

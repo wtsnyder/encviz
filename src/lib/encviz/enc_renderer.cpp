@@ -11,8 +11,6 @@
 #include <iostream>
 namespace fs = std::filesystem;
 
-typedef std::unique_ptr<OGRGeometry, decltype(&OGRGeometryFactory::destroyGeometry)> GeoPtr;
-
 namespace encviz
 {
 
@@ -161,35 +159,16 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         cairo_paint(cr);
     }
 
-    // M_COVR polygons...
-    OGRLayer *coverage_layer = tile_data->GetLayerByName("M_COVR");
-    // New geometry collection to compile all coverage polygons
-    GeoPtr coverage_multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
-    if (coverage_layer)
+    // M_COVR polygons
+    GeoPtr coverage_multi_poly = get_layer_multipoly(tile_data, "M_COVR");
+    // LNDARE polygons
+    GeoPtr lndare_multi_poly = get_layer_multipoly(tile_data, "LNDARE");
+    // Add M_COVR polygons to LNDARE polygons
+    for (const OGRPolygon *child : coverage_multi_poly->toMultiPolygon())
     {
-        for (const auto &feat : coverage_layer)
-        {
-            OGRGeometry *geo = feat->GetGeometryRef();
-            OGRwkbGeometryType gtype = geo->getGeometryType();
-            switch (gtype)
-            {
-                case wkbPolygon: // 6
-                    // Copy all coverage polygons on this layer into one geometry object
-                    coverage_multi_poly->toMultiPolygon()->addGeometry(geo);
-                    break;
-            case wkbMultiPolygon: // 10
-                for (const OGRPolygon *child : geo->toMultiPolygon())
-                {
-                    // Copy all coverage polygons on this layer into one geometry object
-                    coverage_multi_poly->toMultiPolygon()->addGeometry(child);
-                }
-                break;
-            default:
-                break;
-            }
-            
-        }
+        lndare_multi_poly->toMultiPolygon()->addGeometry(child);
     }
+
 
     std::cout << "Render Tile: " << std::endl;
     std::cout << " min scale: " << scale_min << std::endl;
@@ -201,17 +180,25 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     for (const auto &lstyle : style.layers)
     {
         auto layer_start = std::chrono::high_resolution_clock::now();
+        std::string layer_name = lstyle.layer_name.c_str();
+        
         if (lstyle.verbose)
             printf("  Layer: %s\n", lstyle.layer_name.c_str());
     
         // Render feature geometry in this layer
         OGRLayer *tile_layer = tile_data->GetLayerByName(lstyle.layer_name.c_str());
+
+        if (lstyle.verbose)
+        {
+            enc_.print_layer(tile_layer);
+        }
+        
         for (const auto &feat : tile_layer)
         {
             OGRGeometry *geo = feat->GetGeometryRef();
             
             // Render M_COVR
-            if (std::string(feat->GetDefnRef()->GetName()) == "M_COVR")
+            if (layer_name == "M_COVR")
             {
                 OGRwkbGeometryType gtype = geo->getGeometryType();
                 switch (gtype)
@@ -230,8 +217,8 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
                 }
             }
             // Render DEPARE and DRGARE
-            else if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE"
-                     || std::string(feat->GetDefnRef()->GetName()) == "DRGARE")
+            else if (layer_name == "DEPARE"
+                     || layer_name == "DRGARE")
             {
                 OGRwkbGeometryType gtype = geo->getGeometryType();
                 switch (gtype)
@@ -253,7 +240,24 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
             {
                 // render basic geometries
                 double phase = 0;
-                render_geo(cr, geo, wm, lstyle, phase, coverage_multi_poly.get());
+
+                if (layer_name == "ACHARE"
+                    || layer_name == "CBLARE"
+                    || layer_name == "CTNARE"
+                    || layer_name == "PRCARE"
+                    || layer_name == "RESARE"
+                    || layer_name == "ADMARE"
+                    || layer_name == "PILBOP")
+                {
+                    // These types of areas should not render borders when against land
+                    render_geo(cr, geo, wm, lstyle, phase, lndare_multi_poly.get());
+                }
+                else
+                {
+                    // All others just don't render borders when on edge of map
+                    render_geo(cr, geo, wm, lstyle, phase, coverage_multi_poly.get());
+                }
+
             }
             
             // Render anything with a buoy shape as a buoy
@@ -271,67 +275,67 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
             }
 
             // Render Fog Signals
-            if (std::string(feat->GetDefnRef()->GetName()) == "FOGSIG")
+            if (layer_name == "FOGSIG")
             {
                 render_fog(cr, geo->toPoint(), wm, lstyle, feat.get());
             }
             // Render Lights
-            else if (std::string(feat->GetDefnRef()->GetName()) == "LIGHTS")
+            else if (layer_name == "LIGHTS")
             {
                 render_light(cr, geo->toPoint(), wm, lstyle, feat.get());
             }
             // Render Landmark
-            else if (std::string(feat->GetDefnRef()->GetName()) == "LNDMRK")
+            else if (layer_name == "LNDMRK")
             {
                 render_landmark(cr, geo->toPoint(), wm, lstyle, feat.get());
             }
             // Render Silo/Tank
-            else if (std::string(feat->GetDefnRef()->GetName()) == "SILTNK")
+            else if (layer_name == "SILTNK")
             {
                 render_silotank(cr, geo->toPoint(), wm, lstyle, feat.get());
             }
             // Render Rocks
-            else if (std::string(feat->GetDefnRef()->GetName()) == "UWTROC")
+            else if (layer_name == "UWTROC")
             {
                 render_rock(cr, geo->toPoint(), wm, lstyle, feat.get());
             }
             // Render Obstructions
-            else if (std::string(feat->GetDefnRef()->GetName()) == "OBSTRN")
+            else if (layer_name == "OBSTRN")
             {
                 render_obstruction(cr, geo->toPoint(), wm, lstyle, feat.get());
             }
             // Render Wrecks
-            else if (std::string(feat->GetDefnRef()->GetName()) == "WRECKS")
+            else if (layer_name == "WRECKS")
             {
                 render_wreck(cr, geo->toPoint(), wm, lstyle, feat.get());
             }
             // Render Anchor Berths
-            else if (std::string(feat->GetDefnRef()->GetName()) == "ACHBRT")
+            else if (layer_name == "ACHBRT")
             {
                 render_anchor(cr, geo->toPoint(), wm, lstyle, feat.get());
             }
             // Render traffic separation scheme parts
-            else if (std::string(feat->GetDefnRef()->GetName()) == "TSSLPT")
+            else if (layer_name == "TSSLPT")
             {
                 render_traffic_sep_part(cr, geo->toPolygon(), wm, lstyle, feat.get());
             }
             // Render name of a land area
-            else if (std::string(feat->GetDefnRef()->GetName()) == "LNDARE")
+            else if (layer_name == "LNDARE")
             {
                 render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
             }
             // Render name of a sea areas
-            else if (std::string(feat->GetDefnRef()->GetName()) == "SEAARE")
+            else if (layer_name == "SEAARE")
             {
                 render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
             }
             // Render name of a land regions
-            else if (std::string(feat->GetDefnRef()->GetName()) == "LNDRGN")
+            else if (layer_name == "LNDRGN")
             {
                 render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
             }
             // Render name of a cities
-            else if (std::string(feat->GetDefnRef()->GetName()) == "BUAARE")
+            else if (layer_name == "BUAARE")
             {
                 render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
             }
@@ -378,6 +382,40 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     GDALClose(tile_data);
 
     return true;
+}
+
+GeoPtr enc_renderer::get_layer_multipoly(GDALDataset *tile_data, std::string layer_name)
+{
+    OGRLayer *this_layer = tile_data->GetLayerByName(layer_name.c_str());
+    // New geometry collection to compile all coverage polygons
+    GeoPtr this_layer_multi_poly(OGRGeometryFactory::createGeometry(wkbMultiPolygon), &OGRGeometryFactory::destroyGeometry);
+    if (this_layer)
+    {
+        for (const auto &feat : this_layer)
+        {
+            OGRGeometry *geo = feat->GetGeometryRef();
+            OGRwkbGeometryType gtype = geo->getGeometryType();
+            switch (gtype)
+            {
+                case wkbPolygon: // 6
+                    // Copy all coverage polygons on this layer into one geometry object
+                    this_layer_multi_poly->toMultiPolygon()->addGeometry(geo);
+                    break;
+            case wkbMultiPolygon: // 10
+                for (const OGRPolygon *child : geo->toMultiPolygon())
+                {
+                    // Copy all coverage polygons on this layer into one geometry object
+                    this_layer_multi_poly->toMultiPolygon()->addGeometry(child);
+                }
+                break;
+            default:
+                break;
+            }
+            
+        }
+    }
+
+    return this_layer_multi_poly;
 }
 
 /**
@@ -1331,7 +1369,17 @@ void enc_renderer::render_buoy(cairo_t *cr, const OGRPoint *geo,
     {
         colors_list = std::vector<std::string>(colors, colors + CSLCount(colors));
         for (auto color : colors_list)
+        {
             colors_list_int.push_back(std::stoi(color));
+        }
+    }
+    if (style.verbose)
+    {
+        std::cout << "Buoy Color Count: " << colors_list.size() << std::endl;
+        for (auto color_code : colors_list_int)
+        {
+            std::cout << "Buoy Color: " << color_code << std::endl;
+        }
     }
 
     // create style sheet to set buoy colors

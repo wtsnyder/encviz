@@ -19,6 +19,8 @@
 namespace encviz
 {
 
+typedef std::unique_ptr<OGRGeometry, decltype(&OGRGeometryFactory::destroyGeometry)> GeoPtr;
+
 class enc_renderer
 {
 public:
@@ -45,6 +47,14 @@ public:
                 int x, int y, int z, const char *style_name);
 
 private:
+
+    /**
+     * Get Layer Multipoly
+     *
+     * Copy all layer features polygons into one multipolygon
+     * and return a unique pointer to it
+     */
+    GeoPtr get_layer_multipoly(GDALDataset *tile_data, std::string layer_name);
 
     /**
      * Render Feature Geometry
