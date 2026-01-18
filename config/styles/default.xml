@@ -106,7 +106,7 @@
     <fill_color>0000</fill_color>
     <line_color>ef0093</line_color>
     <line_width>1</line_width>
-    <line_style>solid</line_style>
+    <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
   </layer>
 
@@ -115,8 +115,8 @@
     <layer_name>CBLARE</layer_name>
     <fill_color>0000</fill_color>
     <line_color>ef0093</line_color>
-    <line_width>2</line_width>
-    <line_style>wide_dash</line_style>
+    <line_width>1</line_width>
+    <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
   </layer>
 
@@ -135,8 +135,8 @@
     <layer_name>CTNARE</layer_name>
     <fill_color>0000</fill_color>
     <line_color>ef0093</line_color>
-    <line_width>2</line_width>
-    <line_style>wide_dash</line_style>
+    <line_width>1</line_width>
+    <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
   </layer>
 
@@ -145,19 +145,18 @@
     <layer_name>PRCARE</layer_name>
     <fill_color>0000</fill_color>
     <line_color>ef0093</line_color>
-    <line_width>2</line_width>
-    <line_style>wide_dash</line_style>
+    <line_width>1</line_width>
+    <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
   </layer>
 
   <!-- Restricted Area -->
   <layer>
     <layer_name>RESARE</layer_name>
-    <verbose>true</verbose>
     <fill_color>0000</fill_color>
     <line_color>ef0093</line_color>
-    <line_width>2</line_width>
-    <line_style>wide_dash</line_style>
+    <line_width>1</line_width>
+    <line_style>dash_t</line_style>
     <marker_size>0</marker_size>
   </layer>
 
@@ -166,7 +165,7 @@
    <layer_name>ADMARE</layer_name>
     <fill_color>0000</fill_color>
     <line_color>5e6865</line_color>
-    <line_width>2</line_width>
+    <line_width>1</line_width>
     <line_style>dash_t</line_style>
     <marker_size>0</marker_size>
   </layer>
@@ -177,7 +176,7 @@
     <fill_color>0000</fill_color>
     <line_color>ef0093</line_color>
     <line_width>1</line_width>
-    <line_style>wide_dash</line_style>
+    <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
   </layer>
 
@@ -296,8 +295,8 @@
     <layer_name>RECTRC</layer_name>
     <fill_color>0000</fill_color>
     <line_color>bdcecb</line_color>
-    <line_width>2</line_width>
-    <line_style>wide_dash</line_style>
+    <line_width>1</line_width>
+    <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
   </layer>
 
@@ -1012,7 +1011,7 @@
   <layer>
     <layer_name>LNDARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>C0000000</line_color>
+    <line_color>FF000000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -1022,7 +1021,7 @@
   <layer>
     <layer_name>SEAARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>C0000000</line_color>
+    <line_color>FF000000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -1032,7 +1031,7 @@
   <layer>
     <layer_name>BUAARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>C0000000</line_color>
+    <line_color>FF000000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -1042,7 +1041,7 @@
   <layer>
     <layer_name>LNDRGN</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>C0000000</line_color>
+    <line_color>FF000000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -1051,7 +1050,6 @@
   <!-- Chart boundaries -->
   <layer>
     <layer_name>M_COVR</layer_name>
-    <verbose>true</verbose>
     <fill_color>0000</fill_color>
     <line_color>ffff0000</line_color>
     <line_width>0</line_width>

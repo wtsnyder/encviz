@@ -229,7 +229,7 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
                     break;
                 }
             }
-            // Render DEPARE
+            // Render DEPARE and DRGARE
             else if (std::string(feat->GetDefnRef()->GetName()) == "DEPARE"
                      || std::string(feat->GetDefnRef()->GetName()) == "DRGARE")
             {
@@ -396,7 +396,7 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
                               OGRGeometry *coverage_polygons)
 {
     if (style.verbose)
-        std::cout << "Render GEO: " << geo->getGeometryName() << std::endl;
+        std::cout << "Render GEO: " << style.layer_name << " : " << geo->getGeometryName() << std::endl;
     // What sort of geometry were we passed?
     OGRwkbGeometryType gtype = geo->getGeometryType();
     switch (gtype)
@@ -607,6 +607,9 @@ void enc_renderer::render_point(cairo_t *cr, const OGRPoint *geo,
 void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
                  const web_mercator &wm, const layer_style &style, double &phase)
 {
+    if (style.verbose)
+        std::cout << "Render Line: " << style.layer_name << std::endl;
+    
     switch (style.line_style)
     {
     case LineStyle::SOLID:
@@ -643,6 +646,12 @@ void enc_renderer::render_line_basic(cairo_t *cr, const OGRLineString *geo,
     if (style.line_color.alpha == 0
         || style.line_width == 0)
         return;
+
+    if (style.verbose)
+    {
+        std::cout << "Render Line Basic: " << style.layer_name << std::endl;
+        std::cout << "                 : line_width = " << style.line_width << std::endl;
+    }
     
     // Pass OGR points to cairo
     bool first = true;
@@ -714,6 +723,9 @@ void enc_renderer::render_line_with_dots(cairo_t *cr, const OGRLineString *geo,
     if (style.line_color.alpha == 0
         || style.line_width == 0)
         return;
+
+    if (style.verbose)
+        std::cout << "Render Line With Dots: " << style.layer_name << std::endl;
     
     // Pass OGR points to cairo
     bool first = true;
@@ -763,6 +775,9 @@ void enc_renderer::render_line_wavy(cairo_t *cr, const OGRLineString *geo,
     if (style.line_color.alpha == 0
         || style.line_width == 0)
         return;
+
+    if (style.verbose)
+        std::cout << "Render Line Wavy: " << style.layer_name << std::endl;
     
     bool first = true;
     coord prev;
@@ -827,8 +842,18 @@ void enc_renderer::render_line_dash_t(cairo_t *cr, const OGRLineString *geo,
         || style.line_width == 0)
         return;
 
+    if (style.verbose)
+        std::cout << "Render Line Dash T: " << style.layer_name << std::endl;
+
     bool first = true;
     coord prev;
+
+    float dash_size = style.line_width * 10;
+    float gap_size = style.line_width * 5;
+    float stem_pos =  style.line_width * 5.5;
+    float stem_height =  style.line_width * 5;
+    double pattern_len = dash_size + gap_size;
+            
     for (auto &point : geo)
     {
         // Convert lat/lon to pixel coordinates
@@ -859,28 +884,24 @@ void enc_renderer::render_line_dash_t(cairo_t *cr, const OGRLineString *geo,
 
             // Render T's here
             //
-            // -----------
             //      |
+            // -----------
             //
-
-            float dash_size = style.line_width * 10;
-            float gap_size = style.line_width * 5;
-            float stem_pos =  style.line_width * 5.5;
-            float stem_height =  style.line_width * 5;
-            double pattern_len = dash_size + gap_size;
 
             // Move to start
             cairo_move_to(cr, 0, 0);
 
             // Draw dashes
-            float x = 0;
+            double x = 0;
             while (x < length)
             {
                 double pattern_pos = std::fmod((x + phase), pattern_len);
                 if (pattern_pos < dash_size)
                 {
                     // Draw up to the end of this dash
-                    x += std::min(dash_size - pattern_pos, length);
+                    x += dash_size - pattern_pos;
+                    x = std::min( x, length);
+                    
                     cairo_line_to(cr, x, 0);
                     x += 1;
                 }
@@ -901,7 +922,9 @@ void enc_renderer::render_line_dash_t(cairo_t *cr, const OGRLineString *geo,
                 if (pattern_pos < stem_pos)
                 {
                     // Move to and draw next tick
-                    x += std::min(stem_pos - pattern_pos, length);
+                    x += stem_pos - pattern_pos;
+                    x = std::min( x, length);
+                    
                     if (x < length)
                     {
                         cairo_move_to(cr, x, 0);
@@ -939,7 +962,169 @@ void enc_renderer::render_line_dash_triangles(cairo_t *cr, const OGRLineString *
         || style.line_width == 0)
         return;
 
-    // TODO: Draw Triangle fancy border
+    if (style.verbose)
+        std::cout << "Render Line Dash Triangle: " << style.layer_name << std::endl;
+
+    bool first = true;
+    coord prev;
+    
+    float dash_size = style.line_width * 30;
+    float gap_size = style.line_width * 4;
+    float tri_center_pos =  dash_size / 2;
+    float tri_height =  dash_size * 0.2;
+    float tri_base = tri_height;
+    float tri_slope = tri_height / tri_base; // 1
+    float tri_start_pos = tri_center_pos - tri_base;
+    float tri_end_pos = tri_center_pos + tri_base;
+    double pattern_len = dash_size + gap_size;
+    
+    for (auto &point : geo)
+    {
+        // Convert lat/lon to pixel coordinates
+        coord c = wm.point_to_pixels(point);
+
+        // Mark first point as pen-down
+        if (first)
+        {
+            first = false;
+            prev = c;
+        }
+        else
+        {
+            // Get line segment angle/length
+            double angle = std::atan2((c.y - prev.y), (c.x - prev.x));
+            double length = std::hypot((c.x - prev.x),(c.y - prev.y));
+
+            // Store previous tranform matrix
+            cairo_matrix_t matrix;
+            cairo_get_matrix(cr, &matrix);
+
+            // Rotate so 0,0 is beginning of line,
+            // x is along line and y is perpendicular
+            cairo_translate(cr, prev.x, prev.y);
+            cairo_rotate(cr, angle);
+
+            /*
+             *Render Triangles's here
+             *      A
+             *     / \
+             *    /   \
+             * -----------
+             */
+
+            // Move to start
+            cairo_move_to(cr, 0, 0);
+
+            // Draw dashes
+            double x = 0;
+            while (x < length)
+            {
+                double pattern_pos = std::fmod((x + phase), pattern_len);
+                if (pattern_pos < dash_size)
+                {
+                    // Draw up to the end of this dash
+                    x += dash_size - pattern_pos;
+                    x = std::min( x, length);
+                    cairo_line_to(cr, x, 0);
+                    x += .1;
+                }
+                else
+                {
+                    // Move to beginning of next dash
+                    x += pattern_len - pattern_pos;
+                    cairo_move_to(cr, x, 0);
+                    x += .1;
+                }
+            }
+
+            // Draw triangles
+            x = 0;
+            while (x < length)
+            {
+                double pattern_pos = std::fmod((x + phase), pattern_len);
+                if (x == 0)
+                {
+                    // Start of pattern, move to the right place
+
+                    if (pattern_pos < tri_start_pos)
+                    {
+                        cairo_move_to(cr, x, 0);
+                    }
+                    else if (pattern_pos < tri_center_pos)
+                    {
+                        double x_tri = tri_base - (tri_center_pos - pattern_pos);
+                        double y_tri = x_tri * tri_slope;
+                        cairo_move_to(cr, x, y_tri);
+                    }
+                    else if (pattern_pos < tri_end_pos)
+                    {
+                        double x_tri = tri_base - (tri_end_pos - pattern_pos);
+                        double y_tri = x_tri * -tri_slope + tri_height;
+                        cairo_move_to(cr, x, y_tri);
+                    }
+
+                    x += .1;
+                }
+                else
+                {
+                    if (pattern_pos < tri_start_pos)
+                    {
+                        // Move to triangle start position
+                        x += tri_start_pos - pattern_pos;
+                        x = std::min( x, length);
+                        if (x < length)
+                        {
+                            cairo_move_to(cr, x, 0);
+                        }
+                        x += .1;
+                    }
+                    else if (pattern_pos < tri_center_pos)
+                    {
+                        // Line to triangle center position
+                        x += tri_center_pos - pattern_pos;
+                        x = std::min( x, length);
+                        
+                        pattern_pos = std::fmod((x + phase), pattern_len);
+                        double x_tri = tri_base - (tri_center_pos - pattern_pos);
+                        double y_tri = x_tri * tri_slope;
+                        cairo_line_to(cr, x, y_tri);
+
+                        x += .1;
+                    }
+                    else if (pattern_pos < tri_end_pos)
+                    {
+                        // Line to triangle end position
+                        x += tri_end_pos - pattern_pos;
+                        x = std::min( x, length);
+                                      
+                        pattern_pos = std::fmod((x + phase), pattern_len);
+                        double x_tri = tri_base - (tri_end_pos - pattern_pos);
+                        double y_tri = x_tri * -tri_slope + tri_height;
+                        cairo_line_to(cr, x, y_tri);
+
+                        x += .1;
+                    }
+                    else
+                    {
+                        // advance to the next pattern instance
+                        x += pattern_len - pattern_pos + 0.1;
+                    }
+                }
+            }
+            
+            // Compute the new pattern phase
+            phase += length;
+
+            // Restore transform
+            cairo_set_matrix(cr, &matrix);
+            prev = c;
+        }
+    }
+    
+    set_color(cr, style.line_color);
+    cairo_set_line_width(cr, style.line_width);
+    cairo_set_dash(cr, nullptr, 0, 0); // dash always none
+    cairo_stroke(cr);
 }
 
 /**
@@ -955,6 +1140,10 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
 {
     if (geo->IsEmpty() || !geo->IsValid() || style.fill_color.alpha == 0)
         return;
+
+    if (style.verbose)
+        std::cout << "Render polygon: " << style.layer_name << std::endl;
+    
     //std::cout << "Render polygon: " << geo->exportToJson() << std::endl;
     // FIXME - Throw a fit if we see interior rings (not handled)
     if (geo->getNumInteriorRings() != 0)
@@ -1000,7 +1189,8 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
                                        const web_mercator &wm, const layer_style &style,
                                        const OGRGeometry *coverage_polygons)
 {
-    if (geo->IsEmpty() || !geo->IsValid()
+    if (geo->IsEmpty()
+        || !geo->IsValid()
         || style.line_color.alpha == 0
         || style.line_width == 0)
         return;
@@ -1075,33 +1265,6 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
         last_point = point;
     }
 
-    // Draw the border
-    /*
-    set_color(cr, style.line_color);
-    cairo_set_line_width(cr, style.line_width);
-    double dash = 0;
-    switch (style.line_style)
-    {
-    case LineStyle::SOLID:
-        cairo_set_dash(cr, nullptr, 0, 0);
-        break;
-    case LineStyle::DASH:
-        dash = style.line_width;
-        cairo_set_dash(cr, &dash, 1, 0);
-        break;
-    case LineStyle::WIDE_DASH:
-        dash = style.line_width * 10;
-        cairo_set_dash(cr, &dash, 1, 0);
-        break;
-    default:
-        // other line styles not handled here 
-        break;
-    }
-    cairo_stroke(cr);
-
-    // reset dash to none
-    cairo_set_dash(cr, nullptr, 0, 0);
-    */
 }
 
 void enc_renderer::render_depare(cairo_t *cr, const OGRPolygon *geo,

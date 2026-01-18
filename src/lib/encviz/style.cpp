@@ -168,10 +168,10 @@ layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path 
     tinyxml2::XMLElement* verbose = node->FirstChildElement("verbose");
     if (verbose)
     {
-        std::string shape = xml_text(xml_query(node, "verbose"));
-        if (shape == "true")
+        std::string text = xml_text(xml_query(node, "verbose"));
+        if (text == "true")
             parsed.verbose = true;
-        else if (shape == "false")
+        else if (text == "false")
             parsed.verbose = false;
         else
             throw std::runtime_error("<verbose> must be either true or false");
@@ -184,6 +184,7 @@ layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path 
     
     parsed.fill_color = parse_color(xml_query(node, "fill_color"));
     parsed.line_color = parse_color(xml_query(node, "line_color"));
+    parsed.line_width = atoi(xml_text(xml_query(node, "line_width")));
     parsed.line_style = parse_line_style(xml_query(node, "line_style"));
     parsed.marker_size = atoi(xml_text(xml_query(node, "marker_size")));
     parsed.marker_shape = CIRCLE_MARKER;
