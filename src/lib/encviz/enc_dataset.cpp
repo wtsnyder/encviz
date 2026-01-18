@@ -188,6 +188,7 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
                 || layer_name == "BUAARE"
                 || layer_name == "LNDRGN"
                 || layer_name == "CBLSUB"
+                //|| layer_name == "RESARE" //< consintent pattern spacing between tiles?
                 || layer_name == "M_COVR")
             {
                 // Copy all features from this layer
