@@ -9,6 +9,7 @@
 #include <encviz/xml_config.h>
 #include <librsvg/rsvg.h>
 #include <iostream>
+
 namespace fs = std::filesystem;
 
 namespace encviz
@@ -108,6 +109,7 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     // Get base tile boundaries
     encviz::web_mercator wm(x, y, z, tc, tile_size_);
     OGREnvelope bbox = wm.get_bbox_deg();
+    OGRPolygon bbox_poly;
 
     // Oversample a bit so not clip text between tiles
     {
@@ -118,6 +120,14 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         bbox.MaxX += oversample * (width/2);
         bbox.MinY -= oversample * (height/2);
         bbox.MaxY += oversample * (height/2);
+
+        OGRLinearRing bbox_ring;
+        bbox_ring.addPoint(bbox.MinX, bbox.MinY);
+        bbox_ring.addPoint(bbox.MinX, bbox.MaxY);
+        bbox_ring.addPoint(bbox.MaxX, bbox.MaxY);
+        bbox_ring.addPoint(bbox.MaxX, bbox.MinY);
+        bbox_ring.addPoint(bbox.MinX, bbox.MinY); // close ring
+        bbox_poly.addRing(&bbox_ring);
     }
 
     // Compute minimum presentation scale, based on average latitude and zoom
@@ -250,12 +260,12 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
                     || layer_name == "PILBOP")
                 {
                     // These types of areas should not render borders when against land
-                    render_geo(cr, geo, wm, lstyle, phase, lndare_multi_poly.get());
+                    render_geo(cr, geo, wm, lstyle, bbox_poly, phase, lndare_multi_poly.get());
                 }
                 else
                 {
                     // All others just don't render borders when on edge of map
-                    render_geo(cr, geo, wm, lstyle, phase, coverage_multi_poly.get());
+                    render_geo(cr, geo, wm, lstyle, bbox_poly, phase, coverage_multi_poly.get());
                 }
 
             }
@@ -426,10 +436,12 @@ GeoPtr enc_renderer::get_layer_multipoly(GDALDataset *tile_data, std::string lay
  * \param[in] wm Web Mercator point mapper
  * \param[in] style Feature style
  * \param[out] phase Phase tracking for multi-line strings
- * \param[out] late_render_polygons All polygons to be rendered at once afterwards
+ * \param[in] coverage_polygons Lines will not be rendered where they overlap with
+ *                              with coverage bounds
  */
 void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
                               const web_mercator &wm, const layer_style &style,
+                              const OGRPolygon &bbox,
                               double &phase,
                               OGRGeometry *coverage_polygons)
 {
@@ -470,27 +482,27 @@ void enc_renderer::render_geo(cairo_t *cr, const OGRGeometry *geo,
         case wkbMultiLineString: // 5
             for (const OGRGeometry *child : geo->toMultiLineString())
             {
-                render_geo(cr, child, wm, style, phase, coverage_polygons);
+                render_geo(cr, child, wm, style, bbox, phase, coverage_polygons);
             }
             break;
 
         case wkbPolygon: // 6
             render_poly(cr, geo->toPolygon(), wm, style);
-            render_poly_borders(cr, geo->toPolygon(), wm, style, coverage_polygons);
+            render_poly_borders(cr, geo->toPolygon(), wm, style, &bbox, coverage_polygons);
             break;
 
         case wkbMultiPolygon: // 10
             for (const OGRPolygon *child : geo->toMultiPolygon())
             {
                 render_poly(cr, child, wm, style);
-                render_poly_borders(cr, child, wm, style, coverage_polygons);
+                render_poly_borders(cr, child, wm, style, &bbox, coverage_polygons);
             }
             break;
 
         case wkbGeometryCollection: // 7
             for (const OGRGeometry *child : geo->toGeometryCollection())
             {
-                render_geo(cr, child, wm, style, phase, coverage_polygons);
+                render_geo(cr, child, wm, style, bbox, phase, coverage_polygons);
             }
             break;
 
@@ -1225,82 +1237,152 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
  */
 void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
                                        const web_mercator &wm, const layer_style &style,
+                                       const OGRPolygon *bbox,
                                        const OGRGeometry *coverage_polygons)
 {
+    // TODO, check units?
+    const double touching = 0.0001;
+    
     if (geo->IsEmpty()
         || !geo->IsValid()
         || style.line_color.alpha == 0
         || style.line_width == 0)
         return;
-    //std::cout << "Render polygon: " << geo->exportToJson() << std::endl;
+    //std::cout << "Render polygon borders: " << geo->exportToJson() << std::endl;
     // FIXME - Throw a fit if we see interior rings (not handled)
     if (geo->getNumInteriorRings() != 0)
     {
         //throw std::runtime_error("Unhandled polygon with interior rings");
     }
 
-    bool clip_coverage = (coverage_polygons != nullptr && !coverage_polygons->IsEmpty());
+    // Generate much smaller list of segments that touch our
+    // geo so we only have to go through coverage_polygon points once
+    GeoPtr segments(OGRGeometryFactory::createGeometry(wkbMultiLineString), &OGRGeometryFactory::destroyGeometry);
+    if (coverage_polygons != nullptr && !coverage_polygons->IsEmpty())
+    {
+        // Loop all coverage polygons
+        for (const OGRPolygon *child : coverage_polygons->toMultiPolygon())
+        {
+            OGRPoint last_point;
+            OGRPoint this_point;
+            OGRLineString line;
+            bool first;
 
-    // Pass OGR points to cairo
+            // check every line segment in the polygon
+            for (auto &point : child->getExteriorRing())
+            {
+                this_point = point;
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    line.setPoint(0, &last_point);
+                    line.setPoint(1, &this_point);
+                    
+                    // check if points are even within draw box
+                    // (probably faster b/c always a 4 point polygon)
+                    if (bbox == nullptr
+                        || bbox->Contains(&this_point) // point1 in box
+                        || bbox->Contains(&last_point) // point2 in box
+                        || bbox->Intersects(&line)) // line between points crosses box
+                    {
+                        // Check if first distance is small
+                        double dist1 = geo->Distance(&this_point);
+                        if (dist1 < touching)
+                        {
+                            // only compute second distance if first is small
+                            double dist2 = geo->Distance(&last_point);
+                    
+                            if (dist2 < touching)
+                            {
+                                // Add a line segment to the list to be checked while
+                                // drawing lines
+                                segments->toMultiLineString()->addGeometry(&line);
+                            }
+                        }
+                    }
+                }
+                last_point = this_point;
+            }
+        }
+    }
+
+
     bool first = true;
-    //OGRPoint last_point;
     double phase = 0;
     OGRPoint last_point;
-    OGRPoint point_copy;
+    OGRPoint this_point;
     OGRLineString next_segment;
     next_segment.setNumPoints(2);
-    
+
+    // Loop all points in the polygon boundary and maybe draw them
     for (auto &point : geo->getExteriorRing())
     {
-        // Convert lat/lon to pixel coordinates
-        //coord c = wm.point_to_pixels(point);
+        this_point = point;
 
-        point_copy = point;
-
-        // Add the first point to the linestring
         if (first)
         {
-            next_segment.setPoint(0, &point_copy);
             first = false;
         }
         else
         {
-            if (clip_coverage)
+            bool draw_segment = true;
+            next_segment.setPoint(0, &last_point);
+            next_segment.setPoint(1, &this_point);
+
+            // Check if at least one point is within the drawn tile.
+            // Less expensive than looping all clip segments
+            if (bbox != nullptr)
             {
-                bool last_touches = false;
-                bool this_touches = false;
-                for (const OGRPolygon *child : coverage_polygons->toMultiPolygon())
+                if (!bbox->Contains(&this_point) // point1 not in box
+                    && !bbox->Contains(&last_point) // point2 not in box
+                    && !bbox->Intersects(&next_segment)) // line between points does not cross box
                 {
-                    last_touches = last_touches || child->Touches(&last_point);
-                    this_touches = this_touches || child->Touches(&point);
-                }
-                
-                if (last_touches && this_touches)
-                {
-                    // don't draw the line where it touches the other polygon
-                    //next_segment.getPoint(1, &last_point);
-                    next_segment.setPoint(0, &last_point);
-                    next_segment.setPoint(1, &point_copy);
-                }
-                else
-                {
-                    // line not co-linear with the border, draw it
-                    //next_segment.getPoint(1, &last_point);
-                    next_segment.setPoint(0, &last_point);
-                    next_segment.setPoint(1, &point_copy);
-                    render_line(cr, &next_segment, wm, style, phase);
+                    // bounding box does not contain either point
+                    // no need to draw segment
+                    draw_segment = false;
                 }
             }
-            else
+
+            // Check if drawing should be supressed because
+            // edge is allong a coverage polygon edge
+            if (draw_segment && !segments->IsEmpty())
             {
-                //next_segment.getPoint(1, &last_point);
-                next_segment.setPoint(0, &last_point);
-                next_segment.setPoint(1, &point_copy);
+                // check every coverage line segment to see if
+                // we shouldn't draw this line
+                for (auto &line : segments->toMultiLineString())
+                {
+                    double dist1 = line->Distance(&this_point);
+                    if (dist1 < touching)
+                    {
+                        // only do the second distance calc if first one passes
+                        double dist2 = line->Distance(&last_point);
+                        if (dist2 < touching)
+                        {
+                            draw_segment = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (draw_segment)
+            {
                 render_line(cr, &next_segment, wm, style, phase);
             }
+
         }
 
-        last_point = point;
+        last_point = this_point;
+    }
+
+    if (style.verbose)
+    {
+        std::cout << "render_poly_borders Summary:" << std::endl;
+        std::cout << "Points: " << geo->getExteriorRing()->getNumPoints() << std::endl;
+        std::cout << "Coverage Segments: " << segments->toMultiLineString()->getNumGeometries() << std::endl;
     }
 
 }
@@ -1906,7 +1988,14 @@ void enc_renderer::render_named_area(cairo_t *cr, const OGRPolygon *geo,
     
     // Get centroid of area
     OGRPoint centroid;
+    auto centroid_start = std::chrono::high_resolution_clock::now();
     geo->Centroid(&centroid);
+    auto centroid_end = std::chrono::high_resolution_clock::now();
+    if (style.verbose)
+    {
+        auto centroid_duration = std::chrono::duration_cast<std::chrono::microseconds>(centroid_end - centroid_start);
+        std::cout << style.layer_name << " Centroid Time: " << centroid_duration.count() << " usec" << std::endl;
+    }
     // Convert lat/lon to pixel coordinates
     coord c = wm.point_to_pixels(centroid);
 

@@ -63,12 +63,14 @@ private:
      * \param[in] geo Feature geometry
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
+     * \param[in] bbox Bounding box for the current tile
      * \param[out] phase Phase tracking for multi-line strings
      * \param[in] coverage_polygons Lines will not be rendered where they overlap with
      *                              with coverage bounds
      */
     void render_geo(cairo_t *cr, const OGRGeometry *geo,
                     const web_mercator &wm, const layer_style &style,
+                    const OGRPolygon &bbox,
                     double &phase,
                     OGRGeometry *coverage_polygons);
 
@@ -190,11 +192,13 @@ private:
      * \param[in] geo Feature geometry
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
+     * \param[in] bbox Bounding box for the current tile
      * \param[in] coverage_polygons Lines will not be rendered where they overlap with
      *                              with coverage bounds
      */
     void render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
                              const web_mercator &wm, const layer_style &style,
+                             const OGRPolygon *bbox = nullptr,
                              const OGRGeometry *coverage_polygons = nullptr);
 
     /**

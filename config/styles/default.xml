@@ -40,6 +40,26 @@
       <deep>d9edde</deep>
     </depare_colors>
   </layer>
+
+  <!-- Unsurveyed areas -->
+  <layer>
+    <layer_name>UNSARE</layer_name>
+    <fill_color>a7b5b3</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_style>solid</line_style>
+    <marker_size>0</marker_size>
+  </layer>
+
+  <!-- Hulks -->
+  <layer>
+    <layer_name>HULKES</layer_name>
+    <fill_color>b09039</fill_color>
+    <line_color>000</line_color>
+    <line_width>0</line_width>
+    <line_style>solid</line_style>
+    <marker_size>0</marker_size>
+  </layer>
     
   <!-- Land Areas -->
   <layer>
@@ -158,6 +178,8 @@
     <line_width>1</line_width>
     <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
+
+    <!--<verbose>true</verbose>-->
   </layer>
 
   <!-- Precautionary Areas -->
@@ -233,10 +255,10 @@
   <!-- Shoreline Construction -->
   <layer>
     <layer_name>SLCONS</layer_name>
-    <fill_color>000</fill_color>
+    <fill_color>0000</fill_color>
     <line_color>989C92</line_color>
     <line_width>2</line_width>
-    <line_style>solid</line_style>
+    <line_style>dash</line_style>
     <marker_size>5</marker_size>
   </layer>
 
@@ -364,10 +386,10 @@
   <!-- Wrecks -->
   <layer>
     <layer_name>WRECKS</layer_name>
-    <fill_color>000000</fill_color>
-    <line_color>0000</line_color>
+    <fill_color>00000000</fill_color>
+    <line_color>FF000000</line_color>
     <line_width>0</line_width>
-    <line_style>solid</line_style>
+    <line_style>dash</line_style>
     <marker_size>0</marker_size>
 
     <depare_colors>
@@ -1127,7 +1149,7 @@
     <layer_name>M_COVR</layer_name>
     <fill_color>0000</fill_color>
     <line_color>ffff0000</line_color>
-    <line_width>0</line_width>
+    <line_width>1</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
   </layer>
