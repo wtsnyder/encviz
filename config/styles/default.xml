@@ -152,7 +152,7 @@
     <marker_size>0</marker_size>
   </layer>
 
-    <!-- Pipeline Areas -->
+  <!-- Pipeline Areas -->
   <layer>
     <layer_name>PIPARE</layer_name>
     <fill_color>0000</fill_color>
@@ -206,7 +206,7 @@
 
   <!-- Administrative areas -->
   <layer>
-   <layer_name>ADMARE</layer_name>
+    <layer_name>ADMARE</layer_name>
     <fill_color>0000</fill_color>
     <line_color>5e6865</line_color>
     <line_width>1</line_width>
@@ -217,7 +217,7 @@
 
   <!-- Pilot Boarding areas -->
   <layer>
-   <layer_name>PILBOP</layer_name>
+    <layer_name>PILBOP</layer_name>
     <fill_color>0000</fill_color>
     <line_color>ef0093</line_color>
     <line_width>1</line_width>
@@ -227,7 +227,7 @@
 
   <!-- Military Practice areas -->
   <layer>
-   <layer_name>MIPARE</layer_name>
+    <layer_name>MIPARE</layer_name>
     <fill_color>0000</fill_color>
     <line_color>ef0093</line_color>
     <line_width>1</line_width>
@@ -339,8 +339,8 @@
     <icon_size>50</icon_size>
     <icons>
       <icon>
-    <name>TSSLPT</name>
-    <file>M_tracks_routes/mandatory_direction.svg</file>
+        <name>TSSLPT</name>
+        <file>M_tracks_routes/mandatory_direction.svg</file>
       </icon>
     </icons>
   </layer>
@@ -355,7 +355,7 @@
     <marker_size>0</marker_size>
   </layer>
 
-    <!-- Underwater Rocks -->
+  <!-- Underwater Rocks -->
   <layer>
     <layer_name>UWTROC</layer_name>
     <fill_color>000000</fill_color>
@@ -368,20 +368,20 @@
     <icon_size>25</icon_size>
     <icons>
       <icon>
-    <name>UWTROC_awash</name>
-    <file>K_rocks_wrecks_obstrn/rock.svg</file>
+        <name>UWTROC_awash</name>
+        <file>K_rocks_wrecks_obstrn/rock.svg</file>
       </icon>
       <icon>
-    <name>UWTROC_submerged</name>
-    <file>K_rocks_wrecks_obstrn/rock_submerged.svg</file>
+        <name>UWTROC_submerged</name>
+        <file>K_rocks_wrecks_obstrn/rock_submerged.svg</file>
       </icon>
       <icon>
-    <name>UWTROC_shoaler</name>
-    <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+        <name>UWTROC_shoaler</name>
+        <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
       </icon>
       <icon>
-    <name>UWTROC_shoaler_deep</name>
-    <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+        <name>UWTROC_shoaler_deep</name>
+        <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
       </icon>
     </icons>
   </layer>
@@ -407,24 +407,24 @@
     <icon_size>25</icon_size>
     <icons>
       <icon>
-    <name>WRECKS_1</name>
-    <file>K_rocks_wrecks_obstrn/wreck_non_dangerous.svg</file>
+        <name>WRECKS_1</name>
+        <file>K_rocks_wrecks_obstrn/wreck_non_dangerous.svg</file>
       </icon>
       <icon>
-    <name>WRECKS_2</name>
-    <file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
+        <name>WRECKS_2</name>
+        <file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
       </icon>
       <icon>
-    <name>WRECKS_3</name> <!-- distributed remains, needs svg -->
-    <file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
+        <name>WRECKS_3</name> <!-- distributed remains, needs svg -->
+        <file>K_rocks_wrecks_obstrn/wreck_dangerous.svg</file>
       </icon>
       <icon>
-    <name>WRECKS_4</name>
-    <file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
+        <name>WRECKS_4</name>
+        <file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
       </icon>
       <icon>
-    <name>WRECKS_5</name>
-    <file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
+        <name>WRECKS_5</name>
+        <file>K_rocks_wrecks_obstrn/wreck_showing.svg</file>
       </icon>
     </icons>
   </layer>
@@ -450,20 +450,20 @@
     <icon_size>25</icon_size>
     <icons>
       <icon>
-    <name>OBSTRN_awash</name>
-    <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+        <name>OBSTRN_awash</name>
+        <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
       </icon>
       <icon>
-    <name>OBSTRN_submerged</name>
-    <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+        <name>OBSTRN_submerged</name>
+        <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
       </icon>
       <icon>
-    <name>OBSTRN_shoaler</name>
-    <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+        <name>OBSTRN_shoaler</name>
+        <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
       </icon>
       <icon>
-    <name>OBSTRN_shoaler_deep</name>
-    <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
+        <name>OBSTRN_shoaler_deep</name>
+        <file>K_rocks_wrecks_obstrn/obstruction.svg</file>
       </icon>
     </icons>
   </layer>
@@ -481,8 +481,8 @@
     <icon_size>25</icon_size>
     <icons>
       <icon>
-    <name>ACHBRT</name>
-    <file>N_areas_limits/anchor_berth.svg</file>
+        <name>ACHBRT</name>
+        <file>N_areas_limits/anchor_berth.svg</file>
       </icon>
     </icons>
   </layer>
@@ -510,28 +510,28 @@
     <icon_size>50</icon_size>
     <icons>
       <icon>
-    <name>LNDMRK</name>
-    <file>E_landmarks/conspicuous_point.svg</file>
+        <name>LNDMRK</name>
+        <file>E_landmarks/conspicuous_point.svg</file>
       </icon>
       <icon>
-    <name>LNDMRK_chimney</name>
-    <file>E_landmarks/chimney.svg</file>
+        <name>LNDMRK_chimney</name>
+        <file>E_landmarks/chimney.svg</file>
       </icon>
       <icon>
-    <name>LNDMRK_flarestack</name>
-    <file>E_landmarks/flare.svg</file>
+        <name>LNDMRK_flarestack</name>
+        <file>E_landmarks/flare.svg</file>
       </icon>
       <icon>
-    <name>LNDMRK_mast</name>
-    <file>E_landmarks/mast.svg</file>
+        <name>LNDMRK_mast</name>
+        <file>E_landmarks/mast.svg</file>
       </icon>
       <icon>
-    <name>LNDMRK_tower</name>
-    <file>E_landmarks/tower.svg</file>
+        <name>LNDMRK_tower</name>
+        <file>E_landmarks/tower.svg</file>
       </icon>
       <icon>
-    <name>LNDMRK_windturbine</name>
-    <file>L_offshore_installations/wind_motor.svg</file>
+        <name>LNDMRK_windturbine</name>
+        <file>L_offshore_installations/wind_motor.svg</file>
       </icon>
     </icons>
   </layer>
@@ -566,36 +566,36 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BCNSHP_0</name>
-    <file>Q_buoys_beacons/conspicuous.svg</file>
+        <name>BCNSHP_0</name>
+        <file>Q_buoys_beacons/conspicuous.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_1</name>
-    <file>Q_buoys_beacons/stake.svg</file>
+        <name>BCNSHP_1</name>
+        <file>Q_buoys_beacons/stake.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_2</name> <!-- withy -->
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BCNSHP_2</name> <!-- withy -->
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_3</name>
-    <file>Q_buoys_beacons/tower.svg</file>
+        <name>BCNSHP_3</name>
+        <file>Q_buoys_beacons/tower.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_4</name>
-    <file>Q_buoys_beacons/lattice_beacon.svg</file>
+        <name>BCNSHP_4</name>
+        <file>Q_buoys_beacons/lattice_beacon.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_5</name> <!-- plie beacon -->
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BCNSHP_5</name> <!-- plie beacon -->
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_6</name>
-    <file>Q_buoys_beacons/carin.svg</file>
+        <name>BCNSHP_6</name>
+        <file>Q_buoys_beacons/carin.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_7</name>
-    <file>Q_buoys_beacons/buoyant_beacon.svg</file>
+        <name>BCNSHP_7</name>
+        <file>Q_buoys_beacons/buoyant_beacon.svg</file>
       </icon>
     </icons>
   </layer>
@@ -611,36 +611,36 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BCNSHP_0</name>
-    <file>Q_buoys_beacons/conspicuous.svg</file>
+        <name>BCNSHP_0</name>
+        <file>Q_buoys_beacons/conspicuous.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_1</name>
-    <file>Q_buoys_beacons/stake.svg</file>
+        <name>BCNSHP_1</name>
+        <file>Q_buoys_beacons/stake.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_2</name> <!-- withy -->
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BCNSHP_2</name> <!-- withy -->
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_3</name>
-    <file>Q_buoys_beacons/tower.svg</file>
+        <name>BCNSHP_3</name>
+        <file>Q_buoys_beacons/tower.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_4</name>
-    <file>Q_buoys_beacons/lattice_beacon.svg</file>
+        <name>BCNSHP_4</name>
+        <file>Q_buoys_beacons/lattice_beacon.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_5</name> <!-- plie beacon -->
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BCNSHP_5</name> <!-- plie beacon -->
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_6</name>
-    <file>Q_buoys_beacons/carin.svg</file>
+        <name>BCNSHP_6</name>
+        <file>Q_buoys_beacons/carin.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_7</name>
-    <file>Q_buoys_beacons/buoyant_beacon.svg</file>
+        <name>BCNSHP_7</name>
+        <file>Q_buoys_beacons/buoyant_beacon.svg</file>
       </icon>
     </icons>
   </layer>
@@ -656,36 +656,36 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BCNSHP_0</name>
-    <file>Q_buoys_beacons/conspicuous.svg</file>
+        <name>BCNSHP_0</name>
+        <file>Q_buoys_beacons/conspicuous.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_1</name>
-    <file>Q_buoys_beacons/stake.svg</file>
+        <name>BCNSHP_1</name>
+        <file>Q_buoys_beacons/stake.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_2</name> <!-- withy -->
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BCNSHP_2</name> <!-- withy -->
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_3</name>
-    <file>Q_buoys_beacons/tower.svg</file>
+        <name>BCNSHP_3</name>
+        <file>Q_buoys_beacons/tower.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_4</name>
-    <file>Q_buoys_beacons/lattice_beacon.svg</file>
+        <name>BCNSHP_4</name>
+        <file>Q_buoys_beacons/lattice_beacon.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_5</name> <!-- plie beacon -->
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BCNSHP_5</name> <!-- plie beacon -->
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_6</name>
-    <file>Q_buoys_beacons/carin.svg</file>
+        <name>BCNSHP_6</name>
+        <file>Q_buoys_beacons/carin.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_7</name>
-    <file>Q_buoys_beacons/buoyant_beacon.svg</file>
+        <name>BCNSHP_7</name>
+        <file>Q_buoys_beacons/buoyant_beacon.svg</file>
       </icon>
     </icons>
   </layer>
@@ -701,36 +701,36 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BCNSHP_0</name>
-    <file>Q_buoys_beacons/conspicuous.svg</file>
+        <name>BCNSHP_0</name>
+        <file>Q_buoys_beacons/conspicuous.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_1</name>
-    <file>Q_buoys_beacons/stake.svg</file>
+        <name>BCNSHP_1</name>
+        <file>Q_buoys_beacons/stake.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_2</name> <!-- withy -->
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BCNSHP_2</name> <!-- withy -->
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_3</name>
-    <file>Q_buoys_beacons/tower.svg</file>
+        <name>BCNSHP_3</name>
+        <file>Q_buoys_beacons/tower.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_4</name>
-    <file>Q_buoys_beacons/lattice_beacon.svg</file>
+        <name>BCNSHP_4</name>
+        <file>Q_buoys_beacons/lattice_beacon.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_5</name> <!-- plie beacon -->
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BCNSHP_5</name> <!-- plie beacon -->
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_6</name>
-    <file>Q_buoys_beacons/carin.svg</file>
+        <name>BCNSHP_6</name>
+        <file>Q_buoys_beacons/carin.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_7</name>
-    <file>Q_buoys_beacons/buoyant_beacon.svg</file>
+        <name>BCNSHP_7</name>
+        <file>Q_buoys_beacons/buoyant_beacon.svg</file>
       </icon>
     </icons>
   </layer>
@@ -746,36 +746,36 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BCNSHP_0</name>
-    <file>Q_buoys_beacons/conspicuous.svg</file>
+        <name>BCNSHP_0</name>
+        <file>Q_buoys_beacons/conspicuous.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_1</name>
-    <file>Q_buoys_beacons/stake.svg</file>
+        <name>BCNSHP_1</name>
+        <file>Q_buoys_beacons/stake.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_2</name> <!-- withy -->
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BCNSHP_2</name> <!-- withy -->
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_3</name>
-    <file>Q_buoys_beacons/tower.svg</file>
+        <name>BCNSHP_3</name>
+        <file>Q_buoys_beacons/tower.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_4</name>
-    <file>Q_buoys_beacons/lattice_beacon.svg</file>
+        <name>BCNSHP_4</name>
+        <file>Q_buoys_beacons/lattice_beacon.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_5</name> <!-- plie beacon -->
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BCNSHP_5</name> <!-- plie beacon -->
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_6</name>
-    <file>Q_buoys_beacons/carin.svg</file>
+        <name>BCNSHP_6</name>
+        <file>Q_buoys_beacons/carin.svg</file>
       </icon>
       <icon>
-    <name>BCNSHP_7</name>
-    <file>Q_buoys_beacons/buoyant_beacon.svg</file>
+        <name>BCNSHP_7</name>
+        <file>Q_buoys_beacons/buoyant_beacon.svg</file>
       </icon>
     </icons>
   </layer>
@@ -791,32 +791,36 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BOYSHP_1</name>
-    <file>Q_buoys_beacons/conical.svg</file>
+        <name>BOYSHP_0</name>
+        <file>Q_buoys_beacons/buoy.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_2</name>
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BOYSHP_1</name>
+        <file>Q_buoys_beacons/conical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_3</name>
-    <file>Q_buoys_beacons/spherical.svg</file>
+        <name>BOYSHP_2</name>
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_4</name>
-    <file>Q_buoys_beacons/pillar.svg</file>
+        <name>BOYSHP_3</name>
+        <file>Q_buoys_beacons/spherical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_5</name>
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BOYSHP_4</name>
+        <file>Q_buoys_beacons/pillar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_6</name>
-    <file>Q_buoys_beacons/barrel.svg</file>
+        <name>BOYSHP_5</name>
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_7</name>
-    <file>Q_buoys_beacons/super_buoy.svg</file>
+        <name>BOYSHP_6</name>
+        <file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+        <name>BOYSHP_7</name>
+        <file>Q_buoys_beacons/super_buoy.svg</file>
       </icon>
     </icons>
   </layer>
@@ -832,32 +836,36 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BOYSHP_1</name>
-    <file>Q_buoys_beacons/conical.svg</file>
+        <name>BOYSHP_0</name>
+        <file>Q_buoys_beacons/buoy.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_2</name>
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BOYSHP_1</name>
+        <file>Q_buoys_beacons/conical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_3</name>
-    <file>Q_buoys_beacons/spherical.svg</file>
+        <name>BOYSHP_2</name>
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_4</name>
-    <file>Q_buoys_beacons/pillar.svg</file>
+        <name>BOYSHP_3</name>
+        <file>Q_buoys_beacons/spherical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_5</name>
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BOYSHP_4</name>
+        <file>Q_buoys_beacons/pillar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_6</name>
-    <file>Q_buoys_beacons/barrel.svg</file>
+        <name>BOYSHP_5</name>
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_7</name>
-    <file>Q_buoys_beacons/super_buoy.svg</file>
+        <name>BOYSHP_6</name>
+        <file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+        <name>BOYSHP_7</name>
+        <file>Q_buoys_beacons/super_buoy.svg</file>
       </icon>
     </icons>
   </layer>
@@ -873,32 +881,36 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BOYSHP_1</name>
-    <file>Q_buoys_beacons/conical.svg</file>
+        <name>BOYSHP_0</name>
+        <file>Q_buoys_beacons/buoy.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_2</name>
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BOYSHP_1</name>
+        <file>Q_buoys_beacons/conical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_3</name>
-    <file>Q_buoys_beacons/spherical.svg</file>
+        <name>BOYSHP_2</name>
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_4</name>
-    <file>Q_buoys_beacons/pillar.svg</file>
+        <name>BOYSHP_3</name>
+        <file>Q_buoys_beacons/spherical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_5</name>
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BOYSHP_4</name>
+        <file>Q_buoys_beacons/pillar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_6</name>
-    <file>Q_buoys_beacons/barrel.svg</file>
+        <name>BOYSHP_5</name>
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_7</name>
-    <file>Q_buoys_beacons/super_buoy.svg</file>
+        <name>BOYSHP_6</name>
+        <file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+        <name>BOYSHP_7</name>
+        <file>Q_buoys_beacons/super_buoy.svg</file>
       </icon>
     </icons>
   </layer>
@@ -916,32 +928,36 @@
     <icon_size>30</icon_size>
     <icons>
       <icon>
-    <name>BOYSHP_1</name>
-    <file>Q_buoys_beacons/conical.svg</file>
+        <name>BOYSHP_0</name>
+        <file>Q_buoys_beacons/buoy.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_2</name>
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BOYSHP_1</name>
+        <file>Q_buoys_beacons/conical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_3</name>
-    <file>Q_buoys_beacons/spherical.svg</file>
+        <name>BOYSHP_2</name>
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_4</name>
-    <file>Q_buoys_beacons/pillar.svg</file>
+        <name>BOYSHP_3</name>
+        <file>Q_buoys_beacons/spherical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_5</name>
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BOYSHP_4</name>
+        <file>Q_buoys_beacons/pillar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_6</name>
-    <file>Q_buoys_beacons/barrel.svg</file>
+        <name>BOYSHP_5</name>
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_7</name>
-    <file>Q_buoys_beacons/super_buoy.svg</file>
+        <name>BOYSHP_6</name>
+        <file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+        <name>BOYSHP_7</name>
+        <file>Q_buoys_beacons/super_buoy.svg</file>
       </icon>
     </icons>
   </layer>
@@ -957,32 +973,36 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BOYSHP_1</name>
-    <file>Q_buoys_beacons/conical.svg</file>
+        <name>BOYSHP_0</name>
+        <file>Q_buoys_beacons/buoy.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_2</name>
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BOYSHP_1</name>
+        <file>Q_buoys_beacons/conical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_3</name>
-    <file>Q_buoys_beacons/spherical.svg</file>
+        <name>BOYSHP_2</name>
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_4</name>
-    <file>Q_buoys_beacons/pillar.svg</file>
+        <name>BOYSHP_3</name>
+        <file>Q_buoys_beacons/spherical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_5</name>
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BOYSHP_4</name>
+        <file>Q_buoys_beacons/pillar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_6</name>
-    <file>Q_buoys_beacons/barrel.svg</file>
+        <name>BOYSHP_5</name>
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_7</name>
-    <file>Q_buoys_beacons/super_buoy.svg</file>
+        <name>BOYSHP_6</name>
+        <file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+        <name>BOYSHP_7</name>
+        <file>Q_buoys_beacons/super_buoy.svg</file>
       </icon>
     </icons>
   </layer>
@@ -998,34 +1018,39 @@
     <icon_color>000000</icon_color>
     <icons>
       <icon>
-    <name>BOYSHP_1</name>
-    <file>Q_buoys_beacons/conical.svg</file>
+        <name>BOYSHP_0</name>
+        <file>Q_buoys_beacons/buoy.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_2</name>
-    <file>Q_buoys_beacons/can.svg</file>
+        <name>BOYSHP_1</name>
+        <file>Q_buoys_beacons/conical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_3</name>
-    <file>Q_buoys_beacons/spherical.svg</file>
+        <name>BOYSHP_2</name>
+        <file>Q_buoys_beacons/can.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_4</name>
-    <file>Q_buoys_beacons/pillar.svg</file>
+        <name>BOYSHP_3</name>
+        <file>Q_buoys_beacons/spherical.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_5</name>
-    <file>Q_buoys_beacons/spar.svg</file>
+        <name>BOYSHP_4</name>
+        <file>Q_buoys_beacons/pillar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_6</name>
-    <file>Q_buoys_beacons/barrel.svg</file>
+        <name>BOYSHP_5</name>
+        <file>Q_buoys_beacons/spar.svg</file>
       </icon>
       <icon>
-    <name>BOYSHP_7</name>
-    <file>Q_buoys_beacons/super_buoy.svg</file>
+        <name>BOYSHP_6</name>
+        <file>Q_buoys_beacons/barrel.svg</file>
+      </icon>
+      <icon>
+        <name>BOYSHP_7</name>
+        <file>Q_buoys_beacons/super_buoy.svg</file>
       </icon>
     </icons>
+    <verbose>true</verbose>
   </layer>
 
   <!-- Mooring Facility -->
@@ -1085,8 +1110,8 @@
     <icon_color>a30075</icon_color>
     <icons>
       <icon>
-    <name>FOGSIG</name>
-    <file>R_fog_signal/fog_signal.svg</file>
+        <name>FOGSIG</name>
+        <file>R_fog_signal/fog_signal.svg</file>
       </icon>
     </icons>
   </layer>
@@ -1101,9 +1126,9 @@
     <marker_size>0</marker_size>
     <icons>
       <icon>
-    <name>LIGHTS</name>
-    <file>P_lights/light.svg</file>
-    </icon>
+        <name>LIGHTS</name>
+        <file>P_lights/light.svg</file>
+      </icon>
     </icons>
   </layer>
 
