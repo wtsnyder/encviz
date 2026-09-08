@@ -84,6 +84,12 @@ encviz $ gedit ~/.encviz/config.xml
   <chart_path>/path/to/your/ENC_ROOT</chart_path>
 ```
 
+Or, alternatively.  Just simlink the paths from the default config somewhere on your system.
+```
+encviz/config $ ln -s /path/to/ENC_ROOT charts
+encviz/config $ ln -s /path/to/metadata_storage meta
+```
+
 5. Start the tile server (be patient on first start)
 
 ```

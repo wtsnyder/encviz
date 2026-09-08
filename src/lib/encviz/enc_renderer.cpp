@@ -368,6 +368,20 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
 
     }
 
+    // Tile debug always drawn last, on top of everything else
+    if (style.tile_debug)
+    {
+        std::string tile_coord = std::to_string(x) + ", "
+            + std::to_string(y) + ", "
+            + std::to_string(z);
+
+        auto render_duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - render_start);
+
+        std::string render_time = std::to_string(render_duration.count()) + " usec";
+
+        render_tile_debug(cr, wm, tile_coord, render_time);
+    }
+
     // Write out image
     data.clear();
     cairo_status_t rc =
@@ -435,6 +449,7 @@ GeoPtr enc_renderer::get_layer_multipoly(GDALDataset *tile_data, std::string lay
  * \param[in] geo Feature geometry
  * \param[in] wm Web Mercator point mapper
  * \param[in] style Feature style
+ * \param[in] bbox Lines will not be rendered if completely outside the bounding box
  * \param[out] phase Phase tracking for multi-line strings
  * \param[in] coverage_polygons Lines will not be rendered where they overlap with
  *                              with coverage bounds
@@ -2021,6 +2036,66 @@ void enc_renderer::render_named_area(cairo_t *cr, const OGRPolygon *geo,
         cairo_move_to(cr, c.x - name_extents.width/2, c.y + name_extents.height/2);
         cairo_show_text(cr, name);
     }
+}
+
+void enc_renderer::render_tile_debug(cairo_t *cr, const web_mercator &wm, const std::string &text, const std::string &text2)
+{
+    OGREnvelope bbox = wm.get_bbox_deg();
+    OGRPolygon bbox_poly;
+    OGRLinearRing bbox_ring;
+    bbox_ring.addPoint(bbox.MinX, bbox.MinY);
+    bbox_ring.addPoint(bbox.MinX, bbox.MaxY);
+    bbox_ring.addPoint(bbox.MaxX, bbox.MaxY);
+    bbox_ring.addPoint(bbox.MaxX, bbox.MinY);
+    bbox_ring.addPoint(bbox.MinX, bbox.MinY); // close ring
+    bbox_poly.addRing(&bbox_ring);
+
+    layer_style ls;
+    ls.fill_color = {0,0,0,0};
+    ls.line_color = {255,0,0,0};
+    ls.line_width = 1;
+    ls.line_style = SOLID;
+
+    // Render the border of the tile
+    render_poly_borders(cr, &bbox_poly, wm, ls, nullptr, nullptr);
+
+    // Get center point of the tile
+    OGRPoint centroid;
+    bbox_poly.Centroid(&centroid);
+    coord centroid_px = wm.point_to_pixels(centroid);
+
+    // Create C string of debug text
+    char debug_text[text.length() + 1];
+    strcpy(debug_text, text.c_str());
+
+    // Set text style
+    set_color(cr, ls.line_color);
+    cairo_select_font_face(cr, "monospace",
+                           CAIRO_FONT_SLANT_NORMAL,
+                           CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_font_size(cr, 15);
+
+    // Determine text render size
+    cairo_text_extents_t debug_text_extents = {};
+    cairo_text_extents(cr, debug_text, &debug_text_extents);
+
+    // Draw text
+    cairo_move_to(cr, centroid_px.x - debug_text_extents.width/2,
+                  centroid_px.y + debug_text_extents.height/2);
+    cairo_show_text(cr, debug_text);
+
+    // Create C string of debug text2
+    char debug_text2[text2.length() + 1];
+    strcpy(debug_text2, text2.c_str());
+
+    // Determine text render size
+    cairo_text_extents_t debug_text2_extents = {};
+    cairo_text_extents(cr, debug_text2, &debug_text2_extents);
+
+    // Draw text
+    cairo_move_to(cr, centroid_px.x - debug_text2_extents.width/2,
+                  centroid_px.y + debug_text2_extents.height/2 + debug_text_extents.height * 1.1);
+    cairo_show_text(cr, debug_text2);
 }
 
 /**

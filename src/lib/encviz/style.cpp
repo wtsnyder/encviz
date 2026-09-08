@@ -284,12 +284,29 @@ render_style load_style(const std::string &filename, std::filesystem::path svg_p
         parsed.background = parse_color(xml_query(root, "background"));
     }
     catch (...) {}
+
+    tinyxml2::XMLElement* verbose = root->FirstChildElement("debug");
+    if (verbose)
+    {
+        std::string text = xml_text(xml_query(root, "debug"));
+        if (text == "true")
+            parsed.tile_debug = true;
+        else if (text == "false")
+            parsed.tile_debug = false;
+        else
+            throw std::runtime_error("<debug> must be either true or false");
+    }
+    else
+    {
+        parsed.tile_debug = false;
+    }
+
     for (tinyxml2::XMLElement *child : xml_query_all(root, "layer"))
     {
         parsed.layers.push_back(parse_layer(child, svg_path));
     }
-    
-    
+
+
     return parsed;
 }
 

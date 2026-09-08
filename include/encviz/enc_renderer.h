@@ -304,6 +304,11 @@ private:
                            const OGRFeature *feat);
 
     /**
+     * Render the tile border and some text at its center for debug purposes
+     */
+    void render_tile_debug(cairo_t *cr, const web_mercator &wm, const std::string &text, const std::string &text2);
+
+    /**
      * Set Render Color
      *
      * \param[out] cr Image context

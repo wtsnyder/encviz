@@ -4,6 +4,8 @@
 
   <!-- Icon paths relative to svg path in config.xml -->
 
+  <debug>true</debug>
+
   <!-- Green Background -->
   <background>00ff00</background>
 

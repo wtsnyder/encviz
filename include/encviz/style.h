@@ -111,6 +111,9 @@ struct layer_style
 /// Full rendering style
 struct render_style
 {
+    /// Draw tile debug info
+    bool tile_debug;
+
     /// Background fill
     std::optional<color> background;
 
