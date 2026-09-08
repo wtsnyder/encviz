@@ -52,7 +52,8 @@ enum LineStyle
     WAVY,      ///< A Sin wave (submerged cables)
     SOLID_WITH_VERTEXES,  ///< Also plot markers at vertex point, largely for debug
     DASH_T,    ///< A dashed line with inward pointing T shaped dashes
-    DASH_TRIANGLES  ///< A dashed line with inward pointing triangles
+    DASH_TRIANGLES, ///< A dashed line with inward pointing triangles
+    DASH_CIRCLES ///< A dashed line with circles on the end of each dash
 };
 
 struct DepareColors

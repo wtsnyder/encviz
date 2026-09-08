@@ -175,6 +175,18 @@ private:
                                     const web_mercator &wm, const layer_style &style, double &phase);
 
     /**
+     * Render LineString Geometry with Stemmed Circle lines
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[in/out] phase Phase of the sin wave for connecting multiple segments
+     */
+    void render_line_dash_circles(cairo_t *cr, const OGRLineString *geo,
+                                  const web_mercator &wm, const layer_style &style, double &phase);
+
+    /**
      * Render Polygon Geometry, just filled in polygon, no borders
      *
      * \param[out] cr Image context

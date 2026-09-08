@@ -142,6 +142,10 @@ LineStyle parse_line_style(tinyxml2::XMLElement *node)
     {
         return LineStyle::DASH_TRIANGLES;
     }
+    else if (line_style == "dash_circles")
+    {
+        return LineStyle::DASH_CIRCLES;
+    }
     else
     {
         throw std::runtime_error("Invalid line_style");

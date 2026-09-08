@@ -694,6 +694,9 @@ void enc_renderer::render_line(cairo_t *cr, const OGRLineString *geo,
     case LineStyle::DASH_TRIANGLES:
         render_line_dash_triangles(cr, geo, wm, style, phase);
         break;
+    case LineStyle::DASH_CIRCLES:
+        render_line_dash_circles(cr, geo, wm, style, phase);
+        break;
     }
 }
 
@@ -1192,6 +1195,127 @@ void enc_renderer::render_line_dash_triangles(cairo_t *cr, const OGRLineString *
     cairo_stroke(cr);
 }
 
+void enc_renderer::render_line_dash_circles(cairo_t *cr, const OGRLineString *geo,
+                         const web_mercator &wm, const layer_style &style, double &phase)
+{
+    if (style.line_color.alpha == 0
+        || style.line_width == 0)
+        return;
+
+    if (style.verbose)
+        std::cout << "Render Line Circles: " << style.layer_name << std::endl;
+
+    bool first = true;
+    coord prev;
+
+    float dash_size = style.line_width * 10;
+    float circle_diam = style.line_width * 3;
+    float gap_size = style.line_width * 7;
+
+    float circle_radius = circle_diam / 2;
+    float circle_center = dash_size + circle_radius;
+
+    double pattern_len = dash_size + circle_diam + gap_size;
+
+    for (auto &point : geo)
+    {
+        // Convert lat/lon to pixel coordinates
+        coord c = wm.point_to_pixels(point);
+
+        // Mark first point as pen-down
+        if (first)
+        {
+            first = false;
+            prev = c;
+        }
+        else
+        {
+            // Get line segment angle/length
+            double angle = std::atan2((c.y - prev.y), (c.x - prev.x));
+            double length = std::hypot((c.x - prev.x),(c.y - prev.y));
+
+            // Store previous tranform matrix
+            cairo_matrix_t matrix;
+            cairo_get_matrix(cr, &matrix);
+
+            // Rotate so 0,0 is beginning of line,
+            // x is along line and y is perpendicular
+            cairo_translate(cr, prev.x, prev.y);
+            cairo_rotate(cr, angle);
+
+            /*
+             * Render Circle lines here
+             *
+             * --------( )  --------( )
+             */
+
+            // Move to start
+            cairo_move_to(cr, 0, 0);
+
+            // Draw dashes
+            double x = 0;
+            while (x < length)
+            {
+                double pattern_pos = std::fmod((x + phase), pattern_len);
+                if (pattern_pos < dash_size)
+                {
+                    // Draw up to the end of this dash
+                    x += dash_size - pattern_pos;
+                    x = std::min( x, length);
+                    cairo_line_to(cr, x, 0);
+                    x += .1;
+                }
+                else
+                {
+                    // Move to beginning of next dash
+                    x += pattern_len - pattern_pos;
+                    cairo_move_to(cr, x, 0);
+                    x += .1;
+                }
+            }
+
+            // Draw circles
+            x = 0;
+            while (x < length)
+            {
+                double pattern_pos = std::fmod((x + phase), pattern_len);
+                if (pattern_pos < circle_center)
+                {
+                    // Move to and draw next circle
+                    x += circle_center - pattern_pos;
+                    x = std::min( x, length);
+
+                    if (x < length)
+                    {
+                        cairo_move_to(cr, x + circle_radius, 0);
+                        cairo_arc(cr, x, 0, circle_radius, 0.0, 2.0 * M_PI);
+                    }
+                    x += .1;
+                }
+                else
+                {
+                    // advance to the next pattern instance
+                    x += pattern_len - pattern_pos + 0.1;
+                    cairo_move_to(cr, x, 0);
+                }
+            }
+
+
+            // Compute the new pattern phase
+            phase += length;
+
+            // Restore transform
+            cairo_set_matrix(cr, &matrix);
+            prev = c;
+        }
+    }
+
+    set_color(cr, style.line_color);
+    cairo_set_line_width(cr, style.line_width);
+    cairo_set_dash(cr, nullptr, 0, 0); // dash always none
+    cairo_stroke(cr);
+}
+
 /**
  * Render Polygon Geometry, just filled in polygon, no borders
  *
@@ -1257,12 +1381,19 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
 {
     // TODO, check units?
     const double touching = 0.0001;
-    
+
     if (geo->IsEmpty()
         || !geo->IsValid()
         || style.line_color.alpha == 0
         || style.line_width == 0)
+    {
+        if (style.verbose)
+        {
+            std::cout << "render_poly_borders skipped" << std::endl;
+        }
         return;
+    }
+
     //std::cout << "Render polygon borders: " << geo->exportToJson() << std::endl;
     // FIXME - Throw a fit if we see interior rings (not handled)
     if (geo->getNumInteriorRings() != 0)
@@ -1273,6 +1404,7 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
     // Generate much smaller list of segments that touch our
     // geo so we only have to go through coverage_polygon points once
     GeoPtr segments(OGRGeometryFactory::createGeometry(wkbMultiLineString), &OGRGeometryFactory::destroyGeometry);
+
     if (coverage_polygons != nullptr && !coverage_polygons->IsEmpty())
     {
         // Loop all coverage polygons
@@ -1295,7 +1427,7 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
                 {
                     line.setPoint(0, &last_point);
                     line.setPoint(1, &this_point);
-                    
+
                     // check if points are even within draw box
                     // (probably faster b/c always a 4 point polygon)
                     if (bbox == nullptr
@@ -1309,7 +1441,7 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
                         {
                             // only compute second distance if first is small
                             double dist2 = geo->Distance(&last_point);
-                    
+
                             if (dist2 < touching)
                             {
                                 // Add a line segment to the list to be checked while
@@ -1382,7 +1514,7 @@ void enc_renderer::render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
                     }
                 }
             }
-            
+
             if (draw_segment)
             {
                 render_line(cr, &next_segment, wm, style, phase);
@@ -2051,6 +2183,8 @@ void enc_renderer::render_tile_debug(cairo_t *cr, const web_mercator &wm, const 
     bbox_poly.addRing(&bbox_ring);
 
     layer_style ls;
+    ls.layer_name = "tile debug";
+    ls.verbose = false;
     ls.fill_color = {0,0,0,0};
     ls.line_color = {255,0,0,0};
     ls.line_width = 1;
