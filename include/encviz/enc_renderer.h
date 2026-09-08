@@ -19,6 +19,8 @@
 namespace encviz
 {
 
+typedef std::unique_ptr<OGRGeometry, decltype(&OGRGeometryFactory::destroyGeometry)> GeoPtr;
+
 class enc_renderer
 {
 public:
@@ -47,18 +49,28 @@ public:
 private:
 
     /**
+     * Get Layer Multipoly
+     *
+     * Copy all layer features polygons into one multipolygon
+     * and return a unique pointer to it
+     */
+    GeoPtr get_layer_multipoly(GDALDataset *tile_data, std::string layer_name);
+
+    /**
      * Render Feature Geometry
      *
      * \param[out] cr Image context
      * \param[in] geo Feature geometry
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
+     * \param[in] bbox Bounding box for the current tile
      * \param[out] phase Phase tracking for multi-line strings
      * \param[in] coverage_polygons Lines will not be rendered where they overlap with
      *                              with coverage bounds
      */
     void render_geo(cairo_t *cr, const OGRGeometry *geo,
                     const web_mercator &wm, const layer_style &style,
+                    const OGRPolygon &bbox,
                     double &phase,
                     OGRGeometry *coverage_polygons);
 
@@ -101,6 +113,18 @@ private:
      */
     void render_line(cairo_t *cr, const OGRLineString *geo,
                      const web_mercator &wm, const layer_style &style, double &phase);
+    
+    /**
+     * Render LineString Geometry as basic solid or dashed lines
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[in/out] phase Phase of dashing for connecting multiple segments
+     */
+    void render_line_basic(cairo_t *cr, const OGRLineString *geo,
+                           const web_mercator &wm, const layer_style &style, double &phase);
 
     /**
      * Render LineString With Points Geometry
@@ -123,11 +147,47 @@ private:
      * \param[in] style Feature style
      * \param[in/out] phase Phase of the sin wave for connecting multiple segments
      */
-    void render_wavy_line(cairo_t *cr, const OGRLineString *geo,
+    void render_line_wavy(cairo_t *cr, const OGRLineString *geo,
                           const web_mercator &wm, const layer_style &style, double &phase);
 
     /**
-     * Render Polygon Geometry
+     * Render LineString Geometry with T Dashed lines
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[in/out] phase Phase of the sin wave for connecting multiple segments
+     */
+    void render_line_dash_t(cairo_t *cr, const OGRLineString *geo,
+                            const web_mercator &wm, const layer_style &style, double &phase);
+
+    /**
+     * Render LineString Geometry with Triangle Dashed lines
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[in/out] phase Phase of the sin wave for connecting multiple segments
+     */
+    void render_line_dash_triangles(cairo_t *cr, const OGRLineString *geo,
+                                    const web_mercator &wm, const layer_style &style, double &phase);
+
+    /**
+     * Render LineString Geometry with Stemmed Circle lines
+     *
+     * \param[out] cr Image context
+     * \param[in] geo Feature geometry
+     * \param[in] wm Web Mercator point mapper
+     * \param[in] style Feature style
+     * \param[in/out] phase Phase of the sin wave for connecting multiple segments
+     */
+    void render_line_dash_circles(cairo_t *cr, const OGRLineString *geo,
+                                  const web_mercator &wm, const layer_style &style, double &phase);
+
+    /**
+     * Render Polygon Geometry, just filled in polygon, no borders
      *
      * \param[out] cr Image context
      * \param[in] geo Feature geometry
@@ -144,11 +204,13 @@ private:
      * \param[in] geo Feature geometry
      * \param[in] wm Web Mercator point mapper
      * \param[in] style Feature style
+     * \param[in] bbox Bounding box for the current tile
      * \param[in] coverage_polygons Lines will not be rendered where they overlap with
      *                              with coverage bounds
      */
     void render_poly_borders(cairo_t *cr, const OGRPolygon *geo,
                              const web_mercator &wm, const layer_style &style,
+                             const OGRPolygon *bbox = nullptr,
                              const OGRGeometry *coverage_polygons = nullptr);
 
     /**
@@ -252,6 +314,11 @@ private:
     void render_named_area(cairo_t *cr, const OGRPolygon *geo,
                            const web_mercator &wm, const layer_style &style,
                            const OGRFeature *feat);
+
+    /**
+     * Render the tile border and some text at its center for debug purposes
+     */
+    void render_tile_debug(cairo_t *cr, const web_mercator &wm, const std::string &text, const std::string &text2);
 
     /**
      * Set Render Color

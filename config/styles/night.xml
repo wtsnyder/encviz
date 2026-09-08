@@ -11,7 +11,7 @@
     <fill_color>0D0A08</fill_color>
     <line_color>0E0F15</line_color>
     <line_width>1</line_width>
-    <line_dash>0</line_dash>
+    <line_style>solid</line_style>
     <marker_size>5</marker_size>
   </layer>
 
@@ -21,7 +21,7 @@
     <fill_color>000</fill_color>
     <line_color>141616</line_color>
     <line_width>1</line_width>
-    <line_dash>0</line_dash>
+    <line_style>solid</line_style>
     <marker_size>5</marker_size>
   </layer>
 
@@ -31,7 +31,7 @@
     <fill_color>000</fill_color>
     <line_color>0C0D0E</line_color>
     <line_width>1</line_width>
-    <line_dash>0</line_dash>
+    <line_style>solid</line_style>
     <marker_size>0</marker_size>
   </layer>
 
@@ -41,7 +41,7 @@
     <fill_color>000</fill_color>
     <line_color>000</line_color>
     <line_width>0</line_width>
-    <line_dash>0</line_dash>
+    <line_style>solid</line_style>
     <marker_size>0</marker_size>
   </layer>
 

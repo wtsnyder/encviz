@@ -72,10 +72,11 @@ $ make test
 
 4. Point ENCVIZ at your chart files
 
-The easiest method is to create a symlink to the charts in the config directory
+The easiest method is to create a symlink to the charts in the config directory and a metadata directory
 ```
 $ cd encviz/config
 $ ln -s path/to/dir/with/ENC_ROOT charts
+$ ln -s /path/to/metadata_storage meta
 ```
 
 You could also edit the path in `encviz/config/config.xml`
@@ -88,7 +89,7 @@ You could also edit the path in `encviz/config/config.xml`
 
 ```
 $ cd encviz/build
-$ ./bin/enc_tile_server -c ../config/config.xml 
+$ ./bin/enc_tile_server -c ../config/config.xml
 Using config file: ../config/config.xml ...
  - Reading ../config/config.xml ...
  - Charts: ../config/charts
