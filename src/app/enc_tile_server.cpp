@@ -84,17 +84,26 @@ MHD_Result request_handler(void *cls, struct MHD_Connection *connection,
     // Render requested tile
     std::vector<uint8_t> out_bytes;
     printf("Tile X=%d, Y=%d, Z=%d\n", x, y, z);
-    if (enc_rend->render(out_bytes, encviz::tile_coords::WTMS, x, y, z,
-                         style_name.c_str()))
+    try
     {
-        // Respond with rendered data
-        return request_reply(connection, MHD_HTTP_OK,
-                             out_bytes.data(), out_bytes.size());
+        if (enc_rend->render(out_bytes, encviz::tile_coords::WTMS, x, y, z,
+                             style_name.c_str()))
+        {
+            // Respond with rendered data
+            return request_reply(connection, MHD_HTTP_OK,
+                                 out_bytes.data(), out_bytes.size());
+        }
+        else
+        {
+            // Nothing available, so 404 ...
+            return request_reply(connection, MHD_HTTP_NOT_FOUND,
+                                 nullptr, 0);
+        }
     }
-    else
+    catch (std::exception &e)
     {
-        // Nothing available, so 404 ...
-        return request_reply(connection, MHD_HTTP_NOT_FOUND,
+        // Exception thrown
+        return request_reply(connection, MHD_HTTP_INTERNAL_SERVER_ERROR,
                              nullptr, 0);
     }
 }
