@@ -1357,11 +1357,6 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
         std::cout << "Render polygon: " << style.layer_name << std::endl;
     
     //std::cout << "Render polygon: " << geo->exportToJson() << std::endl;
-    // FIXME - Throw a fit if we see interior rings (not handled)
-    if (geo->getNumInteriorRings() != 0)
-    {
-        //throw std::runtime_error("Unhandled polygon with interior rings");
-    }
 
     // Pass OGR points to cairo
     bool first = true;
@@ -1379,6 +1374,30 @@ void enc_renderer::render_poly(cairo_t *cr, const OGRPolygon *geo,
         else
         {
             cairo_line_to(cr, c.x, c.y);
+        }
+    }
+
+    int int_ring_count = geo->getNumInteriorRings();
+    for (int i = 0; i < int_ring_count; i++)
+    {
+        cairo_new_sub_path (cr);
+
+        first = true;
+        for (auto &point : geo->getInteriorRing(i))
+        {
+            // Convert lat/lon to pixel coordinates
+            coord c = wm.point_to_pixels(point);
+
+            // Mark first point as pen-down
+            if (first)
+            {
+                cairo_move_to(cr, c.x, c.y);
+                first = false;
+            }
+            else
+            {
+                cairo_line_to(cr, c.x, c.y);
+            }
         }
     }
 
