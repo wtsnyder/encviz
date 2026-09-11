@@ -10,6 +10,13 @@ if(CCACHE_FOUND)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 endif()
 
+# default build type is Release if unspecified
+# NOTE: no build flags are configured here, this is just the configuration type
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+message( STATUS "    No build configuration specified, setting default build type to 'Release' ")
+	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: Debug Release" FORCE)
+endif()
+
 # Required Libraries
 include(FindPkgConfig)
 pkg_check_modules(CAIRO REQUIRED cairo)

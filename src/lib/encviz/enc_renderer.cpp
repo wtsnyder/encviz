@@ -7,6 +7,8 @@
 
 #include <encviz/enc_renderer.h>
 #include <encviz/xml_config.h>
+#include <encviz/polylabel.h>
+
 #include <librsvg/rsvg.h>
 #include <iostream>
 
@@ -327,27 +329,48 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
             // Render traffic separation scheme parts
             else if (layer_name == "TSSLPT")
             {
-                render_traffic_sep_part(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                if (wkbFlatten(geo->getGeometryType()) == wkbPolygon ||
+                    wkbFlatten(geo->getGeometryType()) == wkbTriangle)
+                {
+                    render_traffic_sep_part(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                }
+                // TODO: check what happens if these aren't downcastable to a polygon??
             }
             // Render name of a land area
             else if (layer_name == "LNDARE")
             {
-                render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                if (wkbFlatten(geo->getGeometryType()) == wkbPolygon ||
+                    wkbFlatten(geo->getGeometryType()) == wkbTriangle)
+                {
+                    render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                }
             }
             // Render name of a sea areas
             else if (layer_name == "SEAARE")
             {
-                render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                if (wkbFlatten(geo->getGeometryType()) == wkbPolygon ||
+                    wkbFlatten(geo->getGeometryType()) == wkbTriangle)
+                {
+                    render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                }
             }
             // Render name of a land regions
             else if (layer_name == "LNDRGN")
             {
-                render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                if (wkbFlatten(geo->getGeometryType()) == wkbPolygon ||
+                    wkbFlatten(geo->getGeometryType()) == wkbTriangle)
+                {
+                    render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                }
             }
             // Render name of a cities
             else if (layer_name == "BUAARE")
             {
-                render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                if (wkbFlatten(geo->getGeometryType()) == wkbPolygon ||
+                    wkbFlatten(geo->getGeometryType()) == wkbTriangle)
+                {
+                    render_named_area(cr, geo->toPolygon(), wm, lstyle, feat.get());
+                }
             }
             
         }
@@ -2132,19 +2155,29 @@ void enc_renderer::render_named_area(cairo_t *cr, const OGRPolygon *geo,
     // Nothing to do if no color
     if (style.line_color.alpha == 0)
         return;
-    
+
     // Get centroid of area
-    OGRPoint centroid;
-    auto centroid_start = std::chrono::high_resolution_clock::now();
-    geo->Centroid(&centroid);
-    auto centroid_end = std::chrono::high_resolution_clock::now();
+    //OGRPoint centroid;
+    //auto centroid_start = std::chrono::high_resolution_clock::now();
+    //geo->Centroid(&centroid);
+    //auto centroid_end = std::chrono::high_resolution_clock::now();
+
+    auto poi_start = std::chrono::high_resolution_clock::now();
+    double precision = 0.000001;
+    OGRPoint pole_of_inaccessibility = encviz::polylabel<double>(*geo, precision);
+    auto poi_end = std::chrono::high_resolution_clock::now();
+
+
     if (style.verbose)
     {
-        auto centroid_duration = std::chrono::duration_cast<std::chrono::microseconds>(centroid_end - centroid_start);
-        std::cout << style.layer_name << " Centroid Time: " << centroid_duration.count() << " usec" << std::endl;
+        //auto centroid_duration = std::chrono::duration_cast<std::chrono::microseconds>(centroid_end - centroid_start);
+        auto poi_duration = std::chrono::duration_cast<std::chrono::microseconds>(poi_end - poi_start);
+        //std::cout << style.layer_name << " Centroid Time: " << centroid_duration.count() << " usec" << std::endl;
+        std::cout << style.layer_name << " POI Time: " << poi_duration.count() << " usec" << std::endl;
     }
     // Convert lat/lon to pixel coordinates
-    coord c = wm.point_to_pixels(centroid);
+    //coord c = wm.point_to_pixels(centroid);
+    coord c = wm.point_to_pixels(pole_of_inaccessibility);
 
     std::string place_name = feat->GetFieldAsString("OBJNAM");
 
