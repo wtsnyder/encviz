@@ -12,34 +12,34 @@
   <!-- Depth areas -->
   <layer>
     <layer_name>DEPARE</layer_name>
-    <fill_color>d9edde</fill_color>
+    <fill_color>@deep</fill_color>
     <line_color>000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
     <depare_colors>
-      <foreshore>74b98f</foreshore>
-      <very_shallow>7fc0e9</very_shallow>
-      <medium_shallow>7fc0e9</medium_shallow>
-      <medium_deep>b9e1de</medium_deep>
-      <deep>d9edde</deep>
+      <foreshore>@foreshore</foreshore>
+      <very_shallow>@very_shallow</very_shallow>
+      <medium_shallow>@medium_shallow</medium_shallow>
+      <medium_deep>@medium_deep</medium_deep>
+      <deep>@deep</deep>
     </depare_colors>
   </layer>
 
   <!-- Dredged areas -->
   <layer>
     <layer_name>DRGARE</layer_name>
-    <fill_color>d9edde</fill_color>
+    <fill_color>@deep</fill_color>
     <line_color>000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
     <depare_colors>
-      <foreshore>74b98f</foreshore>
-      <very_shallow>7fc0e9</very_shallow>
-      <medium_shallow>7fc0e9</medium_shallow>
-      <medium_deep>b9e1de</medium_deep>
-      <deep>d9edde</deep>
+      <foreshore>@foreshore</foreshore>
+      <very_shallow>@very_shallow</very_shallow>
+      <medium_shallow>@medium_shallow</medium_shallow>
+      <medium_deep>@medium_deep</medium_deep>
+      <deep>@deep</deep>
     </depare_colors>
   </layer>
 
@@ -56,7 +56,7 @@
   <!-- Hulks -->
   <layer>
     <layer_name>HULKES</layer_name>
-    <fill_color>b09039</fill_color>
+    <fill_color>@built_up</fill_color>
     <line_color>000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
@@ -66,7 +66,7 @@
   <!-- Land Areas -->
   <layer>
     <layer_name>LNDARE</layer_name>
-    <fill_color>C8B87A</fill_color>
+    <fill_color>@land</fill_color>
     <line_color>00000000</line_color> <!-- no lines to skip place names -->
     <line_width>0</line_width>
     <line_style>solid</line_style>
@@ -76,7 +76,7 @@
   <!-- Built up areas -->
   <layer>
     <layer_name>BUAARE</layer_name>
-    <fill_color>b09039</fill_color>
+    <fill_color>@built_up</fill_color>
     <line_color>00000000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
@@ -85,7 +85,7 @@
 
   <layer>
     <layer_name>LAKARE</layer_name>
-    <fill_color>a8cbe2</fill_color>
+    <fill_color>@lake_river</fill_color>
     <line_color>00000000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
@@ -94,7 +94,7 @@
 
   <layer>
     <layer_name>RIVERS</layer_name>
-    <fill_color>a8cbe2</fill_color>
+    <fill_color>@lake_river</fill_color>
     <line_color>00000000</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
@@ -105,8 +105,8 @@
   <!-- Depth Soundings -->
   <layer>
     <layer_name>SOUNDG</layer_name>
-    <fill_color>000</fill_color>
-    <line_color>000</line_color>
+    <fill_color>000</fill_color> <!-- unused -->
+    <line_color>@text_icon</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -116,7 +116,7 @@
   <layer>
     <layer_name>DEPCNT</layer_name>
     <fill_color>000</fill_color>
-    <line_color>B2CBD6</line_color>
+    <line_color>@contours</line_color>
     <line_width>1</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -126,7 +126,7 @@
   <layer>
     <layer_name>ACHARE</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ef0093</line_color>
+    <line_color>@pink_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
@@ -136,7 +136,7 @@
   <layer>
     <layer_name>CBLARE</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ef0093</line_color>
+    <line_color>@pink_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
@@ -146,7 +146,7 @@
   <layer>
     <layer_name>CBLSUB</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ef0093</line_color>
+    <line_color>@pink_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>wavy</line_style>
     <marker_size>0</marker_size>
@@ -156,7 +156,7 @@
   <layer>
     <layer_name>PIPARE</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ef0093</line_color>
+    <line_color>@pink_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
@@ -166,7 +166,7 @@
   <layer>
     <layer_name>PIPSOL</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ff000000</line_color>
+    <line_color>@pipes</line_color>
     <line_width>2</line_width>
     <line_style>dash_circles</line_style>
     <marker_size>0</marker_size>
@@ -176,7 +176,7 @@
   <layer>
     <layer_name>CTNARE</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ef0093</line_color>
+    <line_color>@pink_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
@@ -188,7 +188,7 @@
   <layer>
     <layer_name>PRCARE</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ef0093</line_color>
+    <line_color>@pink_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
@@ -198,7 +198,7 @@
   <layer>
     <layer_name>RESARE</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ef0093</line_color>
+    <line_color>@pink_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>dash_t</line_style>
     <marker_size>0</marker_size>
@@ -208,7 +208,7 @@
   <layer>
     <layer_name>ADMARE</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>5e6865</line_color>
+    <line_color>@admin_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>dash_t</line_style>
     <marker_size>0</marker_size>
@@ -219,7 +219,7 @@
   <layer>
     <layer_name>PILBOP</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ef0093</line_color>
+    <line_color>@pink_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
@@ -229,7 +229,7 @@
   <layer>
     <layer_name>MIPARE</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>ef0093</line_color>
+    <line_color>@pink_boundaries</line_color>
     <line_width>1</line_width>
     <line_style>dash_triangles</line_style>
     <marker_size>0</marker_size>
@@ -239,7 +239,7 @@
   <layer>
     <layer_name>COALNE</layer_name>
     <fill_color>000</fill_color>
-    <line_color>000</line_color>
+    <line_color>@coastlines</line_color>
     <line_width>2</line_width>
     <line_style>solid</line_style>
     <marker_size>5</marker_size>
@@ -249,7 +249,7 @@
   <layer>
     <layer_name>LAKSHR</layer_name>
     <fill_color>000</fill_color>
-    <line_color>000</line_color>
+    <line_color>@coastlines</line_color>
     <line_width>2</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -259,7 +259,7 @@
   <layer>
     <layer_name>SLCONS</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>989C92</line_color>
+    <line_color>@shoreline_construction</line_color>
     <line_width>2</line_width>
     <line_style>dash</line_style>
     <marker_size>5</marker_size>
@@ -278,7 +278,7 @@
   <!-- Buildings -->
   <layer>
     <layer_name>BUISGL</layer_name>
-    <fill_color>f0dc9e</fill_color>
+    <fill_color>@building</fill_color>
     <line_color>000000</line_color>
     <line_width>2</line_width>
     <line_style>solid</line_style>
@@ -289,8 +289,8 @@
   <!-- Forts -->
   <layer>
     <layer_name>FORSTC</layer_name>
-    <fill_color>f0dc9e</fill_color>
-    <line_color>a27638</line_color>
+    <fill_color>@building</fill_color>
+    <line_color>@fort_outline</line_color>
     <line_width>1</line_width>
     <line_style>solid</line_style>
     <marker_size>5</marker_size>
@@ -300,7 +300,7 @@
   <layer>
     <layer_name>FAIRWY</layer_name>
     <fill_color>00000000</fill_color>
-    <line_color>ffdfc9e3</line_color>
+    <line_color>@fairway_boundaries</line_color>
     <line_width>2</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -309,8 +309,8 @@
   <!-- Traffic Separation Zone -->
   <layer>
     <layer_name>TSEZNE</layer_name>
-    <fill_color>80dfc9e3</fill_color>
-    <line_color>dfc9e3</line_color>
+    <fill_color>@traffic_sep</fill_color>
+    <line_color>@fairway_boundaries</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -320,7 +320,7 @@
   <layer>
     <layer_name>TSSBND</layer_name>
     <fill_color>000</fill_color>
-    <line_color>b354aa</line_color>
+    <line_color>@traffic_sep_boundaries</line_color>
     <line_width>6</line_width>
     <line_style>wide_dash</line_style>
     <marker_size>0</marker_size>
@@ -335,7 +335,7 @@
     <line_style>solid</line_style>
     <marker_size>20</marker_size>
 
-    <icon_color>ef0093</icon_color>
+    <icon_color>@pink_boundaries</icon_color>
     <icon_size>50</icon_size>
     <icons>
       <icon>
@@ -359,12 +359,12 @@
   <layer>
     <layer_name>UWTROC</layer_name>
     <fill_color>000000</fill_color>
-    <line_color>000</line_color> <!-- must have line color to draw sounding depths -->
+    <line_color>@text_icon</line_color> <!-- must have line color to draw sounding depths -->
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
 
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icon_size>25</icon_size>
     <icons>
       <icon>
@@ -390,20 +390,20 @@
   <layer>
     <layer_name>WRECKS</layer_name>
     <fill_color>00000000</fill_color>
-    <line_color>FF000000</line_color>
+    <line_color>@text_icon</line_color>
     <line_width>0</line_width>
     <line_style>dash</line_style>
     <marker_size>0</marker_size>
 
     <depare_colors>
-      <foreshore>74b98f</foreshore>
-      <very_shallow>7fc0e9</very_shallow>
-      <medium_shallow>7fc0e9</medium_shallow>
-      <medium_deep>b9e1de</medium_deep>
-      <deep>d9edde</deep>
+      <foreshore>@foreshore</foreshore>
+      <very_shallow>@very_shallow</very_shallow>
+      <medium_shallow>@medium_shallow</medium_shallow>
+      <medium_deep>@medium_deep</medium_deep>
+      <deep>@deep</deep>
     </depare_colors>
 
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icon_size>25</icon_size>
     <icons>
       <icon>
@@ -433,20 +433,20 @@
   <layer>
     <layer_name>OBSTRN</layer_name>
     <fill_color>00000000</fill_color>
-    <line_color>000</line_color> <!-- must have line color to draw sounding depths -->
+    <line_color>@text_icon</line_color> <!-- must have line color to draw sounding depths -->
     <line_width>2</line_width> <!-- need line width to draw obstruction areas -->
     <line_style>dash</line_style>
     <marker_size>0</marker_size>
 
     <depare_colors>
-      <foreshore>74b98f</foreshore>
-      <very_shallow>7fc0e9</very_shallow>
-      <medium_shallow>7fc0e9</medium_shallow>
-      <medium_deep>b9e1de</medium_deep>
-      <deep>d9edde</deep>
+      <foreshore>@foreshore</foreshore>
+      <very_shallow>@very_shallow</very_shallow>
+      <medium_shallow>@medium_shallow</medium_shallow>
+      <medium_deep>@medium_deep</medium_deep>
+      <deep>@deep</deep>
     </depare_colors>
 
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icon_size>25</icon_size>
     <icons>
       <icon>
@@ -477,7 +477,7 @@
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
 
-    <icon_color>ef0093</icon_color>
+    <icon_color>@pink_boundaries</icon_color>
     <icon_size>25</icon_size>
     <icons>
       <icon>
@@ -491,7 +491,7 @@
   <layer>
     <layer_name>BRIDGE</layer_name>
     <fill_color>0000</fill_color>
-    <line_color>616866</line_color>
+    <line_color>@bridge</line_color>
     <line_width>2</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -506,7 +506,7 @@
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
 
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icon_size>50</icon_size>
     <icons>
       <icon>
@@ -563,7 +563,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BCNSHP_0</name>
@@ -608,7 +608,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BCNSHP_0</name>
@@ -653,7 +653,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BCNSHP_0</name>
@@ -698,7 +698,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BCNSHP_0</name>
@@ -743,7 +743,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BCNSHP_0</name>
@@ -788,7 +788,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BOYSHP_0</name>
@@ -833,7 +833,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BOYSHP_0</name>
@@ -878,7 +878,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BOYSHP_0</name>
@@ -924,7 +924,7 @@
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
 
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icon_size>30</icon_size>
     <icons>
       <icon>
@@ -970,7 +970,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BOYSHP_0</name>
@@ -1015,7 +1015,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BOYSHP_0</name>
@@ -1061,7 +1061,7 @@
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>1</marker_size>
-    <icon_color>000000</icon_color>
+    <icon_color>@text_icon</icon_color>
     <icons>
       <icon>
         <name>BOYSHP_0</name>
@@ -1107,7 +1107,7 @@
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
 
-    <icon_color>a30075</icon_color>
+    <icon_color>@fogsignal</icon_color>
     <icons>
       <icon>
         <name>FOGSIG</name>
@@ -1136,7 +1136,7 @@
   <layer>
     <layer_name>LNDARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>FF000000</line_color>
+    <line_color>@text_icon</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -1146,7 +1146,7 @@
   <layer>
     <layer_name>SEAARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>FF000000</line_color>
+    <line_color>@text_icon</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -1156,7 +1156,7 @@
   <layer>
     <layer_name>BUAARE</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>FF000000</line_color>
+    <line_color>@text_icon</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>
@@ -1166,7 +1166,7 @@
   <layer>
     <layer_name>LNDRGN</layer_name>
     <fill_color>00000000</fill_color> <!-- no fill to skip geometry -->
-    <line_color>FF000000</line_color>
+    <line_color>@text_icon</line_color>
     <line_width>0</line_width>
     <line_style>solid</line_style>
     <marker_size>0</marker_size>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colors>
+
+  <!-- most text/icons, black in daytime -->
+  <color>
+    <name>text_icon</name>
+    <value>ff1A252F</value>
+  </color>
+
+  <!-- Land things -->
+  <color>
+    <name>land</name>
+    <value>0D0A08</value>
+  </color>
+  <color>
+    <name>built_up</name>
+    <value>362c11</value>
+  </color>
+  <color>
+    <name>bridge</name>
+    <value>616866</value>
+  </color>
+  <color>
+    <name>building</name>
+    <value>362c11</value>
+  </color>
+  <color>
+    <name>fort_outline</name>
+    <value>000000</value>
+  </color>
+
+
+  <color>
+    <name>lake_river</name>
+    <value>16232f</value>
+  </color>
+
+  <!-- DEPARE zone colors -->
+  <color>
+    <name>foreshore</name>
+    <value>15251f</value>
+  </color>
+  <color>
+    <name>very_shallow</name>
+    <value>16232f</value>
+  </color>
+  <color>
+    <name>medium_shallow</name>
+    <value>151b21</value>
+  </color>
+  <color>
+    <name>medium_deep</name>
+    <value>0c0e0f</value>
+  </color>
+  <color>
+    <name>deep</name>
+    <value>070707</value>
+  </color>
+
+  <!-- other zones -->
+  <color>
+    <name>traffic_sep</name>
+    <value>80dfc9e3</value>
+  </color>
+
+  <!-- lines -->
+  <color>
+    <name>contours</name>
+    <value>0C0D0E</value>
+  </color>
+  <color>
+    <name>coastlines</name>
+    <value>ff0E0F15</value>
+  </color>
+  <color>
+    <name>shoreline_construction</name>
+    <value>ff141616</value>
+  </color>
+  <color>
+    <name>channels</name>
+    <value>ff363c3d</value>
+  </color>
+  <color>
+    <name>pink_boundaries</name>
+    <value>ff4a3a51</value>
+  </color>
+  <color>
+    <name>traffic_sep_boundaries</name>
+    <value>ff4a3a51</value>
+  </color>
+  <color>
+    <name>fairway_boundaries</name>
+    <value>ff4a3a51</value>
+  </color>
+  <color>
+    <name>admin_boundaries</name>
+    <value>ff5e6865</value>
+  </color>
+  <color>
+    <name>pipes</name>
+    <value>ff000000</value>
+  </color>
+
+  <!-- random -->
+  <color>
+    <name>fogsignal</name>
+    <value>ff4a3a51</value>
+  </color>
+
+
+</colors>

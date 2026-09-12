@@ -32,9 +32,32 @@ std::ostream& operator<<(std::ostream& os, const color& c)
        << std::setw(2) << int(c.green)
        << std::setw(2) << int(c.blue)
        << std::setw(2) << int(c.alpha);
-    
+
     os << ss.str();
     return os;
+}
+
+color load_color(tinyxml2::XMLElement *node, const ColorTheme &color_theme)
+{
+    const char *color_text = xml_text(node);
+
+    if (strlen(color_text) > 1 && color_text[0] == '@')
+    {
+        // Theme color
+        std::string name = color_text;
+        name = name.substr(1);
+        auto it = color_theme.find(name);
+        if (it == color_theme.end())
+        {
+            throw std::runtime_error("Invalid theme color " + name);
+        }
+        return it->second;
+    }
+    else
+    {
+        // Directly specified color
+        return parse_color(node);
+    }
 }
 
 /**
@@ -158,7 +181,7 @@ LineStyle parse_line_style(tinyxml2::XMLElement *node)
  * \param[in] node Layer element
  * \return Parsed layer style
  */
-layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path &svg_path)
+layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path &svg_path, const ColorTheme &color_theme)
 {
     // Sanity check
     if (node == nullptr)
@@ -186,8 +209,8 @@ layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path 
     }
 
     
-    parsed.fill_color = parse_color(xml_query(node, "fill_color"));
-    parsed.line_color = parse_color(xml_query(node, "line_color"));
+    parsed.fill_color = load_color(xml_query(node, "fill_color"), color_theme);
+    parsed.line_color = load_color(xml_query(node, "line_color"), color_theme);
     parsed.line_width = atoi(xml_text(xml_query(node, "line_width")));
     parsed.line_style = parse_line_style(xml_query(node, "line_style"));
     parsed.marker_size = atoi(xml_text(xml_query(node, "marker_size")));
@@ -206,7 +229,7 @@ layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path 
     tinyxml2::XMLElement* icon_color = node->FirstChildElement("icon_color");
     if (icon_color)
     {
-        parsed.icon_color = parse_color(xml_query(node, "icon_color"));
+        parsed.icon_color = load_color(xml_query(node, "icon_color"), color_theme);
     }
 
     parsed.icon_size = 50;
@@ -230,11 +253,11 @@ layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path 
     tinyxml2::XMLElement* depare = node->FirstChildElement("depare_colors");
     if (depare)
     {
-        parsed.depare_colors.foreshore = parse_color(xml_query(depare, "foreshore"));
-        parsed.depare_colors.very_shallow = parse_color(xml_query(depare, "very_shallow"));
-        parsed.depare_colors.medium_shallow = parse_color(xml_query(depare, "medium_shallow"));
-        parsed.depare_colors.medium_deep = parse_color(xml_query(depare, "medium_deep"));
-        parsed.depare_colors.deep = parse_color(xml_query(depare, "deep"));
+        parsed.depare_colors.foreshore = load_color(xml_query(depare, "foreshore"), color_theme);
+        parsed.depare_colors.very_shallow = load_color(xml_query(depare, "very_shallow"), color_theme);
+        parsed.depare_colors.medium_shallow = load_color(xml_query(depare, "medium_shallow"), color_theme);
+        parsed.depare_colors.medium_deep = load_color(xml_query(depare, "medium_deep"), color_theme);
+        parsed.depare_colors.deep = load_color(xml_query(depare, "deep"), color_theme);
     }
     
     return parsed;
@@ -264,14 +287,37 @@ std::pair<std::string, std::filesystem::path> parse_icon(tinyxml2::XMLElement *n
     return output;
 }
 
+ColorTheme parse_color_theme(const std::string &colors)
+{
+    ColorTheme color_theme;
+
+    // Load XML document
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile(colors.c_str()))
+    {
+        // Parse error?
+        throw std::runtime_error("Cannot parse " + colors);
+    }
+    tinyxml2::XMLElement *root = doc.RootElement();
+
+    for (tinyxml2::XMLElement *child : xml_query_all(root, "color"))
+    {
+        color_theme[xml_text(xml_query(child, "name"))] = parse_color(xml_query(child, "value"));
+    }
+
+    return color_theme;
+}
+
 /**
  * Load Style from File
  *
  * \param[in] filename Path to style file
  * \return Loaded style
  */
-render_style load_style(const std::string &filename, std::filesystem::path svg_path)
+render_style load_style(const std::string &colors, const std::string &filename, std::filesystem::path svg_path)
 {
+    ColorTheme color_theme = parse_color_theme(colors);
+
     // Load XML document
     tinyxml2::XMLDocument doc;
     if (doc.LoadFile(filename.c_str()))
@@ -307,7 +353,7 @@ render_style load_style(const std::string &filename, std::filesystem::path svg_p
 
     for (tinyxml2::XMLElement *child : xml_query_all(root, "layer"))
     {
-        parsed.layers.push_back(parse_layer(child, svg_path));
+        parsed.layers.push_back(parse_layer(child, svg_path, color_theme));
     }
 
 

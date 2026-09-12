@@ -2270,7 +2270,7 @@ void enc_renderer::load_config(const fs::path &config_file)
     tinyxml2::XMLElement *root = doc.RootElement();
     fs::path chart_path = xml_text(xml_query(root, "chart_path"));
     fs::path meta_path = xml_text(xml_query(root, "meta_path"));
-    fs::path style_path = xml_text(xml_query(root, "style_path"));
+    //fs::path style_path = xml_text(xml_query(root, "style_path"));
     fs::path svg_path = xml_text(xml_query(root, "svg_path"));
     tile_size_ = atoi(xml_text(xml_query(root, "tile_size")));
     min_scale0_ = atof(xml_text(xml_query(root, "scale_base")));
@@ -2280,14 +2280,14 @@ void enc_renderer::load_config(const fs::path &config_file)
         chart_path = config_path / chart_path;
     if (meta_path.is_relative())
         meta_path = config_path / meta_path;
-    if (style_path.is_relative())
-        style_path = config_path / style_path;
+    //if (style_path.is_relative())
+    //    style_path = config_path / style_path;
     if (svg_path.is_relative())
         svg_path = config_path / svg_path;
 
     printf(" - Charts: %s\n", chart_path.string().c_str());
     printf(" - Metadata: %s\n", meta_path.string().c_str());
-    printf(" - Styles: %s\n", style_path.string().c_str());
+    //printf(" - Styles: %s\n", style_path.string().c_str());
     printf(" - SVGs: %s\n", svg_path.string().c_str());
     printf(" - Tile Size: %d\n", tile_size_);
     printf(" - Scale Base: %g\n", min_scale0_);
@@ -2299,15 +2299,25 @@ void enc_renderer::load_config(const fs::path &config_file)
     // Set up svg load path
     //svg_.set_svg_path(svg_path);
 
-    // Load styles
-    for (const fs::directory_entry &entry : fs::directory_iterator(style_path))
+    // Load chart styles
+    tinyxml2::XMLElement* styles = root->FirstChildElement("styles");
+    if (styles)
     {
-        fs::path p = entry.path();
-        if (p.extension() == ".xml")
+        for (tinyxml2::XMLElement *style : xml_query_all(styles, "style"))
         {
-            styles_[p.stem().string()] = load_style(p.string(), svg_path);
+            std::string name = xml_text(xml_query(style, "name"));
+            fs::path color_table_path = xml_text(xml_query(style, "color_table"));
+            fs::path layers_file_path = xml_text(xml_query(style, "layers_file"));
+
+            if (color_table_path.is_relative())
+                color_table_path = config_path / color_table_path;
+            if (layers_file_path.is_relative())
+                layers_file_path = config_path / layers_file_path;
+
+            styles_[name] = load_style(color_table_path, layers_file_path, svg_path);
         }
     }
+
 }
 
 }; // ~namespace encviz

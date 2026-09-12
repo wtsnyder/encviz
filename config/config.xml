@@ -9,10 +9,28 @@
   <meta_path>meta</meta_path>
 
   <!-- Location to store render styles -->
-  <style_path>styles</style_path>
+  <!--<style_path>styles</style_path> -->
 
   <!-- Location of SVG icons -->
   <svg_path>icons</svg_path>
+
+  <styles>
+    <style>
+      <name>default</name>
+      <color_table>styles/day_colors.xml</color_table>
+      <layers_file>styles/default.xml</layers_file>
+    </style>
+    <style>
+      <name>dusk</name>
+      <color_table>styles/dusk_colors.xml</color_table>
+      <layers_file>styles/default.xml</layers_file>
+    </style>
+    <style>
+      <name>night</name>
+      <color_table>styles/night_colors.xml</color_table>
+      <layers_file>styles/default.xml</layers_file>
+    </style>
+  </styles>
 
   <!-- Size of rendered tiles -->
   <tile_size>256</tile_size>
