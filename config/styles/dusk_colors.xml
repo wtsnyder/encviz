@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colors>
 
+  <!-- debug overlay -->
+  <color>
+    <name>debug</name>
+    <value>ff000000</value>
+  </color>
+  
   <!-- most text/icons, black in daytime -->
   <color>
     <name>text_icon</name>

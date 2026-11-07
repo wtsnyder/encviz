@@ -6,6 +6,8 @@
 
   <debug>true</debug>
 
+  <debug_color>@debug</debug_color>
+
   <!-- Green Background -->
   <background>00ff00</background>
 

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colors>
 
+  <!-- debug overlay -->
+  <color>
+    <name>debug</name>
+    <value>ffffffff</value>
+  </color>
+
   <!-- most text/icons, black in daytime -->
   <color>
     <name>text_icon</name>
@@ -14,7 +20,7 @@
   </color>
   <color>
     <name>built_up</name>
-    <value>362c11</value>
+    <value>1F2223</value>
   </color>
   <color>
     <name>bridge</name>
@@ -22,11 +28,11 @@
   </color>
   <color>
     <name>building</name>
-    <value>362c11</value>
+    <value>1F2223</value>
   </color>
   <color>
     <name>fort_outline</name>
-    <value>000000</value>
+    <value>1F2223</value>
   </color>
 
 

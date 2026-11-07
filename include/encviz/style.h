@@ -117,6 +117,9 @@ struct render_style
     /// Draw tile debug info
     bool tile_debug;
 
+    /// Debug color
+    std::optional<color> debug_color;
+
     /// Background fill
     std::optional<color> background;
 

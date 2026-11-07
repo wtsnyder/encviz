@@ -316,6 +316,7 @@ ColorTheme parse_color_theme(const std::string &colors)
  */
 render_style load_style(const std::string &colors, const std::string &filename, std::filesystem::path svg_path)
 {
+    std::cout << "Parsing style " << filename << " with theme " << colors << std::endl;
     ColorTheme color_theme = parse_color_theme(colors);
 
     // Load XML document
@@ -331,7 +332,7 @@ render_style load_style(const std::string &colors, const std::string &filename, 
     render_style parsed;
     try
     {
-        parsed.background = parse_color(xml_query(root, "background"));
+        parsed.background = load_color(xml_query(root, "background"), color_theme);
     }
     catch (...) {}
 
@@ -350,6 +351,13 @@ render_style load_style(const std::string &colors, const std::string &filename, 
     {
         parsed.tile_debug = false;
     }
+
+    try
+    {
+        parsed.debug_color = load_color(xml_query(root, "debug_color"), color_theme);
+        std::cout << "Parsed debug color " << std::endl;
+    }
+    catch (...) {}
 
     for (tinyxml2::XMLElement *child : xml_query_all(root, "layer"))
     {
