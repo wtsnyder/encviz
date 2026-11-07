@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 project(encviz)
 
 # Need C++17
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # Use ccache if available
 find_program(CCACHE_FOUND ccache)

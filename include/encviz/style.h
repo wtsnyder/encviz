@@ -67,6 +67,8 @@ struct DepareColors
 
 typedef std::map<std::string, std::filesystem::path> IconStyle;
 
+typedef std::map<std::string, color> ColorTheme;
+
 /// Style for a single layer
 struct layer_style
 {
@@ -115,12 +117,21 @@ struct render_style
     /// Draw tile debug info
     bool tile_debug;
 
+    /// Debug color
+    std::optional<color> debug_color;
+
     /// Background fill
     std::optional<color> background;
 
     /// Layers
     std::vector<layer_style> layers;
 };
+
+/**
+ * Get a named color from a theme
+ * or load a hex color value
+ */
+color load_color(tinyxml2::XMLElement *node, const ColorTheme &color_theme);
 
 /**
  * Parse Color Code
@@ -148,12 +159,17 @@ LineStyle parse_line_style(tinyxml2::XMLElement *node);
  * \param[in] node Layer element
  * \return Parsed layer style
  */
-layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path &svg_path);
+layer_style parse_layer(tinyxml2::XMLElement *node, const std::filesystem::path &svg_path, const ColorTheme &color_theme);
 
- /**
-  * Parse Icon
-  */
+/**
+ * Parse Icon
+ */
 std::pair<std::string, std::filesystem::path> parse_icon(tinyxml2::XMLElement *node, std::filesystem::path svg_path);
+
+/**
+ * Load a list of named colors from a provided xml file
+ */
+ColorTheme parse_color_theme(const std::string &colors);
 
 /**
  * Load Style from File
@@ -161,6 +177,6 @@ std::pair<std::string, std::filesystem::path> parse_icon(tinyxml2::XMLElement *n
  * \param[in] filename Path to style file
  * \return Loaded style
  */
-render_style load_style(const std::string &filename, std::filesystem::path svg_path);
+render_style load_style(const std::string &colors, const std::string &layers, std::filesystem::path svg_path);
 
 }; // ~namespace encviz

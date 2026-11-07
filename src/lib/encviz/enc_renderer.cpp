@@ -9,6 +9,7 @@
 #include <encviz/xml_config.h>
 #include <librsvg/rsvg.h>
 #include <iostream>
+#include <format>
 
 namespace fs = std::filesystem;
 
@@ -147,6 +148,8 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         scale_min = 22000 - 1;
     if (z >= 14)
         scale_min = 12000;
+
+    auto dataload_start = std::chrono::high_resolution_clock::now();
             
     // Export all data in this tile
     GDALDataset *tile_data = GetGDALDriverManager()->GetDriverByName("Memory")->
@@ -156,6 +159,12 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     printf("Error exporting tile data\n");
         return false;
     }
+
+    std::cout << "Render Tile: " << std::endl;
+    std::cout << " min scale: " << scale_min << std::endl;
+    auto render_start = std::chrono::high_resolution_clock::now();
+    std::string longest_layer = "";
+    std::chrono::microseconds longest_layer_duration = std::chrono::microseconds(0);
 
     // Create a cairo surface
     cairo_surface_t *surface =
@@ -178,13 +187,6 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     {
         lndare_multi_poly->toMultiPolygon()->addGeometry(child);
     }
-
-
-    std::cout << "Render Tile: " << std::endl;
-    std::cout << " min scale: " << scale_min << std::endl;
-    auto render_start = std::chrono::high_resolution_clock::now();
-    std::string longest_layer = "";
-    std::chrono::microseconds longest_layer_duration = std::chrono::microseconds(0);
     
     // Render style layers
     for (const auto &lstyle : style.layers)
@@ -375,11 +377,17 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
             + std::to_string(y) + ", "
             + std::to_string(z);
 
+        auto data_duration = render_start - dataload_start;
+
         auto render_duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - render_start);
 
-        std::string render_time = std::to_string(render_duration.count()) + " usec";
+        std::string data_time = std::format("data: {:.3f} msec", data_duration.count() / 1000.0);
+        std::string render_time = std::format("render: {:.3f} msec", render_duration.count() / 1000.0);
 
-        render_tile_debug(cr, wm, tile_coord, render_time);
+        color debug_color = {255,0,0,0};
+        if (style.debug_color)
+            debug_color = style.debug_color.value();
+        render_tile_debug(cr, wm, debug_color, tile_coord, data_time, render_time);
     }
 
     // Write out image
@@ -2170,7 +2178,12 @@ void enc_renderer::render_named_area(cairo_t *cr, const OGRPolygon *geo,
     }
 }
 
-void enc_renderer::render_tile_debug(cairo_t *cr, const web_mercator &wm, const std::string &text, const std::string &text2)
+void enc_renderer::render_tile_debug(cairo_t *cr,
+                                     const web_mercator &wm,
+                                     const color &color,
+                                     const std::string &text,
+                                     const std::string &text2,
+                                     const std::string &text3)
 {
     OGREnvelope bbox = wm.get_bbox_deg();
     OGRPolygon bbox_poly;
@@ -2186,7 +2199,7 @@ void enc_renderer::render_tile_debug(cairo_t *cr, const web_mercator &wm, const 
     ls.layer_name = "tile debug";
     ls.verbose = false;
     ls.fill_color = {0,0,0,0};
-    ls.line_color = {255,0,0,0};
+    ls.line_color = color;
     ls.line_width = 1;
     ls.line_style = SOLID;
 
@@ -2230,6 +2243,19 @@ void enc_renderer::render_tile_debug(cairo_t *cr, const web_mercator &wm, const 
     cairo_move_to(cr, centroid_px.x - debug_text2_extents.width/2,
                   centroid_px.y + debug_text2_extents.height/2 + debug_text_extents.height * 1.1);
     cairo_show_text(cr, debug_text2);
+
+    // Create C string of debug text3
+    char debug_text3[text3.length() + 1];
+    strcpy(debug_text3, text3.c_str());
+
+    // Determine text render size
+    cairo_text_extents_t debug_text3_extents = {};
+    cairo_text_extents(cr, debug_text3, &debug_text3_extents);
+
+    // Draw text
+    cairo_move_to(cr, centroid_px.x - debug_text3_extents.width/2,
+                  centroid_px.y + debug_text3_extents.height/2 + debug_text2_extents.height * 1.1 + debug_text_extents.height * 1.1);
+    cairo_show_text(cr, debug_text3);
 }
 
 /**
@@ -2270,7 +2296,7 @@ void enc_renderer::load_config(const fs::path &config_file)
     tinyxml2::XMLElement *root = doc.RootElement();
     fs::path chart_path = xml_text(xml_query(root, "chart_path"));
     fs::path meta_path = xml_text(xml_query(root, "meta_path"));
-    fs::path style_path = xml_text(xml_query(root, "style_path"));
+    //fs::path style_path = xml_text(xml_query(root, "style_path"));
     fs::path svg_path = xml_text(xml_query(root, "svg_path"));
     tile_size_ = atoi(xml_text(xml_query(root, "tile_size")));
     min_scale0_ = atof(xml_text(xml_query(root, "scale_base")));
@@ -2280,14 +2306,14 @@ void enc_renderer::load_config(const fs::path &config_file)
         chart_path = config_path / chart_path;
     if (meta_path.is_relative())
         meta_path = config_path / meta_path;
-    if (style_path.is_relative())
-        style_path = config_path / style_path;
+    //if (style_path.is_relative())
+    //    style_path = config_path / style_path;
     if (svg_path.is_relative())
         svg_path = config_path / svg_path;
 
     printf(" - Charts: %s\n", chart_path.string().c_str());
     printf(" - Metadata: %s\n", meta_path.string().c_str());
-    printf(" - Styles: %s\n", style_path.string().c_str());
+    //printf(" - Styles: %s\n", style_path.string().c_str());
     printf(" - SVGs: %s\n", svg_path.string().c_str());
     printf(" - Tile Size: %d\n", tile_size_);
     printf(" - Scale Base: %g\n", min_scale0_);
@@ -2299,15 +2325,25 @@ void enc_renderer::load_config(const fs::path &config_file)
     // Set up svg load path
     //svg_.set_svg_path(svg_path);
 
-    // Load styles
-    for (const fs::directory_entry &entry : fs::directory_iterator(style_path))
+    // Load chart styles
+    tinyxml2::XMLElement* styles = root->FirstChildElement("styles");
+    if (styles)
     {
-        fs::path p = entry.path();
-        if (p.extension() == ".xml")
+        for (tinyxml2::XMLElement *style : xml_query_all(styles, "style"))
         {
-            styles_[p.stem().string()] = load_style(p.string(), svg_path);
+            std::string name = xml_text(xml_query(style, "name"));
+            fs::path color_table_path = xml_text(xml_query(style, "color_table"));
+            fs::path layers_file_path = xml_text(xml_query(style, "layers_file"));
+
+            if (color_table_path.is_relative())
+                color_table_path = config_path / color_table_path;
+            if (layers_file_path.is_relative())
+                layers_file_path = config_path / layers_file_path;
+
+            styles_[name] = load_style(color_table_path, layers_file_path, svg_path);
         }
     }
+
 }
 
 }; // ~namespace encviz
