@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <memory>
+#include <format>
 #include <encviz/enc_dataset.h>
 
 // Helper macro for data presence
@@ -27,6 +28,7 @@ namespace encviz
  * Constructor
  */
 enc_dataset::enc_dataset()
+    : enc_cache_(30, std::chrono::seconds(30))
 {
     // Cache location
     char *phome = getenv("HOME");
@@ -149,15 +151,16 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
     // Clip layer will track missing coverage
     create_bbox_feature(clip_layer, bbox);
 
+    std::chrono::high_resolution_clock::duration clip_duration(0);
+
     // Process charts one at a time to reduce repeated S57 parses
     for (const auto &chart : selected)
     {
         // Open input data set
         printf(" - Process: %s\n", chart->path.stem().string().c_str());
-        GDALDataset *ids = GDALDataset::Open(chart->path.string().c_str(),
-                                             GDAL_OF_VECTOR | GDAL_OF_READONLY,
-                                             nullptr, nullptr, nullptr);
-        CHECKNULL(ids, "Cannot open input data set");
+        GDALDatasetPtr ids = enc_cache_.openFromCache(chart->path);
+        if (!ids)
+            throw std::runtime_error("Cannot open input dataset");
 
         // Process chart's layers
         for (const std::string &layer_name : layers)
@@ -232,16 +235,21 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
             }
             else
             {
+                auto clip_start = std::chrono::high_resolution_clock::now();
+                
                 // Clip out only the features in this tile for most layers
                 if (ilayer->Clip(clip_layer, olayer) != OGRERR_NONE)
                 {
                     throw std::runtime_error("Cannot perform layer clip operation");
                 }
+
+                auto clip_end = std::chrono::high_resolution_clock::now();
+                clip_duration += (clip_end - clip_start);
             }
         }
 
         // Remove any coverage from the clipping layer
-        copy_chart_coverage(coverage_layer, ids);
+        copy_chart_coverage(coverage_layer, ids.get());
         if (clip_layer->Erase(coverage_layer, result_layer) != OGRERR_NONE)
         {
             throw std::runtime_error("Cannot perform layer erase operation");
@@ -250,13 +258,12 @@ bool enc_dataset::export_data(GDALDataset *ods, std::vector<std::string> layers,
         clear_layer(coverage_layer);
         clear_layer(result_layer);
 
-        // Close input dataset
-        delete ids;
-
         // Stop if all coverage is accounted for ...
         if (clip_layer->GetFeatureCount() == 0)
         {
-            printf(" - Complete coverage (STOP)\n");
+            std::string clip_time = std::format("{:.3f} msec", std::chrono::duration_cast<std::chrono::microseconds>(clip_duration).count() / 1000.0);
+            std::cout << " - Complte coverage (STOP), clip time: " << clip_time << std::endl;
+
             break;
         }
     }

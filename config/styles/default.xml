@@ -1052,7 +1052,7 @@
         <file>Q_buoys_beacons/super_buoy.svg</file>
       </icon>
     </icons>
-    <verbose>true</verbose>
+    <!-- <verbose>true</verbose> -->
   </layer>
 
   <!-- Mooring Facility -->

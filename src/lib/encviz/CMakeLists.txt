@@ -1,5 +1,6 @@
 add_library(encviz
   enc_dataset.cpp
+  enc_cache.cpp
   enc_renderer.cpp
   style.cpp
   svg_collection.cpp

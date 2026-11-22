@@ -377,7 +377,7 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
             + std::to_string(y) + ", "
             + std::to_string(z);
 
-        auto data_duration = render_start - dataload_start;
+        auto data_duration = std::chrono::duration_cast<std::chrono::microseconds>(render_start - dataload_start);
 
         auto render_duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - render_start);
 
@@ -388,6 +388,7 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
         if (style.debug_color)
             debug_color = style.debug_color.value();
         render_tile_debug(cr, wm, debug_color, tile_coord, data_time, render_time);
+
     }
 
     // Write out image
@@ -405,8 +406,9 @@ bool enc_renderer::render(std::vector<uint8_t> &data, tile_coords tc,
     printf("Png Size: %lu\n", data.size());
     auto render_end = std::chrono::high_resolution_clock::now();
     auto render_duration = std::chrono::duration_cast<std::chrono::microseconds>(render_end - render_start);
-    std::cout << "Render Time: " << render_duration.count() << " usec" << std::endl;
-    std::cout << "Longest Layer: " << longest_layer << " " << longest_layer_duration.count() << " usec" << std::endl;
+    
+    std::cout << "Render Time: " << std::format(" {:.3f} msec", render_duration.count() / 1000.0) << std::endl;
+    std::cout << "Longest Layer: " << longest_layer << " " << std::format(" {:.3f} msec", longest_layer_duration.count() / 1000.0) << std::endl;
     
     // Cleanup
     cairo_destroy(cr);

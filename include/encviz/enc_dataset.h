@@ -16,6 +16,8 @@
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 
+#include <encviz/enc_cache.h>
+
 namespace encviz
 {
 
@@ -168,6 +170,9 @@ private:
 
     /// Chart data cache location
     std::filesystem::path cache_;
+
+    /// In-memory chart loading cache
+    EncCache enc_cache_;
 
     /// GDAL memory driver handle
     GDALDriver *mem_drv_;
